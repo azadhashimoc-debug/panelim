@@ -25,7 +25,11 @@ export async function proxy(request: NextRequest) {
       },
     },
   });
-  await client.auth.getClaims();
+  try {
+    await client.auth.getClaims();
+  } catch {
+    // Unauthenticated visitors or network glitch should not fail request
+  }
   return response;
 }
 export const config = {
