@@ -32,6 +32,10 @@ export async function proxy(request: NextRequest) {
   }
   return response;
 }
+export const middleware = proxy;
+export default proxy;
+
 export const config = {
   matcher: ["/isci/:path*", "/rehber/:path*", "/giris", "/api/:path*"],
 };
+

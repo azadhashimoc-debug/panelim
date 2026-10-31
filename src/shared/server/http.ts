@@ -29,9 +29,12 @@ export function ok(data: unknown) {
   });
 }
 export async function readMutation(request: Request): Promise<unknown> {
-  const expected = new URL(process.env.APP_URL || request.url).origin;
+  const origin = request.headers.get("origin");
+  const requestOrigin = new URL(request.url).origin;
+  const configuredOrigin = process.env.APP_URL ? new URL(process.env.APP_URL).origin : null;
+  const isAllowedOrigin = origin && (origin === requestOrigin || (configuredOrigin && origin === configuredOrigin));
   if (
-    request.headers.get("origin") !== expected ||
+    !isAllowedOrigin ||
     request.headers.get("sec-fetch-site") === "cross-site"
   )
     throw new Error("FORBIDDEN");
