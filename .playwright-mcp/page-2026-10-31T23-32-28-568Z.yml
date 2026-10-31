@@ -1,0 +1,76 @@
+- generic [active] [ref=f28e1]:
+  - link "Məzmuna keç" [ref=f28e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f28e3]:
+    - complementary [ref=f28e4]:
+      - link "Panelim ana səhifə" [ref=f28e5] [cursor=pointer]:
+        - /url: /demo
+        - generic [ref=f28e6]: panelim.az
+      - generic [ref=f28e14]: İŞÇİ KABİNETİ
+      - navigation "Əsas naviqasiya" [ref=f28e15]:
+        - link "İş günüm" [ref=f28e16] [cursor=pointer]:
+          - /url: /demo
+        - link "Davamiyyətim" [ref=f28e23] [cursor=pointer]:
+          - /url: /demo/tarixce
+        - link "Müraciətlərim" [ref=f28e29] [cursor=pointer]:
+          - /url: /demo/muracietler
+      - link "Rəhbər paneli" [ref=f28e35] [cursor=pointer]:
+        - /url: /rehber
+      - generic [ref=f28e44]:
+        - generic [ref=f28e45]:
+          - strong [ref=f28e49]: Vaxtınız dəyərlidir.
+          - paragraph [ref=f28e50]: Hər iş gününü rahatlıqla qeyd edin.
+          - generic [ref=f28e51]:
+            - text: panelim sizinlədir
+            - generic [aria-hidden] [ref=f28e52]: ✦
+        - button "Kömək və dəstək" [ref=f28e53] [cursor=pointer]
+        - generic [ref=f28e57]: Azərbaycan üçün hazırlanıb
+    - generic [ref=f28e59]:
+      - banner [ref=f28e60]:
+        - generic [ref=f28e61]:
+          - generic [ref=f28e62]: İşçi kabineti
+          - strong [ref=f28e65]: Müraciətlərim
+        - generic [ref=f28e66]:
+          - link "Rəhbər görünüşü" [ref=f28e67] [cursor=pointer]:
+            - /url: /rehber
+          - generic [ref=f28e76]: 1 noyabr
+          - generic [ref=f28e80]: A
+          - button "Hesabdan çıx" [ref=f28e81] [cursor=pointer]
+      - main [ref=f28e85]:
+        - generic [ref=f28e86]:
+          - generic [ref=f28e87]:
+            - generic [ref=f28e88]:
+              - text: Xoş gəldiniz, Aylin
+              - generic [ref=f28e89]: ✦
+            - heading "Müraciətləriniz" [level=1] [ref=f28e90]
+            - paragraph [ref=f28e91]: Göndərdiyiniz düzəlişlərin vəziyyətini izləyin.
+          - generic [ref=f28e98]:
+            - generic [ref=f28e99]: Nümunə Kafe
+            - strong [ref=f28e100]: Nizami filialı
+        - generic [ref=f28e101]:
+          - generic [ref=f28e106]:
+            - strong [ref=f28e107]: İşçi baxışı (Tanışlıq rejimi)
+            - paragraph [ref=f28e108]: Hazırda işçi ekranındasınız. Şirkət rəhbərinin kabinetinə və filial idarəetməsinə baxmaq üçün keçid edə bilərsiniz.
+          - link "Rəhbər kabinetinə keç" [ref=f28e109] [cursor=pointer]:
+            - /url: /rehber
+        - generic [ref=f28e118]:
+          - strong [ref=f28e119]: Nümunə məlumatlar
+          - text: · Bu kabinetdəki şəxs, davamiyyət və maaş göstəriciləri yalnız demo üçündür.
+        - generic [ref=f28e120]:
+          - generic [ref=f28e121]:
+            - heading "Düzəliş müraciətləri" [level=2] [ref=f28e122]
+            - button "Yeni müraciət" [ref=f28e123] [cursor=pointer]
+          - generic [ref=f28e128]:
+            - article [ref=f28e129]:
+              - generic [ref=f28e134]:
+                - strong [ref=f28e135]: İcazə · 2026-11-12
+                - paragraph [ref=f28e136]: Şəxsi iş üçün 2 saatlıq icazə
+              - generic [ref=f28e137]: Gözləyir
+            - article [ref=f28e138]:
+              - generic [ref=f28e144]:
+                - strong [ref=f28e145]: 29 oktyabr ·09:00 – 18:00
+                - paragraph [ref=f28e146]: Giriş qeydi telefondakı internet kəsintisinə görə yaranmayıb.
+              - generic [ref=f28e147]: Gözləyir
+        - generic [ref=f28e148]:
+          - generic [ref=f28e149]: ©2026 panelim.az
+          - generic [ref=f28e150]: İşin vaxtında. Hər şey qaydasında.

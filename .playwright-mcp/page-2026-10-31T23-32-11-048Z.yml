@@ -1,0 +1,96 @@
+- generic [active] [ref=f27e1]:
+  - link "Məzmuna keç" [ref=f27e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f27e3]:
+    - complementary [ref=f27e4]:
+      - link "Panelim ana səhifə" [ref=f27e5] [cursor=pointer]:
+        - /url: /demo
+        - generic [ref=f27e6]: panelim.az
+      - generic [ref=f27e14]: İŞÇİ KABİNETİ
+      - navigation "Əsas naviqasiya" [ref=f27e15]:
+        - link "İş günüm" [ref=f27e16] [cursor=pointer]:
+          - /url: /demo
+        - link "Davamiyyətim" [ref=f27e23] [cursor=pointer]:
+          - /url: /demo/tarixce
+        - link "Müraciətlərim" [ref=f27e30] [cursor=pointer]:
+          - /url: /demo/muracietler
+      - link "Rəhbər paneli" [ref=f27e35] [cursor=pointer]:
+        - /url: /rehber
+      - generic [ref=f27e44]:
+        - generic [ref=f27e45]:
+          - strong [ref=f27e49]: Vaxtınız dəyərlidir.
+          - paragraph [ref=f27e50]: Hər iş gününü rahatlıqla qeyd edin.
+          - generic [ref=f27e51]:
+            - text: panelim sizinlədir
+            - generic [aria-hidden] [ref=f27e52]: ✦
+        - button "Kömək və dəstək" [ref=f27e53] [cursor=pointer]
+        - generic [ref=f27e57]: Azərbaycan üçün hazırlanıb
+    - generic [ref=f27e59]:
+      - banner [ref=f27e60]:
+        - generic [ref=f27e61]:
+          - generic [ref=f27e62]: İşçi kabineti
+          - strong [ref=f27e65]: Davamiyyətim
+        - generic [ref=f27e66]:
+          - link "Rəhbər görünüşü" [ref=f27e67] [cursor=pointer]:
+            - /url: /rehber
+          - generic [ref=f27e76]: 1 noyabr
+          - generic [ref=f27e80]: A
+          - button "Hesabdan çıx" [ref=f27e81] [cursor=pointer]
+      - main [ref=f27e85]:
+        - generic [ref=f27e86]:
+          - generic [ref=f27e87]:
+            - generic [ref=f27e88]:
+              - text: Xoş gəldiniz, Aylin
+              - generic [ref=f27e89]: ✦
+            - heading "Davamiyyət tarixçəniz" [level=1] [ref=f27e90]
+            - paragraph [ref=f27e91]: Giriş və çıxış qeydləriniz həmişə əlinizin altında.
+          - generic [ref=f27e98]:
+            - generic [ref=f27e99]: Nümunə Kafe
+            - strong [ref=f27e100]: Nizami filialı
+        - generic [ref=f27e101]:
+          - generic [ref=f27e106]:
+            - strong [ref=f27e107]: İşçi baxışı (Tanışlıq rejimi)
+            - paragraph [ref=f27e108]: Hazırda işçi ekranındasınız. Şirkət rəhbərinin kabinetinə və filial idarəetməsinə baxmaq üçün keçid edə bilərsiniz.
+          - link "Rəhbər kabinetinə keç" [ref=f27e109] [cursor=pointer]:
+            - /url: /rehber
+        - generic [ref=f27e118]:
+          - strong [ref=f27e119]: Nümunə məlumatlar
+          - text: · Bu kabinetdəki şəxs, davamiyyət və maaş göstəriciləri yalnız demo üçündür.
+        - generic [ref=f27e120]:
+          - generic [ref=f27e121]:
+            - heading "Son 30 qeyd" [level=2] [ref=f27e122]
+            - generic [ref=f27e123]: Bakı vaxtı ilə
+          - table [ref=f27e125]:
+            - rowgroup [ref=f27e126]:
+              - row [ref=f27e127]:
+                - columnheader "Tarix / filial" [ref=f27e128]
+                - columnheader "Giriş" [ref=f27e129]
+                - columnheader "Çıxış" [ref=f27e130]
+                - columnheader "Vəziyyət" [ref=f27e131]
+            - rowgroup [ref=f27e132]:
+              - row [ref=f27e133]:
+                - cell "1 noyabr Nizami filialı" [ref=f27e134]:
+                  - strong [ref=f27e135]: 1 noyabr
+                  - generic [ref=f27e136]: Nizami filialı
+                - cell "09:00" [ref=f27e137]
+                - cell "—" [ref=f27e142]
+                - cell "İşdə" [ref=f27e147]
+              - row [ref=f27e149]:
+                - cell "31 oktyabr Nizami filialı" [ref=f27e150]:
+                  - strong [ref=f27e151]: 31 oktyabr
+                  - generic [ref=f27e152]: Nizami filialı
+                - cell "09:02" [ref=f27e153]
+                - cell "18:01" [ref=f27e158]
+                - cell "Tamamlanıb" [ref=f27e163]
+              - row [ref=f27e165]:
+                - cell "30 oktyabr Nizami filialı" [ref=f27e166]:
+                  - strong [ref=f27e167]: 30 oktyabr
+                  - generic [ref=f27e168]: Nizami filialı
+                - cell "09:04" [ref=f27e169]
+                - cell "18:00" [ref=f27e174]
+                - cell "Tamamlanıb" [ref=f27e179]
+          - paragraph [ref=f27e181]: Vaxtlarda səhv varsa, düzəliş müraciəti göndərin.
+          - button "Düzəliş müraciəti" [ref=f27e182] [cursor=pointer]
+        - generic [ref=f27e187]:
+          - generic [ref=f27e188]: ©2026 panelim.az
+          - generic [ref=f27e189]: İşin vaxtında. Hər şey qaydasında.

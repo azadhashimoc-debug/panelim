@@ -1,0 +1,155 @@
+- generic [active] [ref=f19e1]:
+  - link "Məzmuna keç" [ref=f19e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f19e3]:
+    - complementary [ref=f19e4]:
+      - link "Panelim ana səhifə" [ref=f19e5] [cursor=pointer]:
+        - /url: /demo
+        - generic [ref=f19e6]: panelim.az
+      - generic [ref=f19e14]: İŞÇİ KABİNETİ
+      - navigation "Əsas naviqasiya" [ref=f19e15]:
+        - link "İş günüm" [ref=f19e16] [cursor=pointer]:
+          - /url: /demo
+        - link "Davamiyyətim" [ref=f19e24] [cursor=pointer]:
+          - /url: /demo/tarixce
+        - link "Müraciətlərim" [ref=f19e30] [cursor=pointer]:
+          - /url: /demo/muracietler
+      - link "Rəhbər paneli" [ref=f19e35] [cursor=pointer]:
+        - /url: /rehber
+      - generic [ref=f19e44]:
+        - generic [ref=f19e45]:
+          - strong [ref=f19e49]: Vaxtınız dəyərlidir.
+          - paragraph [ref=f19e50]: Hər iş gününü rahatlıqla qeyd edin.
+          - generic [ref=f19e51]:
+            - text: panelim sizinlədir
+            - generic [aria-hidden] [ref=f19e52]: ✦
+        - button "Kömək və dəstək" [ref=f19e53] [cursor=pointer]
+        - generic [ref=f19e57]: Azərbaycan üçün hazırlanıb
+    - generic [ref=f19e59]:
+      - banner [ref=f19e60]:
+        - generic [ref=f19e61]:
+          - generic [ref=f19e62]: İşçi kabineti
+          - strong [ref=f19e65]: İş günüm
+        - generic [ref=f19e66]:
+          - link "Rəhbər görünüşü" [ref=f19e67] [cursor=pointer]:
+            - /url: /rehber
+          - generic [ref=f19e76]: 1 noyabr
+          - generic [ref=f19e80]: A
+          - button "Hesabdan çıx" [ref=f19e81] [cursor=pointer]
+      - main [ref=f19e85]:
+        - generic [ref=f19e86]:
+          - generic [ref=f19e87]:
+            - generic [ref=f19e88]:
+              - text: Xoş gəldiniz, Aylin
+              - generic [ref=f19e89]: ✦
+            - heading "İş gününüz bir baxışda" [level=1] [ref=f19e90]
+            - paragraph [ref=f19e91]: Növbənizi izləyin, vaxtınızı rahat idarə edin.
+          - generic [ref=f19e98]:
+            - generic [ref=f19e99]: Nümunə Kafe
+            - strong [ref=f19e100]: Nizami filialı
+        - generic [ref=f19e101]:
+          - generic [ref=f19e106]:
+            - strong [ref=f19e107]: İşçi baxışı (Tanışlıq rejimi)
+            - paragraph [ref=f19e108]: Hazırda işçi ekranındasınız. Şirkət rəhbərinin kabinetinə və filial idarəetməsinə baxmaq üçün keçid edə bilərsiniz.
+          - link "Rəhbər kabinetinə keç" [ref=f19e109] [cursor=pointer]:
+            - /url: /rehber
+        - generic [ref=f19e118]:
+          - strong [ref=f19e119]: Nümunə məlumatlar
+          - text: · Bu kabinetdəki şəxs, davamiyyət və maaş göstəriciləri yalnız demo üçündür.
+        - generic [ref=f19e120]:
+          - region "Bugünkü davamiyyət" [ref=f19e121]:
+            - generic [ref=f19e122]:
+              - generic [ref=f19e123]: BUGÜNKÜ DAVAMİYYƏT
+              - generic [ref=f19e125]: İşdəsiniz
+            - generic "Bakı vaxtı" [ref=f19e126]:
+              - text: 03:18:51
+              - generic [ref=f19e127]: Bakı vaxtı · GMT+4
+            - generic [ref=f19e128]:
+              - heading "Uğurlu iş günü!" [level=2] [ref=f19e129]
+              - paragraph [ref=f19e130]: İş gününüz bitəndə çıxış etməyi unutmayın.
+            - button "QR ilə çıxış et" [ref=f19e131] [cursor=pointer]
+            - generic [ref=f19e139]: Filial QR kodu və məkan yoxlaması ilə
+          - generic [ref=f19e147]:
+            - heading "Bugünkü növbəm" [level=2] [ref=f19e149]
+            - generic [ref=f19e153]: 09:00 – 18:00
+            - paragraph [ref=f19e154]: 1 noyabr · Nizami filialı
+            - generic [ref=f19e155]:
+              - generic [ref=f19e156]:
+                - generic [ref=f19e158]: Giriş
+                - strong [ref=f19e159]: 09:00
+              - generic [ref=f19e161]:
+                - generic [ref=f19e163]: Çıxış
+                - strong [ref=f19e164]: "— : —"
+            - generic [ref=f19e165]:
+              - generic [ref=f19e169]: Bu gün tamamlanmış iş vaxtı
+              - strong [ref=f19e170]: 0 s 0 dəq
+        - generic [ref=f19e171]:
+          - generic [ref=f19e172]:
+            - generic [ref=f19e173]:
+              - heading "Son qeydlərim" [level=2] [ref=f19e174]
+              - link "Hamısına bax" [ref=f19e175] [cursor=pointer]:
+                - /url: /demo/tarixce
+            - table [ref=f19e180]:
+              - rowgroup [ref=f19e181]:
+                - row [ref=f19e182]:
+                  - columnheader "Tarix / filial" [ref=f19e183]
+                  - columnheader "Giriş" [ref=f19e184]
+                  - columnheader "Çıxış" [ref=f19e185]
+                  - columnheader "Vəziyyət" [ref=f19e186]
+              - rowgroup [ref=f19e187]:
+                - row [ref=f19e188]:
+                  - cell "1 noyabr Nizami filialı" [ref=f19e189]:
+                    - strong [ref=f19e190]: 1 noyabr
+                    - generic [ref=f19e191]: Nizami filialı
+                  - cell "09:00" [ref=f19e192]
+                  - cell "—" [ref=f19e197]
+                  - cell "İşdə" [ref=f19e202]
+                - row [ref=f19e204]:
+                  - cell "31 oktyabr Nizami filialı" [ref=f19e205]:
+                    - strong [ref=f19e206]: 31 oktyabr
+                    - generic [ref=f19e207]: Nizami filialı
+                  - cell "09:02" [ref=f19e208]
+                  - cell "18:01" [ref=f19e213]
+                  - cell "Tamamlanıb" [ref=f19e218]
+                - row [ref=f19e220]:
+                  - cell "30 oktyabr Nizami filialı" [ref=f19e221]:
+                    - strong [ref=f19e222]: 30 oktyabr
+                    - generic [ref=f19e223]: Nizami filialı
+                  - cell "09:04" [ref=f19e224]
+                  - cell "18:00" [ref=f19e229]
+                  - cell "Tamamlanıb" [ref=f19e234]
+          - generic [ref=f19e236]:
+            - heading "Sürətli keçidlər" [level=2] [ref=f19e238]
+            - button "İcazə və məzuniyyət Tarixi seçin, səbəbi yazın və rəhbərə göndərin" [ref=f19e243] [cursor=pointer]:
+              - generic [ref=f19e248]:
+                - strong [ref=f19e249]: İcazə və məzuniyyət
+                - generic [ref=f19e250]: Tarixi seçin, səbəbi yazın və rəhbərə göndərin
+            - button "Düzəliş müraciəti Qeydi unutmusunuz və ya səhv var?" [ref=f19e253] [cursor=pointer]:
+              - generic [ref=f19e259]:
+                - strong [ref=f19e260]: Düzəliş müraciəti
+                - generic [ref=f19e261]: Qeydi unutmusunuz və ya səhv var?
+            - link "Müraciətlərim Göndərdiyiniz müraciətləri izləyin" [ref=f19e264] [cursor=pointer]:
+              - /url: /demo/muracietler
+              - generic [ref=f19e269]:
+                - strong [ref=f19e270]: Müraciətlərim
+                - generic [ref=f19e271]: Göndərdiyiniz müraciətləri izləyin
+            - paragraph [ref=f19e276]: Hesaba daxil ola bilmirsiniz? Rəhbərinizlə birbaşa əlaqə saxlayın. Düzəliş müraciəti üçün əvvəl hesabınıza daxil olun.
+        - region "İş məlumatlarım" [ref=f19e277]:
+          - article [ref=f19e278]:
+            - generic [ref=f19e282]:
+              - generic [ref=f19e283]: İŞƏ BAŞLAMA TARİXİ
+              - strong [ref=f19e284]: 14 aprel 2025
+          - article [ref=f19e285]:
+            - generic [ref=f19e290]:
+              - generic [ref=f19e291]: BU AYIN QAZANCI
+              - strong [ref=f19e292]: 850,00 ₼
+              - paragraph [ref=f19e293]: Nümunə aylıq əsas məbləğ
+          - article [ref=f19e294]:
+            - generic [ref=f19e298]:
+              - generic [ref=f19e299]: NÖVBƏTİ MAAŞ GÜNÜ
+              - strong [ref=f19e300]: 5 noyabr
+              - paragraph [ref=f19e301]: Yekun hesablaşma təsdiqdən sonra görünəcək
+        - generic [ref=f19e302]: Qeydləriniz təhlükəsiz saxlanılır. Məlumatlarınızı yalnız siz və səlahiyyətli rəhbəriniz görə bilər.
+        - generic [ref=f19e307]:
+          - generic [ref=f19e308]: ©2026 panelim.az
+          - generic [ref=f19e309]: İşin vaxtında. Hər şey qaydasında.

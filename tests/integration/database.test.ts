@@ -41,6 +41,7 @@ beforeAll(async () => {
     "0005_leave_decisions_and_export.sql",
     "0006_payroll_and_advances.sql",
     "0007_subscriptions_and_billing.sql",
+    "0008_company_registration.sql",
   ]) {
     await db.exec(await readFile(`supabase/migrations/${file}`, "utf8"));
   }
@@ -555,5 +556,65 @@ describe("stage 5 subscription limits and billing", () => {
     expect(updated.max_branches).toBe(3); // 2 + 1 extra = 3
     expect(updated.extra_branches).toBe(1);
   });
+
+  it("registers a new company atomically with initial branch, owner and trial", async () => {
+    const newOwnerId = "10000000-0000-4000-8000-000000000099";
+    await db.exec(`insert into auth.users values ('${newOwnerId}') on conflict do nothing;`);
+
+    // Invalid short input
+    await expect(
+      command("register_company", [newOwnerId, "A", "C", "Filial", 40.37, 49.84, 100]),
+    ).rejects.toThrow("INVALID_INPUT");
+
+    // Successful registration
+    const res = await command<{ register_company: any }>("register_company", [
+      newOwnerId,
+      "Rəşad Qasımov",
+      "Qasımov Kafe",
+      "Nəsimi filialı",
+      40.3756,
+      49.8465,
+      100,
+    ]);
+    const result = res[0].register_company;
+    expect(result.success).toBe(true);
+    expect(result.company_id).toBeTruthy();
+    expect(result.branch_id).toBeTruthy();
+    expect(result.membership_id).toBeTruthy();
+
+    // Check membership role is owner
+    const members = await asUser<{ role: string; display_name: string }>(
+      newOwnerId,
+      `select role, display_name from memberships where company_id = '${result.company_id}'`,
+    );
+    expect(members).toHaveLength(1);
+    expect(members[0].role).toBe("owner");
+    expect(members[0].display_name).toBe("Rəşad Qasımov");
+
+    // Check subscription initialized with 14-day business trial
+    const statusRes = await command<{ get_subscription_status: any }>(
+      "get_subscription_status",
+      [result.company_id],
+    );
+    const sub = statusRes[0].get_subscription_status;
+    expect(sub.status).toBe("trialing");
+    expect(sub.effective_plan).toBe("business");
+    expect(sub.max_employees).toBe(25);
+    expect(sub.max_branches).toBe(2);
+
+    // Duplicate registration for same user is rejected
+    await expect(
+      command("register_company", [
+        newOwnerId,
+        "Rəşad Qasımov",
+        "İkinci Kafe",
+        "Filial",
+        40.37,
+        49.84,
+        100,
+      ]),
+    ).rejects.toThrow("ALREADY_EXISTS");
+  });
 });
+
 

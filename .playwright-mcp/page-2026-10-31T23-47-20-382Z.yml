@@ -1,0 +1,52 @@
+- generic [active] [ref=f39e1]:
+  - link "Məzmuna keç" [ref=f39e2] [cursor=pointer]:
+    - /url: "#main"
+  - main [ref=f39e3]:
+    - generic [ref=f39e4]:
+      - link "panelim.az" [ref=f39e5] [cursor=pointer]:
+        - /url: /
+      - generic [ref=f39e14]:
+        - heading "Biznesinizi 1 dəqiqədə başladın." [level=2] [ref=f39e15]: Biznesinizi1 dəqiqədə başladın.
+        - paragraph [ref=f39e16]: 5–50 işçisi olan kafe, restoran və mağazalar üçün avtomatlaşdırılmış davamiyyət və daxili maaş uçotu.
+        - generic [ref=f39e17]:
+          - generic [ref=f39e18]: 14 günlük Business sınaq
+          - generic [ref=f39e22]: QR və GPS davamiyyət
+          - generic [ref=f39e29]: 25 işçi və 2 filial
+          - generic [ref=f39e34]: Bank kartı tələb olunmur
+      - generic [ref=f39e38]: Azərbaycan biznesləri üçün hazırlanıb.
+    - generic [ref=f39e40]:
+      - link "Ana səhifəyə qayıt" [ref=f39e41] [cursor=pointer]:
+        - /url: /
+      - heading "Yeni şirkət qeydiyyatı" [level=1] [ref=f39e44]
+      - paragraph [ref=f39e45]: 14 günlük ödənişsiz sınaqla şirkət hesabınızı indi açın.
+      - generic [ref=f39e46]:
+        - generic [ref=f39e47]:
+          - text: Şirkət və ya obyektin adı
+          - textbox "Şirkət və ya obyektin adı" [ref=f39e48]:
+            - /placeholder: "Məsələn: Nizami Kafe"
+        - generic [ref=f39e49]:
+          - generic [ref=f39e50]:
+            - text: Rəhbərin adı və soyadı
+            - textbox "Rəhbərin adı və soyadı" [ref=f39e51]:
+              - /placeholder: Nigar Əliyeva
+          - generic [ref=f39e52]:
+            - text: İlk filial adı
+            - textbox "İlk filial adı" [ref=f39e53]:
+              - /placeholder: Mərkəz filialı
+              - text: Mərkəz filialı
+        - generic [ref=f39e54]:
+          - text: Rəsmi e-poçt ünvanı
+          - textbox "Rəsmi e-poçt ünvanı" [ref=f39e55]:
+            - /placeholder: rehber@biznes.az
+        - generic [ref=f39e56]:
+          - text: Şifrə (ən azı 6 simvol)
+          - generic [ref=f39e57]:
+            - textbox "Şifrə (ən azı 6 simvol) Şifrəni göstər" [ref=f39e58]:
+              - /placeholder: Şifrənizi təyin edin
+            - button "Şifrəni göstər" [ref=f39e59] [cursor=pointer]
+        - button "14 günlük sınağı başlat" [ref=f39e63] [cursor=pointer]
+      - generic [ref=f39e66]:
+        - text: Artıq hesabınız var?
+        - link "Daxil olun" [ref=f39e67] [cursor=pointer]:
+          - /url: /giris
+  - button "Open Next.js Dev Tools" [ref=f39e73] [cursor=pointer]

@@ -37,6 +37,7 @@ export const errorMessages: Record<string, string> = {
     "Təklif olunan vaxt başqa davamiyyət qeydi ilə üst-üstə düşür.",
   RATE_LIMITED: "Çox sayda cəhd edildi. Bir qədər sonra yenidən cəhd edin.",
   AUTH_FAILED: "E-poçt və ya şifrə düzgün deyil.",
+  ALREADY_EXISTS: "Bu e-poçt ünvanı ilə artıq qeydiyyatdan keçilib.",
   INTERNAL: "Əməliyyat tamamlanmadı. Yenidən cəhd edin.",
   NETWORK: "İnternet bağlantısını yoxlayın. Qeyd təsdiqlənməyib.",
 };

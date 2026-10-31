@@ -92,6 +92,9 @@ export function WelcomePage({ year }: { year: number }) {
             <Link href="/giris" className={styles.loginLink}>
               {m.login}
             </Link>
+            <Link href="/qeydiyyat" className={styles.loginLink} style={{ color: "#0052cc", fontWeight: 600 }}>
+              Qeydiyyat
+            </Link>
             <DemoLink small />
             <button
               ref={menuButton}
@@ -121,6 +124,14 @@ export function WelcomePage({ year }: { year: number }) {
                 <ChevronRight size={17} aria-hidden="true" />
               </a>
             ))}
+            <Link
+              href="/qeydiyyat"
+              style={{ fontWeight: 600, color: "#0052cc", padding: "12px 16px", display: "flex", justifyContent: "space-between" }}
+              onClick={() => setMenuOpen(false)}
+            >
+              Qeydiyyat (14 günlük sınaq)
+              <ChevronRight size={17} aria-hidden="true" />
+            </Link>
           </nav>
         )}
       </header>
@@ -138,6 +149,9 @@ export function WelcomePage({ year }: { year: number }) {
             </h1>
             <p className={styles.heroIntro}>{m.intro}</p>
             <div className={styles.heroActions}>
+              <Link href="/qeydiyyat" className={styles.demoButton} style={{ background: "#0052cc", color: "#fff" }}>
+                14 günlük sınağa başla
+              </Link>
               <DemoLink />
               <Link href="/giris" className={styles.secondaryLink}>
                 {m.login}

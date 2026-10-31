@@ -152,6 +152,12 @@ export function LoginForm({ configured }: { configured: boolean }) {
               "İşçi hesabı və şifrə bərpası üçün biznes sahibinizə müraciət edin. Məxfi məlumatlarınızı heç kimlə paylaşmayın.",
             )}
           </p>
+          <div style={{ marginTop: 16, textAlign: "center", fontSize: "0.88rem", color: "#6b778c" }}>
+            Yeni şirkət hesabı açmaq istəyirsiniz?{" "}
+            <Link href="/qeydiyyat" style={{ color: "#0052cc", fontWeight: 600 }}>
+              14 günlük sınaqla qeydiyyatdan keçin
+            </Link>
+          </div>
         </div>
       </section>
     </main>

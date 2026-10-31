@@ -1,0 +1,229 @@
+- generic [active] [ref=f22e1]:
+  - link "Məzmuna keç" [ref=f22e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f22e3]:
+    - banner [ref=f22e4]:
+      - generic [ref=f22e5]:
+        - link "Panelim ana səhifə" [ref=f22e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f22e8]: panelim.az
+        - navigation "Sayt naviqasiyası" [ref=f22e9]:
+          - link "İmkanlar" [ref=f22e10] [cursor=pointer]:
+            - /url: "#imkanlar"
+          - link "Yol xəritəsi" [ref=f22e11] [cursor=pointer]:
+            - /url: "#yol-xeritesi"
+          - link "Necə işləyir" [ref=f22e12] [cursor=pointer]:
+            - /url: "#nece-isleyir"
+          - link "Suallar" [ref=f22e13] [cursor=pointer]:
+            - /url: "#suallar"
+        - generic [ref=f22e14]:
+          - link "Daxil ol" [ref=f22e15] [cursor=pointer]:
+            - /url: /giris
+          - link "Demoya bax" [ref=f22e16] [cursor=pointer]:
+            - /url: /demo
+    - main [ref=f22e20]:
+      - generic [ref=f22e21]:
+        - generic [ref=f22e22]:
+          - paragraph [ref=f22e23]: AZƏRBAYCANIN KİÇİK BİZNESLƏRİ ÜÇÜN
+          - heading "Kim gəlib, kim çıxıb? Bir baxışda." [level=1] [ref=f22e25]: Kim gəlib, kim çıxıb?Bir baxışda.
+          - paragraph [ref=f22e26]: QR davamiyyət, növbə qrafikləri, icazə müraciətləri və daxili maaş hesablaşması. Bütün filiallarınızın iş axını bir ekranda.
+          - generic [ref=f22e27]:
+            - link "Demoya bax" [ref=f22e28] [cursor=pointer]:
+              - /url: /demo
+            - link "Daxil ol" [ref=f22e32] [cursor=pointer]:
+              - /url: /giris
+          - paragraph [ref=f22e35]: Qeydiyyatsız baxın. Real qeyd yaradılmır.
+          - generic [ref=f22e36]:
+            - generic [ref=f22e37]: QR və GPS davamiyyət
+            - generic [ref=f22e40]: Növbə və iş qrafikləri
+            - generic [ref=f22e43]: Maaş və avans uçotu
+            - generic [ref=f22e46]: Filiallar üzrə nəzarət
+        - 'figure "İşçi kabinetinin nümunəsi: QR qeydiyyatı, bugünkü növbə və şəxsi davamiyyət tarixçəsi." [ref=f22e49]':
+          - generic [ref=f22e50]: Nümunə ekran
+          - generic [aria-hidden] [ref=f22e54]:
+            - generic [ref=f22e55]:
+              - generic [ref=f22e56]: panelim.az
+              - generic [ref=f22e57]: İşçi kabineti
+              - generic [ref=f22e58]: P
+            - generic [ref=f22e77]:
+              - generic [ref=f22e78]: Xoş gəldiniz!
+              - generic [ref=f22e91]:
+                - generic [ref=f22e92]:
+                  - generic [ref=f22e93]: BUGÜNKÜ DAVAMİYYƏT
+                  - generic [ref=f22e94]: İşdəsiniz
+                - strong [ref=f22e95]: 09:01:24
+                - paragraph [ref=f22e96]: Bakı vaxtı
+                - generic [ref=f22e97]: Giriş qeydə alındı
+              - generic [ref=f22e113]:
+                - text: Bugünkü növbəm
+                - strong [ref=f22e114]: 09:00 – 18:00
+              - generic [ref=f22e116]:
+                - text: Son qeydlər
+                - generic [ref=f22e117]:
+                  - generic [ref=f22e118]: Giriş
+                  - strong [ref=f22e122]: 09:01
+                  - generic [ref=f22e123]: Təsdiqlənib
+                - generic [ref=f22e124]:
+                  - generic [ref=f22e125]: Çıxış
+                  - strong [ref=f22e129]: "— : —"
+                  - generic [ref=f22e130]: Gözləyir
+          - generic [ref=f22e145]:
+            - text: QR ilə qeydiyyat
+            - strong [ref=f22e146]: QR + məkan yoxlaması
+          - generic [aria-hidden] [ref=f22e150]: Filial daxilində
+      - generic [ref=f22e155]:
+        - paragraph [ref=f22e156]: Gündəlik işi çox olan kiçik komandalar üçün.
+        - generic [ref=f22e157]:
+          - generic [ref=f22e158]: Kafe və restoranlar
+          - generic [ref=f22e161]: Market və mağazalar
+          - generic [ref=f22e166]: Kiçik komandalar
+      - generic [ref=f22e171]:
+        - generic [ref=f22e172]:
+          - paragraph [ref=f22e173]: BÜTÖV HƏLL
+          - heading "Davamiyyət, növbə və maaş uçotu bir yerdə." [level=2] [ref=f22e174]
+          - paragraph [ref=f22e175]: QR davamiyyətdən növbə təyinatına, icazə müraciətlərindən daxili əməkhaqqı hesablaşmasına qədər bütün proseslər eyni platformada.
+        - generic [ref=f22e176]:
+          - generic [ref=f22e177]:
+            - group [ref=f22e178]:
+              - heading "QR ilə davamiyyət" [level=3] [ref=f22e187] [cursor=pointer]
+              - generic [ref=f22e191]:
+                - paragraph [ref=f22e192]: İşçi filialdakı QR kodu oxudur, məkanını təsdiqləyir və giriş-çıxışını qeyd edir.
+                - list [ref=f22e193]:
+                  - listitem [ref=f22e194]: İşçi hesabı ilə qeydiyyat
+                  - listitem [ref=f22e197]: Filial QR kodu və məkan yoxlaması
+                  - listitem [ref=f22e200]: Şəxsi giriş-çıxış tarixçəsi
+                - link "Davamiyyət ekranına bax" [ref=f22e203] [cursor=pointer]:
+                  - /url: /demo
+            - group [ref=f22e206]:
+              - heading "Növbə və iş qrafikləri" [level=3] [ref=f22e211] [cursor=pointer]
+            - group [ref=f22e213]:
+              - heading "Maaş və avans uçotu" [level=3] [ref=f22e218] [cursor=pointer]
+            - group [ref=f22e220]:
+              - heading "Səbəbli düzəlişlər" [level=3] [ref=f22e227] [cursor=pointer]
+            - group [ref=f22e229]:
+              - heading "Filial üzrə nəzarət" [level=3] [ref=f22e236] [cursor=pointer]
+          - generic [ref=f22e238]:
+            - generic [ref=f22e239]: QR ilə qeydiyyat
+            - generic [ref=f22e265]:
+              - strong [ref=f22e270]: Giriş qeydə alındı
+              - paragraph [ref=f22e271]: 09:01 · Bakı vaxtı
+              - generic [ref=f22e272]: Filial daxilində
+            - generic [ref=f22e276]: QR + məkan yoxlaması
+      - generic [ref=f22e281]:
+        - generic [ref=f22e282]:
+          - paragraph [ref=f22e283]: NÖVBƏTİ MƏRHƏLƏLƏR
+          - heading "Davamiyyətdən daha artığı planımızdadır." [level=2] [ref=f22e284]
+          - paragraph [ref=f22e285]: Hazırkı demo davamiyyət axınını göstərir. Aşağıdakı imkanlar məhsul planına daxildir, amma hələ istifadəyə açılmayıb.
+        - generic [ref=f22e286]:
+          - article [ref=f22e287]:
+            - generic [aria-hidden] [ref=f22e288]: "01"
+            - generic [ref=f22e289]:
+              - heading "Növbə və müraciətlər" [level=3] [ref=f22e290]
+              - paragraph [ref=f22e291]: Növbə qrafiki, dəyişiklik təsdiqi, məzuniyyət və icazə müraciətləri.
+          - article [ref=f22e292]:
+            - generic [aria-hidden] [ref=f22e293]: "02"
+            - generic [ref=f22e294]:
+              - heading "Əməkhaqqı və avans" [level=3] [ref=f22e295]
+              - paragraph [ref=f22e296]: Aylıq və saatlıq hesablaşma, təsdiqlənmiş əlavə saat, avans və düzəliş tarixçəsi.
+          - article [ref=f22e297]:
+            - generic [aria-hidden] [ref=f22e298]: "03"
+            - generic [ref=f22e299]:
+              - heading "Tapşırıqlar və filiallar" [level=3] [ref=f22e300]
+              - paragraph [ref=f22e301]: Tapşırıqların vəziyyəti, nəticələri və filial üzrə səlahiyyətli idarəetmə.
+          - article [ref=f22e302]:
+            - generic [aria-hidden] [ref=f22e303]: "04"
+            - generic [ref=f22e304]:
+              - heading "Çıxarış və hesabatlar" [level=3] [ref=f22e305]
+              - paragraph [ref=f22e306]: Davamiyyət üzrə Excel çıxarışı və filialların müqayisəli göstəriciləri.
+      - generic [ref=f22e308]:
+        - generic [ref=f22e309]:
+          - paragraph [ref=f22e310]: İŞÇİ ÜÇÜN GİRİŞ-ÇIXIŞ
+          - heading "Girişinizi üç addımda qeyd edin." [level=2] [ref=f22e311]
+        - generic [ref=f22e312]:
+          - article [ref=f22e313]:
+            - generic [ref=f22e314]: "01"
+            - heading "Hesabınıza daxil olun" [level=3] [ref=f22e315]
+            - paragraph [ref=f22e316]: Biznes sahibinin yaratdığı işçi hesabını açın.
+          - article [ref=f22e317]:
+            - generic [ref=f22e318]: "02"
+            - heading "QR kodu oxudun" [level=3] [ref=f22e319]
+            - paragraph [ref=f22e320]: Filialda göstərilən QR kodu telefonunuzla oxudun.
+          - article [ref=f22e321]:
+            - generic [ref=f22e322]: "03"
+            - heading "Məkanınızı təsdiqləyin" [level=3] [ref=f22e323]
+            - paragraph [ref=f22e324]: Serverin təsdiqindən sonra girişiniz qeydə alınır.
+        - paragraph [ref=f22e325]: Məkan yoxlanmır və ya qeydi unutmusunuz? Hesabınıza daxil olub səbəbini yazaraq düzəliş müraciəti göndərin.
+      - generic [ref=f22e329]:
+        - generic [ref=f22e330]:
+          - generic [ref=f22e331]:
+            - text: Son qeydlər
+            - generic [ref=f22e336]: Nümunə ekran
+          - generic [ref=f22e337]:
+            - generic [ref=f22e338]:
+              - generic [ref=f22e346]:
+                - strong [ref=f22e347]: QR kod oxundu
+                - paragraph [ref=f22e348]: Filial və işçi hesabı yoxlanılır.
+              - time [ref=f22e349]: 09:00
+            - generic [ref=f22e350]:
+              - generic [ref=f22e354]:
+                - strong [ref=f22e355]: Giriş qeydə alındı
+                - paragraph [ref=f22e356]: Məkan yoxlamasından sonra təsdiqlənir.
+              - time [ref=f22e357]: 09:01
+            - generic [ref=f22e358]:
+              - generic [ref=f22e364]:
+                - strong [ref=f22e365]: Tarixçənizdə görünür
+                - paragraph [ref=f22e366]: Giriş və çıxış vaxtınız bir yerdədir.
+              - time [ref=f22e367]: 09:01
+          - generic [ref=f22e368]: Hər kəs öz məlumatını görür.
+        - generic [ref=f22e373]:
+          - paragraph [ref=f22e374]: HƏR QEYDİN ÖZ TARİXÇƏSİ VAR
+          - heading "“Nə vaxt gəlmişdim?” sualının cavabı buradadır." [level=2] [ref=f22e375]
+          - paragraph [ref=f22e376]: İşçi öz qeydlərini görür. Düzəliş lazım olduqda səbəbini yazır. Rəhbərin qərarı və dəyişiklik tarixçəsi saxlanılır.
+          - generic [ref=f22e381]:
+            - strong [ref=f22e382]: Hər kəs öz məlumatını görür.
+            - paragraph [ref=f22e383]: İşçi öz qeydlərini, rəhbər isə icazə verilmiş filialın məlumatlarını görür.
+          - link "Davamiyyət ekranına bax" [ref=f22e384] [cursor=pointer]:
+            - /url: /demo/tarixce
+      - generic [ref=f22e388]:
+        - generic [ref=f22e389]:
+          - paragraph [ref=f22e390]: SUALLARINIZ QALMASIN
+          - heading "Bilmək istədikləriniz." [level=2] [ref=f22e391]
+        - generic [ref=f22e392]:
+          - group [ref=f22e393]:
+            - heading "Demo üçün qeydiyyat lazımdır?" [level=3] [ref=f22e395] [cursor=pointer]
+          - group [ref=f22e397]:
+            - heading "Telefondan istifadə edə bilərəm?" [level=3] [ref=f22e399] [cursor=pointer]
+          - group [ref=f22e401]:
+            - heading "İnternet və ya məkan problemi olsa nə edim?" [level=3] [ref=f22e403] [cursor=pointer]
+          - group [ref=f22e405]:
+            - heading "Hesabıma necə daxil olum?" [level=3] [ref=f22e407] [cursor=pointer]
+      - generic [ref=f22e410]:
+        - paragraph [ref=f22e417]: İLK ADDIM — TANIŞ OLMAQDIR
+        - heading "Bir iş gününüzün necə görünəcəyinə baxın." [level=2] [ref=f22e418]
+        - paragraph [ref=f22e419]: Kabineti açın, ekranları gəzin və Panelim ilə tanış olun.
+        - link "Demoya bax" [ref=f22e420] [cursor=pointer]:
+          - /url: /demo
+        - generic [ref=f22e424]:
+          - text: Artıq hesabınız var?
+          - link "Daxil ol" [ref=f22e425] [cursor=pointer]:
+            - /url: /giris
+    - contentinfo [ref=f22e429]:
+      - generic [ref=f22e430]:
+        - link "Panelim ana səhifə" [ref=f22e431] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f22e433]: panelim.az
+        - paragraph [ref=f22e434]: İşin vaxtında. Hər şey qaydasında.
+      - navigation "Sayt naviqasiyası" [ref=f22e435]:
+        - link "İmkanlar" [ref=f22e436] [cursor=pointer]:
+          - /url: "#imkanlar"
+        - link "Yol xəritəsi" [ref=f22e437] [cursor=pointer]:
+          - /url: "#yol-xeritesi"
+        - link "Necə işləyir" [ref=f22e438] [cursor=pointer]:
+          - /url: "#nece-isleyir"
+        - link "Suallar" [ref=f22e439] [cursor=pointer]:
+          - /url: "#suallar"
+        - link "Daxil ol" [ref=f22e440] [cursor=pointer]:
+          - /url: /giris
+      - generic [ref=f22e441]:
+        - generic [ref=f22e442]: © 2026 panelim.az
+        - generic [ref=f22e443]: Azərbaycan biznesləri üçün.

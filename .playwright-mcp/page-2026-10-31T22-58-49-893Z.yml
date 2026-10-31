@@ -1,0 +1,46 @@
+- generic [ref=f8e2]:
+  - generic [ref=f8e3]:
+    - link "Skip to content" [ref=f8e4] [cursor=pointer]:
+      - /url: "#start-of-content"
+    - banner [ref=f8e6]
+  - main [ref=f8e9]:
+    - generic [ref=f8e10]:
+      - generic [ref=f8e12]:
+        - img "Vercel logo" [ref=f8e14]
+        - paragraph [ref=f8e15]:
+          - text: Sign in to
+          - strong [ref=f8e16]: GitHub
+          - text: to continue to
+          - strong [ref=f8e17]: Vercel
+      - generic [ref=f8e19]:
+        - generic [ref=f8e20]:
+          - generic [ref=f8e21]: Username or email address
+          - textbox "Username or email address" [active] [ref=f8e22]
+        - generic [ref=f8e23]:
+          - generic [ref=f8e24]: Password
+          - textbox "Password" [ref=f8e25]
+          - link "Forgot password?" [ref=f8e26] [cursor=pointer]:
+            - /url: /password_reset
+        - button "Sign in" [ref=f8e28] [cursor=pointer]
+      - paragraph [ref=f8e31]:
+        - text: New to GitHub?
+        - link "Create an account" [ref=f8e32] [cursor=pointer]:
+          - /url: /join?return_to=%2Flogin%2Foauth%2Fauthorize%3Fclient_id%3DIv1.9d7d662ea00b8481%26scope%3Dread%253Auser%252Cuser%253Aemail%26state%3D6a7deef851c1f195f708980e093d8a240224d1c40b5d75e62747e116662365f008b388324ed61be72cd271b6e55eadaaf8bb2a73476789ed931acd8716b20129472b4032f3c0f464dffff7744261f6c81e2bc57d877023aac0f2659148cd74dcbb3b22a5213c9034681e4ce61eb2a539995c84ca1c193e0abe1035a4e7e8e4f056f6d1315444796dd0fa70a0bf7aa462e4e8e41211028379b33ea26171da187ec99ebfe7be15c147fb346d1395d592c392c23c6802017b9b216991374ff6f7faf2f33bbe235e17c03f39e6dd750af20a45d57af9cfa9309291cb7cbac388174d69b0da05354196eac6042bc2fe9054c228d424f845b3f469188078159062850efa6e5d039ae8eacf5dd69f7db7239cf98dab1d35cc7e499a20bff8f58fdd63e13a48e96252e3585ea63a81c2d85010d26769a8e71f29afb53b4ff5fe4e3b011b729ef1b672e313bff93a05dd1c252301513b407a&source=oauth
+  - contentinfo [ref=f8e33]:
+    - list [ref=f8e34]:
+      - listitem [ref=f8e35]:
+        - link "Terms" [ref=f8e36] [cursor=pointer]:
+          - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+      - listitem [ref=f8e37]:
+        - link "Privacy" [ref=f8e38] [cursor=pointer]:
+          - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+      - listitem [ref=f8e39]:
+        - link "Docs" [ref=f8e40] [cursor=pointer]:
+          - /url: https://docs.github.com
+      - listitem [ref=f8e41]:
+        - link "Contact GitHub Support" [ref=f8e42] [cursor=pointer]:
+          - /url: https://support.github.com
+      - listitem [ref=f8e43]:
+        - button "Manage cookies" [ref=f8e45] [cursor=pointer]
+      - listitem [ref=f8e46]:
+        - button "Do not share my personal information" [ref=f8e48] [cursor=pointer]
