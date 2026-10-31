@@ -7,7 +7,7 @@ import type { SubscriptionStatus } from "@/shared/types";
 
 const checkoutSchema = z
   .object({
-    plan: z.enum(["start", "business", "growth"]),
+    plan: z.enum(["free", "start", "business", "growth"]),
     extraBranches: z.number().int().min(0).max(2).default(0),
     idempotencyKey: z.string().trim().max(100).optional(),
   })
@@ -84,6 +84,28 @@ export async function processSandboxCheckout(input: unknown) {
   }
 
   const { plan, extraBranches } = parsed.data;
+
+  if (plan === "free") {
+    try {
+      const db = serviceClient();
+      await db
+        .from("subscriptions")
+        .update({ plan_tier: "free", status: "active", extra_branches: 0 })
+        .eq("company_id", companyId);
+    } catch {
+      // In sandbox/demo continue
+    }
+    return {
+      status: 200,
+      body: {
+        ok: true,
+        success: true,
+        transactionId: `free-${Date.now()}`,
+        idempotent: false,
+      },
+    };
+  }
+
   let amountQepik = 0;
   if (plan === "start") amountQepik = 1500;
   else if (plan === "business") amountQepik = 2900 + extraBranches * 500;

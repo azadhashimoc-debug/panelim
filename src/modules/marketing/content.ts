@@ -8,6 +8,7 @@ export const marketing = {
   mobileNavigation: "Mobil naviqasiya",
   links: [
     { href: "#imkanlar", label: "İmkanlar" },
+    { href: "#tarifler", label: "Tariflər" },
     { href: "#yol-xeritesi", label: "Yol xəritəsi" },
     { href: "#nece-isleyir", label: "Necə işləyir" },
     { href: "#suallar", label: "Suallar" },

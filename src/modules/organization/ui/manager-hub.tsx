@@ -182,7 +182,7 @@ function ReportsSample() {
   );
 }
 function PlanSample() {
-  const [selectedPlan, setSelectedPlan] = useState<"start" | "business" | "growth">("business");
+  const [selectedPlan, setSelectedPlan] = useState<"free" | "start" | "business" | "growth">("business");
   const [extraBranches, setExtraBranches] = useState(0);
   const [status, setStatus] = useState<"trialing" | "active">("trialing");
   const [daysLeft, setDaysLeft] = useState(11);
@@ -191,18 +191,21 @@ function PlanSample() {
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
 
   const planPrices = {
+    free: 0,
     start: 15,
     business: 29 + extraBranches * 5,
     growth: 49,
   };
 
   const planEmployees = {
+    free: 3,
     start: 10,
     business: 25,
     growth: 50,
   };
 
   const planBranches = {
+    free: 1,
     start: 1,
     business: 2 + extraBranches,
     growth: 3,
@@ -273,7 +276,27 @@ function PlanSample() {
           <div><small>TARİFLƏR VƏ YENİLƏNMƏ</small><h2>Paket Seçimi</h2></div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, marginTop: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginTop: 12 }}>
+          {/* Free Tier */}
+          <div style={{
+            border: selectedPlan === "free" ? "2px solid #0052cc" : "1px solid #dfe1e6",
+            borderRadius: 8,
+            padding: 16,
+            background: selectedPlan === "free" ? "#f4f8ff" : "#fff",
+            cursor: "pointer",
+          }} onClick={() => setSelectedPlan("free")}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h3 style={{ margin: 0 }}>Free</h3>
+              <span style={{ fontWeight: "bold", fontSize: "1.1rem" }}>0 ₼ <small>/ ay</small></span>
+            </div>
+            <p style={{ margin: "8px 0", fontSize: "0.85rem", color: "#5e6c84" }}>3 işçiyə qədər · 1 filial</p>
+            <ul style={{ margin: 0, paddingLeft: 18, fontSize: "0.82rem", color: "#42526e" }}>
+              <li>QR və GPS davamiyyət</li>
+              <li>Sabit iş qrafiki</li>
+              <li>Davamiyyət tarixçəsi</li>
+            </ul>
+          </div>
+
           {/* Start Tier */}
           <div style={{
             border: selectedPlan === "start" ? "2px solid #0052cc" : "1px solid #dfe1e6",
@@ -365,21 +388,25 @@ function PlanSample() {
             className="button primary"
             onClick={() => setShowCheckoutModal(true)}
           >
-            <CreditCard size={16} /> Paketi seç və Abunə ol ({planPrices[selectedPlan]} ₼ / ay)
+            <CreditCard size={16} /> {selectedPlan === "free" ? "Free Paketə keç (0 ₼ / ay)" : `Paketi seç və Abunə ol (${planPrices[selectedPlan]} ₼ / ay)`}
           </button>
         </div>
       </section>
 
-      {/* Sandbox Checkout Modal */}
+      {/* Sandbox Checkout / Switch Modal */}
       {showCheckoutModal && (
         <div style={{
           position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
           background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000
         }}>
           <div style={{ background: "#fff", padding: 24, borderRadius: 12, maxWidth: 440, width: "90%", boxShadow: "0 8px 30px rgba(0,0,0,0.15)" }}>
-            <h3 style={{ margin: "0 0 8px" }}>Təhlükəsiz Sandbox Ödənişi</h3>
+            <h3 style={{ margin: "0 0 8px" }}>
+              {selectedPlan === "free" ? "Free Paketə Keçid" : "Təhlükəsiz Sandbox Ödənişi"}
+            </h3>
             <p style={{ margin: "0 0 16px", color: "#6b778c", fontSize: "0.9rem" }}>
-              AGENTS.md qaydalarına uyğun sınaq mühiti. Real bank kartı tələb olunmur; əməliyyat idempotent gateway simulyasiyası ilə icra edilir.
+              {selectedPlan === "free"
+                ? "Ödənişsiz Free paketinə keçid. Aktiv işçi limiti 3 nəfər, filial sayı 1 olaraq tənzimlənir."
+                : "AGENTS.md qaydalarına uyğun sınaq mühiti. Real bank kartı tələb olunmur; əməliyyat idempotent gateway simulyasiyası ilə icra edilir."}
             </p>
 
             <div style={{ background: "#f4f5f7", padding: 12, borderRadius: 8, marginBottom: 16, fontSize: "0.9rem" }}>
@@ -411,7 +438,11 @@ function PlanSample() {
                   className="button primary"
                   disabled={isProcessing}
                 >
-                  {isProcessing ? "İcra edilir..." : "Ödənişi təsdiqlə (Sandbox)"}
+                  {isProcessing
+                    ? "İcra edilir..."
+                    : selectedPlan === "free"
+                    ? "Free Paketi təsdiqlə"
+                    : "Ödənişi təsdiqlə (Sandbox)"}
                 </button>
               </div>
             </form>

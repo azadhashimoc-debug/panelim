@@ -359,6 +359,92 @@ export function WelcomePage({ year }: { year: number }) {
             </div>
           </div>
         </section>
+        <section id="tarifler" className={`${styles.features} ${styles.container}`} style={{ marginTop: 60, marginBottom: 60 }}>
+          <div className={styles.sectionHeading}>
+            <p className={styles.eyebrow}>ŞƏFFAF QİYMƏTLƏR</p>
+            <h2>Biznesinizə uyğun sadə tariflər.</h2>
+            <p>14 günlük ödənişsiz sınaqla dərhal başlayın. Kredit kartı tələb olunmur.</p>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 20, marginTop: 30 }}>
+            {/* Free */}
+            <div style={{ background: "#fff", border: "1px solid #dfe1e6", borderRadius: 12, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
+              <div>
+                <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#6b778c", letterSpacing: 0.5 }}>BAŞLANĞIC</span>
+                <h3 style={{ fontSize: "1.5rem", margin: "8px 0 4px" }}>Free</h3>
+                <p style={{ fontSize: "1.6rem", fontWeight: 800, margin: "8px 0 16px", color: "#172b4d" }}>0 ₼ <small style={{ fontSize: "0.85rem", fontWeight: 500, color: "#6b778c" }}>/ ömürlük</small></p>
+                <p style={{ fontSize: "0.9rem", color: "#5e6c84", marginBottom: 16 }}>3 aktiv işçi · 1 filial</p>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 10, fontSize: "0.88rem" }}>
+                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> QR və GPS ilə davamiyyət</li>
+                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Sadə sabit iş qrafiki</li>
+                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Giriş-çıxış tarixçəsi</li>
+                </ul>
+              </div>
+              <Link href="/qeydiyyat" className="button secondary full" style={{ textAlign: "center" }}>
+                Free ilə başla
+              </Link>
+            </div>
+
+            {/* Start */}
+            <div style={{ background: "#fff", border: "1px solid #dfe1e6", borderRadius: 12, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
+              <div>
+                <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#0052cc", letterSpacing: 0.5 }}>KİÇİK KOMANDA</span>
+                <h3 style={{ fontSize: "1.5rem", margin: "8px 0 4px" }}>Start</h3>
+                <p style={{ fontSize: "1.6rem", fontWeight: 800, margin: "8px 0 16px", color: "#172b4d" }}>15 ₼ <small style={{ fontSize: "0.85rem", fontWeight: 500, color: "#6b778c" }}>/ ay</small></p>
+                <p style={{ fontSize: "0.9rem", color: "#5e6c84", marginBottom: 16 }}>10 aktiv işçi · 1 filial</p>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 10, fontSize: "0.88rem" }}>
+                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Bütün Free imkanları</li>
+                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Növbə cədvəli & gecə növbəsi</li>
+                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> İcazə və məzuniyyətlər</li>
+                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Excel çıxarışı (BOM dəstəkli)</li>
+                </ul>
+              </div>
+              <Link href="/qeydiyyat" className="button secondary full" style={{ textAlign: "center" }}>
+                Start seç
+              </Link>
+            </div>
+
+            {/* Business */}
+            <div style={{ background: "#f4f8ff", border: "2px solid #0052cc", borderRadius: 12, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", boxShadow: "0 8px 24px rgba(0,82,204,0.12)" }}>
+              <span style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", background: "#0052cc", color: "#fff", fontSize: "0.75rem", fontWeight: 700, padding: "4px 12px", borderRadius: 20 }}>
+                ƏN ÇOX SEÇİLƏN · 14 GÜN PULSUZ
+              </span>
+              <div>
+                <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#0052cc", letterSpacing: 0.5 }}>BİZNES İDARƏETMƏ</span>
+                <h3 style={{ fontSize: "1.5rem", margin: "8px 0 4px" }}>Business</h3>
+                <p style={{ fontSize: "1.6rem", fontWeight: 800, margin: "8px 0 16px", color: "#0052cc" }}>29 ₼ <small style={{ fontSize: "0.85rem", fontWeight: 500, color: "#5e6c84" }}>/ ay</small></p>
+                <p style={{ fontSize: "0.9rem", color: "#5e6c84", marginBottom: 16 }}>25 aktiv işçi · 2 filial</p>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 10, fontSize: "0.88rem" }}>
+                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Bütün Start imkanları</li>
+                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Daxili maaş və avans uçotu</li>
+                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Təsdiqlənmiş əlavə saatlar</li>
+                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Tapşırıqlar və filial rolları</li>
+                </ul>
+              </div>
+              <Link href="/qeydiyyat" className="button primary full" style={{ textAlign: "center" }}>
+                14 günlük sınaqla başla
+              </Link>
+            </div>
+
+            {/* Growth */}
+            <div style={{ background: "#fff", border: "1px solid #dfe1e6", borderRadius: 12, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
+              <div>
+                <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#6b778c", letterSpacing: 0.5 }}>BÖYÜK ŞƏBƏKƏ</span>
+                <h3 style={{ fontSize: "1.5rem", margin: "8px 0 4px" }}>Growth</h3>
+                <p style={{ fontSize: "1.6rem", fontWeight: 800, margin: "8px 0 16px", color: "#172b4d" }}>49 ₼ <small style={{ fontSize: "0.85rem", fontWeight: 500, color: "#6b778c" }}>/ ay</small></p>
+                <p style={{ fontSize: "0.9rem", color: "#5e6c84", marginBottom: 16 }}>50 aktiv işçi · 3 filial</p>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 10, fontSize: "0.88rem" }}>
+                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Bütün Business imkanları</li>
+                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Filialların müqayisəli analitikası</li>
+                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Maksimal işçi və filial həcmi</li>
+                </ul>
+              </div>
+              <Link href="/qeydiyyat" className="button secondary full" style={{ textAlign: "center" }}>
+                Growth seç
+              </Link>
+            </div>
+          </div>
+        </section>
         <section id="yol-xeritesi" className={styles.roadmapSection}>
           <div className={`${styles.container} ${styles.roadmapInner}`}>
             <div className={styles.roadmapHeading}>
