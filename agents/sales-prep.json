@@ -1,0 +1,10 @@
+{
+  "name": "sales-prep",
+  "subtitle": "Pre-meeting preparation",
+  "color": "pink",
+  "capabilities": [
+    "Personal research",
+    "Follow company events",
+    "Special preparation list"
+  ]
+}

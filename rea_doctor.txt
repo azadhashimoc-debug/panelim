@@ -1,0 +1,346 @@
+status: ready
+plannedActions: []
+appliedActions: []
+clients:
+doctor:
+  healthy: true
+  environment_healthy: false
+  scope:
+    mode: explicit
+    clients[2]: codex,hermes
+    skill_clients[2]: codex,hermes
+    providers: []
+    skill: true
+    target: null
+  availableProviders: []
+  providerInspections[4]:
+    - id: ghidra
+      configured: false
+      available: false
+      providerVersion: null
+      registrationEnvironment:
+      checks[1]{name,ok,code,detail,remediation,classification}:
+        configuration,false,not_configured,GHIDRA_INSTALL_DIR is not set,Set GHIDRA_INSTALL_DIR to an extracted Ghidra 12.1.x release directory.,missing_analysis_engine
+    - id: ida
+      configured: false
+      available: false
+      providerVersion: null
+      registrationEnvironment:
+      checks[1]{name,ok,code,detail,remediation,classification}:
+        registration,false,not_configured,IDA MCP registration is not configured.,Set REA_IDA_MCP_CONFIG to your upstream IDA MCP registration JSON; see docs/ida-provider.md.,missing_analysis_engine
+    - id: jadx
+      configured: false
+      available: false
+      providerVersion: null
+      registrationEnvironment:
+      checks[1]{name,ok,code,detail,remediation,classification}:
+        configuration,false,not_configured,Set REA_JADX_MCP_JAR to the absolute path of a caller-supplied jadx-headless-mcp 0.7.1 JAR. REA does not download or install it.,Set REA_JADX_MCP_JAR to the absolute path of a caller-supplied jadx-headless-mcp 0.7.1 JAR. REA does not download or install it.,missing_analysis_engine
+    - id: kuna
+      configured: false
+      available: false
+      providerVersion: null
+      registrationEnvironment:
+      checks[1]:
+        - name: installation
+          ok: false
+          code: not_configured
+          detail: "Set REA_KUNA_COMMAND to the absolute path of a caller-supplied kuna executable (verified with 1.833). REA does not download, install or update Kuna."
+          remediation: "Set REA_KUNA_COMMAND to the absolute path of a caller-supplied kuna executable (verified with 1.833). REA does not download, install or update Kuna."
+          classification: missing_analysis_engine
+          details:
+            configured: false
+  identity:
+    skill:
+      installed_version: "42"
+      installed_tool_count: 207
+      state: aligned
+      remediation: null
+    registrations[9]:
+      - client: antigravity
+        config_path: "C:\\Users\\adem\\.gemini\\config\\mcp_config.json"
+        command: []
+        state: missing
+        remediation: "Run rea setup to refresh this registration, then restart the client."
+      - client: claude_code
+        config_path: "C:\\Users\\adem\\.claude.json"
+        command: []
+        state: missing
+        remediation: "Run rea setup to refresh this registration, then restart the client."
+      - client: claude_desktop
+        config_path: "C:\\Users\\adem\\AppData\\Local\\Packages\\Claude_pzs8sxrjxfjjc\\LocalCache\\Roaming\\Claude\\claude_desktop_config.json"
+        command: []
+        state: missing
+        remediation: "Quit Claude Desktop fully, run rea setup to refresh this registration, then start Claude Desktop again. A running Claude Desktop can rewrite its configuration from memory and drop the registration."
+      - client: codex
+        config_path: "C:\\Users\\adem\\.codex\\config.toml"
+        command[7]: cmd.exe,/d,/c,npx,"-y",rea-agents@6.5.0,mcp
+        package_reference: rea-agents@6.5.0
+        state: aligned
+        remediation: null
+      - client: copilot_cli
+        config_path: "C:\\Users\\adem\\.copilot\\mcp-config.json"
+        command: []
+        state: missing
+        remediation: "Run rea setup to refresh this registration, then restart the client."
+      - client: gemini_cli
+        config_path: "C:\\Users\\adem\\.gemini\\settings.json"
+        command: []
+        state: missing
+        remediation: "Run rea setup to refresh this registration, then restart the client."
+      - client: hermes
+        config_path: "C:\\Users\\adem\\AppData\\Local\\hermes\\config.yaml"
+        command[7]: cmd.exe,/d,/c,npx,"-y",rea-agents@6.5.0,mcp
+        package_reference: rea-agents@6.5.0
+        state: aligned
+        remediation: null
+      - client: opencode
+        config_path: "C:\\Users\\adem\\.config\\opencode\\opencode.jsonc"
+        command: []
+        state: missing
+        remediation: "Run rea setup to refresh this registration, then restart the client."
+      - client: vscode
+        config_path: "C:\\Users\\adem\\AppData\\Roaming\\Code\\User\\mcp.json"
+        command: []
+        state: missing
+        remediation: "Run rea setup to refresh this registration, then restart the client."
+clientStates[25]:
+  - client:
+      name: claude_code
+      displayName: Claude Code
+      configPath: "C:\\Users\\adem\\.claude.json"
+      markerPath: "C:\\Users\\adem\\.claude"
+      format: json
+    detected: true
+    configured: false
+    status: needs_configuration
+  - client:
+      name: claude_desktop
+      displayName: Claude Desktop
+      configPath: "C:\\Users\\adem\\AppData\\Local\\Packages\\Claude_pzs8sxrjxfjjc\\LocalCache\\Roaming\\Claude\\claude_desktop_config.json"
+      markerPath: "C:\\Users\\adem\\AppData\\Local\\Packages\\Claude_pzs8sxrjxfjjc"
+      msixPackage:
+        packageFamilyName: Claude_pzs8sxrjxfjjc
+        privateConfigPath: "C:\\Users\\adem\\AppData\\Local\\Packages\\Claude_pzs8sxrjxfjjc\\LocalCache\\Roaming\\Claude\\claude_desktop_config.json"
+        appDataConfigPath: "C:\\Users\\adem\\AppData\\Roaming\\Claude\\claude_desktop_config.json"
+        virtualizedRoots[2]: "C:\\Users\\adem\\AppData\\Roaming","C:\\Users\\adem\\AppData\\Local"
+        processView: direct
+      quitBeforeSetup: true
+      format: json
+    detected: true
+    configured: false
+    status: needs_configuration
+  - client:
+      name: codex
+      displayName: Codex
+      configPath: "C:\\Users\\adem\\.codex\\config.toml"
+      markerPath: "C:\\Users\\adem\\.codex"
+      format: toml
+    detected: true
+    configured: true
+    status: configured
+  - client:
+      name: cursor
+      displayName: Cursor
+      configPath: "C:\\Users\\adem\\.cursor\\mcp.json"
+      markerPath: "C:\\Users\\adem\\.cursor"
+      format: json
+    detected: false
+    configured: false
+    status: missing
+  - client:
+      name: gemini_cli
+      displayName: Gemini CLI
+      configPath: "C:\\Users\\adem\\.gemini\\settings.json"
+      geminiSettings:
+        systemPath: "C:\\ProgramData\\gemini-cli\\settings.json"
+        defaultsPath: "C:\\ProgramData\\gemini-cli\\system-defaults.json"
+        workspaceDirectory: "C:\\Users\\adem"
+        trustedFoldersPath: "C:\\Users\\adem\\.gemini\\trustedFolders.json"
+        platform: win32
+      markerPath: "C:\\Users\\adem\\.gemini"
+      format: json
+    detected: true
+    configured: false
+    status: needs_configuration
+  - client:
+      name: windsurf
+      displayName: Windsurf
+      configPath: "C:\\Users\\adem\\.codeium\\windsurf\\mcp_config.json"
+      markerPath: "C:\\Users\\adem\\.codeium\\windsurf"
+      format: json
+    detected: false
+    configured: false
+    status: missing
+  - client:
+      name: devin
+      displayName: Devin
+      configPath: "C:\\Users\\adem\\AppData\\Roaming\\devin\\mcp_config.json"
+      markerPath: "C:\\Users\\adem\\AppData\\Roaming\\devin"
+      format: json
+    detected: false
+    configured: false
+    status: missing
+  - client:
+      name: opencode
+      displayName: OpenCode
+      configPath: "C:\\Users\\adem\\.config\\opencode\\opencode.jsonc"
+      configPaths[3]: "C:\\Users\\adem\\.config\\opencode\\config.json","C:\\Users\\adem\\.config\\opencode\\opencode.json","C:\\Users\\adem\\.config\\opencode\\opencode.jsonc"
+      markerPath: "C:\\Users\\adem\\.config\\opencode"
+      format: opencode
+    detected: true
+    configured: false
+    status: needs_configuration
+  - client:
+      name: antigravity
+      displayName: Antigravity
+      configPath: "C:\\Users\\adem\\.gemini\\config\\mcp_config.json"
+      markerPath: "C:\\Users\\adem\\.gemini\\config"
+      format: json
+    detected: true
+    configured: false
+    status: needs_configuration
+  - client:
+      name: copilot_cli
+      displayName: GitHub Copilot CLI
+      configPath: "C:\\Users\\adem\\.copilot\\mcp-config.json"
+      markerPath: "C:\\Users\\adem\\.copilot"
+      format: copilot_cli
+    detected: true
+    configured: false
+    status: needs_configuration
+  - client:
+      name: commandcode
+      displayName: Command Code
+      configPath: "C:\\Users\\adem\\.commandcode\\mcp.json"
+      markerPath: "C:\\Users\\adem\\.commandcode"
+      format: commandcode
+    detected: false
+    configured: false
+    status: missing
+  - client:
+      name: qwen_code
+      displayName: Qwen Code
+      configPath: "C:\\Users\\adem\\.qwen\\settings.json"
+      markerPath: "C:\\Users\\adem\\.qwen"
+      format: json
+    detected: false
+    configured: false
+    status: missing
+  - client:
+      name: kimi
+      displayName: Kimi Code
+      configPath: "C:\\Users\\adem\\.kimi-code\\mcp.json"
+      markerPath: "C:\\Users\\adem\\.kimi-code"
+      format: kimi
+    detected: false
+    configured: false
+    status: missing
+  - client:
+      name: vscode
+      displayName: VS Code
+      configPath: "C:\\Users\\adem\\AppData\\Roaming\\Code\\User\\mcp.json"
+      markerPath: "C:\\Users\\adem\\AppData\\Roaming\\Code\\User"
+      format: vscode
+    detected: true
+    configured: false
+    status: needs_configuration
+  - client:
+      name: trae
+      displayName: Trae
+      configPath: "C:\\Users\\adem\\AppData\\Roaming\\Trae\\User\\mcp.json"
+      markerPath: "C:\\Users\\adem\\AppData\\Roaming\\Trae\\User"
+      format: json
+    detected: false
+    configured: false
+    status: missing
+  - client:
+      name: workbuddy
+      displayName: WorkBuddy
+      configPath: "C:\\Users\\adem\\.workbuddy\\mcp.json"
+      markerPath: "C:\\Users\\adem\\.workbuddy"
+      format: json
+    detected: false
+    configured: false
+    status: missing
+  - client:
+      name: grok_build
+      displayName: Grok Build
+      configPath: "C:\\Users\\adem\\.grok\\config.toml"
+      markerPath: "C:\\Users\\adem\\.grok"
+      format: grok
+    detected: false
+    configured: false
+    status: missing
+  - client:
+      name: omp
+      displayName: OMP
+      configPath: "C:\\Users\\adem\\.omp\\agent\\mcp.json"
+      markerPath: "C:\\Users\\adem\\.omp\\agent"
+      format: omp
+    detected: false
+    configured: false
+    status: missing
+  - client:
+      name: pi
+      displayName: Pi
+      configPath: "C:\\Users\\adem\\.pi\\agent\\mcp.json"
+      markerPath: "C:\\Users\\adem\\.pi\\agent"
+      format: pi
+    detected: false
+    configured: false
+    status: missing
+  - client:
+      name: hermes
+      displayName: Hermes
+      configPath: "C:\\Users\\adem\\AppData\\Local\\hermes\\config.yaml"
+      markerPath: "C:\\Users\\adem\\AppData\\Local\\hermes"
+      format: hermes
+    detected: true
+    configured: true
+    status: configured
+  - client:
+      name: qoder
+      displayName: Qoder
+      configPath: "C:\\Users\\adem\\.qoder\\settings.json"
+      markerPath: "C:\\Users\\adem\\.qoder"
+      format: json
+    detected: false
+    configured: false
+    status: missing
+  - client:
+      name: droid
+      displayName: Factory Droid
+      configPath: "C:\\Users\\adem\\.factory\\mcp.json"
+      markerPath: "C:\\Users\\adem\\.factory"
+      format: json
+    detected: false
+    configured: false
+    status: missing
+  - client:
+      name: zcode
+      displayName: ZCode
+      configPath: "C:\\Users\\adem\\.zcode\\cli\\config.json"
+      zcodeFallbackPath: "C:\\Users\\adem\\.agents\\mcp.json"
+      markerPath: "C:\\Users\\adem\\.zcode\\cli"
+      format: zcode
+    detected: false
+    configured: false
+    status: missing
+  - client:
+      name: dsh
+      displayName: DeepSeek Harness
+      configPath: "C:\\Users\\adem\\.dsh\\cordis.patch.yml"
+      markerPath: "C:\\Users\\adem\\.dsh"
+      format: dsh
+    detected: false
+    configured: false
+    status: missing
+  - client:
+      name: grok_bot
+      displayName: Grok Bot
+      configPath: "C:\\Users\\adem\\.grokbot"
+      markerPath: "C:\\Users\\adem\\.grokbot"
+      format: unsupported
+    detected: false
+    configured: false
+    status: missing

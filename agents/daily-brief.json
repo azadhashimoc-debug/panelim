@@ -1,0 +1,10 @@
+{
+  "name": "daily-brief",
+  "subtitle": "Daily summary at 9 AM",
+  "color": "cyan",
+  "capabilities": [
+    "Collect Calendar + Mail + Stripe",
+    "Slack DM",
+    "3-5 minute read email"
+  ]
+}

@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.next-connected/
+.next-preview/
+.env*
+!.env.example
+coverage/
+test-results/
+playwright-report/
+*.tsbuildinfo
+.superpowers/
+.runtime/
+.vercel/
+

@@ -1,0 +1,55 @@
+- generic [ref=f1e1]:
+  - link "Məzmuna keç" [ref=f1e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f1e3]:
+    - complementary [ref=f1e4]:
+      - link "panelim.az" [ref=f1e5] [cursor=pointer]:
+        - /url: /
+      - paragraph [ref=f1e14]: ŞİRKƏT KABİNETİ
+      - navigation "Rəhbər naviqasiyası" [ref=f1e15]:
+        - button "İcmal" [ref=f1e16] [cursor=pointer]
+        - button "İşçilər" [ref=f1e23] [cursor=pointer]
+        - button "Növbələr" [ref=f1e29] [cursor=pointer]
+        - button "Müraciətlər" [ref=f1e33] [cursor=pointer]
+        - button "Hesablaşma" [ref=f1e38] [cursor=pointer]
+        - button "Tapşırıqlar" [ref=f1e42] [cursor=pointer]
+        - button "Hesabatlar" [ref=f1e47] [cursor=pointer]
+        - button "Abunə" [active] [ref=f1e51] [cursor=pointer]
+      - button "Parametrlər" [ref=f1e55] [cursor=pointer]
+    - main [ref=f1e60]:
+      - generic [ref=f1e61]:
+        - generic [ref=f1e62]:
+          - text: NÜMUNƏ KAFE · NİZAMİ FİLİALI
+          - heading "Abunə" [level=1] [ref=f1e232]
+        - generic [ref=f1e64]:
+          - generic [ref=f1e65]: "N"
+          - generic [ref=f1e66]:
+            - strong [ref=f1e67]: Nigar Əliyeva
+            - generic [ref=f1e68]: Rəhbər · nümunə hesab
+          - link "İşçi görünüşü" [ref=f1e69] [cursor=pointer]:
+            - /url: /demo
+      - generic [ref=f1e233]: Abunə və paket limitləri · Business paket sınaq müddəti aktivdir.
+      - generic [ref=f1e237]:
+        - generic [ref=f1e238]:
+          - generic [ref=f1e239]:
+            - text: CARİ PAKET
+            - heading "Business Paket" [level=2] [ref=f1e240]
+          - generic [ref=f1e241]: 14 günlük sınaq (11 gün qalıb)
+        - generic [ref=f1e243]:
+          - generic [ref=f1e244]:
+            - generic [ref=f1e245]: AYLIQ QİYMƏT
+            - strong [ref=f1e246]: 29 ₼ / ay
+            - generic [ref=f1e247]: Sınaq bitdikdən sonra
+          - generic [ref=f1e248]:
+            - generic [ref=f1e249]: AKTİV HEYƏT LİMİTİ
+            - strong [ref=f1e250]: 1 / 25 işçi
+            - generic [ref=f1e251]: Bütün filiallar üzrə ümumi
+        - generic [ref=f1e252]:
+          - paragraph [ref=f1e253]:
+            - strong [ref=f1e254]: "Filial limiti:"
+            - text: "1 / 2 filial aktivdir (Əlavə filial: +5 ₼ / ay, maks. 3)"
+          - paragraph [ref=f1e255]:
+            - strong [ref=f1e256]: "Daxildir:"
+            - text: QR və GPS davamiyyət, Növbə qrafiki, Maaş & avans uçotu, Filial hesabatları
+  - button "Open Next.js Dev Tools" [ref=f1e160] [cursor=pointer]
+  - alert [ref=f1e198]

@@ -1,0 +1,10 @@
+{
+  "name": "lead-qualifier",
+  "subtitle": "Lead score report",
+  "color": "purple",
+  "capabilities": [
+    "Score high intent",
+    "MQL / SQL / COLD",
+    "Slack DM for hot leads"
+  ]
+}

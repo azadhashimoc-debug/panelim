@@ -1,0 +1,31 @@
+[    4751ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/next-devtools/shared/forward-logs-shared.js:44
+[    4903ms] [LOG] [HMR] connected @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/next-devtools/shared/forward-logs-shared.js:44
+[   26685ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/next-devtools/shared/forward-logs-shared.js:44
+[   27492ms] [ERROR] ./src/modules/organization/server/billing.ts:1:1
+Module not found: Can't resolve '@/shared/server/auth'
+> 1 | import { getAuthenticatedContext } from "@/shared/server/auth";
+    | ^
+  2 | import { getServiceDb } from "@/shared/server/supabase";
+  3 | import type { SubscriptionStatus } from "@/shared/types";
+  4 |
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/app/api/billing/route.ts @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/next-devtools/userspace/app/errors/intercept-console-error.js:57
+[   27492ms] [ERROR] ./src/modules/organization/server/billing.ts:2:1
+Module not found: Can't resolve '@/shared/server/supabase'
+  1 | import { getAuthenticatedContext } from "@/shared/server/auth";
+> 2 | import { getServiceDb } from "@/shared/server/supabase";
+    | ^
+  3 | import type { SubscriptionStatus } from "@/shared/types";
+  4 |
+  5 | export async function fetchSubscriptionStatus(companyId?: string): Promise<SubscriptionStatus> {
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/app/api/billing/route.ts @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/next-devtools/userspace/app/errors/intercept-console-error.js:57
+[   39608ms] [LOG] [Fast Refresh] done in 12924ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/next-devtools/shared/forward-logs-shared.js:44
+[   47471ms] [LOG] [Fast Refresh] done in 20786ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/next-devtools/shared/forward-logs-shared.js:44
+[   49309ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/next-devtools/shared/forward-logs-shared.js:44

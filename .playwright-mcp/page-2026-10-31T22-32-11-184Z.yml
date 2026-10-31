@@ -1,0 +1,83 @@
+- generic [ref=e1]:
+  - link "Məzmuna keç" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - link "panelim.az" [ref=e5] [cursor=pointer]:
+        - /url: /
+      - paragraph [ref=e14]: ŞİRKƏT KABİNETİ
+      - navigation "Rəhbər naviqasiyası" [ref=e15]:
+        - button "İcmal" [ref=e16] [cursor=pointer]
+        - button "İşçilər" [ref=e23] [cursor=pointer]
+        - button "Növbələr" [ref=e29] [cursor=pointer]
+        - button "Müraciətlər" [ref=e33] [cursor=pointer]
+        - button "Hesablaşma" [ref=e38] [cursor=pointer]
+        - button "Tapşırıqlar" [ref=e42] [cursor=pointer]
+        - button "Hesabatlar" [ref=e47] [cursor=pointer]
+        - button "Abunə" [ref=e51] [cursor=pointer]
+      - button "Parametrlər" [ref=e55] [cursor=pointer]
+    - main [ref=e60]:
+      - generic [ref=e61]:
+        - generic [ref=e62]:
+          - text: NÜMUNƏ KAFE · NİZAMİ FİLİALI
+          - heading "Hesablaşma" [level=1] [ref=e164]
+        - generic [ref=e64]:
+          - generic [ref=e65]: "N"
+          - generic [ref=e66]:
+            - strong [ref=e67]: Nigar Əliyeva
+            - generic [ref=e68]: Rəhbər · nümunə hesab
+          - link "İşçi görünüşü" [ref=e69] [cursor=pointer]:
+            - /url: /demo
+      - generic [ref=e165]: Nümunə maaş və avans uçotu · AZN qəpik dəqiqliyi ilə daxili hesablaşma.
+      - generic [ref=e169]:
+        - generic [ref=e170]:
+          - generic [ref=e171]:
+            - text: AYLIQ HESABLAŞMA · NOYABR 2026
+            - heading "Aylin Məmmədova" [level=2] [ref=e172]
+          - generic [ref=e173]: Cari hesab
+        - generic [ref=e174]:
+          - article [ref=e175]:
+            - generic [ref=e176]: ƏSAS MAAŞ
+            - strong [ref=e177]: 850.00 ₼
+            - generic [ref=e178]: Sabit tarif
+          - article [ref=e179]:
+            - generic [ref=e180]: ƏLAVƏ SAAT (3 S)
+            - strong [ref=e181]: +45.00 ₼
+            - generic [ref=e182]: Təsdiqlənib
+          - article [ref=e183]:
+            - generic [ref=e184]: AVANSLAR
+            - strong [ref=e185]: "-100.00 ₼"
+            - generic [ref=e186]: 1 ödəniş
+          - article [ref=e187]:
+            - generic [ref=e188]: YEKUN ÖDƏNİLƏCƏK
+            - strong [ref=e189]: 795.00 ₼
+            - generic [ref=e190]: "Növbəti maaş: 5 noyabr"
+        - generic [ref=e191]:
+          - button "+ Avans ver" [active] [ref=e192] [cursor=pointer]
+          - button "Noyabr ayını bağla" [ref=e193] [cursor=pointer]
+      - generic [ref=e194]:
+        - generic [ref=e195]:
+          - generic [ref=e196]:
+            - text: BU AYIN ÖDƏNİŞLƏRİ
+            - heading "Verilmiş Avanslar" [level=2] [ref=e197]
+          - generic [ref=e198]: 1 qeyd
+        - generic [ref=e199]:
+          - generic [ref=e200]:
+            - strong [ref=e201]: 100.00 ₼ avans
+            - generic [ref=e202]: "Tarix: 15 oktyabr · Qeyd: Məişət xərcləri üçün"
+          - generic [ref=e203]: "-100.00 ₼"
+      - generic [ref=e206]:
+        - heading "Yeni Avans Qeydi" [level=3] [ref=e207]
+        - generic [ref=e208]:
+          - generic [ref=e209]:
+            - text: Məbləğ (AZN)
+            - spinbutton "Məbləğ (AZN)" [ref=e210]
+          - generic [ref=e211]:
+            - text: Qeyd
+            - textbox "Qeyd" [ref=e212]:
+              - /placeholder: Səbəb və ya qeyd
+          - generic [ref=e213]:
+            - button "İmtina" [ref=e214] [cursor=pointer]
+            - button "Avansı təsdiqlə" [ref=e215] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e160] [cursor=pointer]
+  - alert [ref=e204]

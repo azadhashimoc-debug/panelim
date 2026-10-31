@@ -1,0 +1,11 @@
+{
+  "agents": [
+    "research-agent",
+    "code-reviewer",
+    "qa-agent",
+    "lead-qualifier",
+    "sales-prep",
+    "daily-brief"
+  ],
+  "count": 6
+}

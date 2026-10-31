@@ -1,0 +1,202 @@
+- generic:
+  - link:
+    - /url: "#main"
+    - text: Məzmuna keç
+  - generic:
+    - complementary:
+      - link:
+        - /url: /demo
+        - generic: panelim.az
+      - generic: İŞÇİ KABİNETİ
+      - navigation:
+        - link:
+          - /url: /demo
+          - generic: İş günüm
+        - link:
+          - /url: /demo/tarixce
+          - generic: Davamiyyətim
+        - link:
+          - /url: /demo/muracietler
+          - generic: Müraciətlərim
+      - generic:
+        - generic:
+          - strong: Vaxtınız dəyərlidir.
+          - paragraph: Hər iş gününü rahatlıqla qeyd edin.
+          - generic:
+            - text: panelim sizinlədir
+            - generic [aria-hidden]: ✦
+        - button: Kömək və dəstək
+        - generic: Azərbaycan üçün hazırlanıb
+    - generic:
+      - banner:
+        - generic:
+          - generic: İşçi kabineti
+          - strong: İş günüm
+        - generic:
+          - generic: 1 noyabr
+          - generic: A
+          - button
+      - main:
+        - generic:
+          - generic:
+            - generic:
+              - text: Xoş gəldiniz, Aylin
+              - generic: ✦
+            - heading [level=1]: İş gününüz bir baxışda
+            - paragraph: Növbənizi izləyin, vaxtınızı rahat idarə edin.
+          - generic:
+            - generic:
+              - generic: Nümunə Kafe
+              - strong: Nizami filialı
+        - generic:
+          - generic:
+            - strong: Tanışlıq rejimi
+            - paragraph: Şəxsi növbə və davamiyyət məlumatlarınızı görmək üçün hesabınıza daxil olun.
+          - link:
+            - /url: /giris
+            - text: Hesaba daxil ol
+        - generic:
+          - generic:
+            - strong: Nümunə məlumatlar
+            - text: · Bu kabinetdəki şəxs, davamiyyət və maaş göstəriciləri yalnız demo üçündür.
+        - generic:
+          - region:
+            - generic:
+              - generic: BUGÜNKÜ DAVAMİYYƏT
+              - generic: İşdəsiniz
+            - generic:
+              - text: 02:10:56
+              - generic: Bakı vaxtı · GMT+4
+            - generic:
+              - heading [level=2]: Uğurlu iş günü!
+              - paragraph: İş gününüz bitəndə çıxış etməyi unutmayın.
+            - button: QR ilə çıxış et
+            - generic: Filial QR kodu və məkan yoxlaması ilə
+          - generic:
+            - generic:
+              - heading [level=2]: Bugünkü növbəm
+            - generic: 09:00 – 18:00
+            - paragraph: 1 noyabr · Nizami filialı
+            - generic:
+              - generic:
+                - generic: Giriş
+                - strong: 09:00
+              - generic:
+                - generic: Çıxış
+                - strong: "— : —"
+            - generic:
+              - generic: Bu gün tamamlanmış iş vaxtı
+              - strong: 0 s 0 dəq
+        - generic:
+          - generic:
+            - generic:
+              - heading [level=2]: Son qeydlərim
+              - link:
+                - /url: /demo/tarixce
+                - text: Hamısına bax
+            - generic:
+              - table:
+                - rowgroup:
+                  - row:
+                    - columnheader: Tarix / filial
+                    - columnheader: Giriş
+                    - columnheader: Çıxış
+                    - columnheader: Vəziyyət
+                - rowgroup:
+                  - row:
+                    - cell:
+                      - strong: 1 noyabr
+                      - generic: Nizami filialı
+                    - cell:
+                      - generic: 09:00
+                    - cell:
+                      - generic: —
+                    - cell:
+                      - generic: İşdə
+                  - row:
+                    - cell:
+                      - strong: 31 oktyabr
+                      - generic: Nizami filialı
+                    - cell:
+                      - generic: 09:02
+                    - cell:
+                      - generic: 18:01
+                    - cell:
+                      - generic: Tamamlanıb
+                  - row:
+                    - cell:
+                      - strong: 30 oktyabr
+                      - generic: Nizami filialı
+                    - cell:
+                      - generic: 09:04
+                    - cell:
+                      - generic: 18:00
+                    - cell:
+                      - generic: Tamamlanıb
+          - generic:
+            - generic:
+              - heading [level=2]: Sürətli keçidlər
+            - button:
+              - generic:
+                - strong: İcazə və məzuniyyət
+                - generic: Tarixi seçin, səbəbi yazın və rəhbərə göndərin
+            - button:
+              - generic:
+                - strong: Düzəliş müraciəti
+                - generic: Qeydi unutmusunuz və ya səhv var?
+            - link:
+              - /url: /demo/muracietler
+              - generic:
+                - strong: Müraciətlərim
+                - generic: Göndərdiyiniz müraciətləri izləyin
+            - generic:
+              - paragraph: Hesaba daxil ola bilmirsiniz? Rəhbərinizlə birbaşa əlaqə saxlayın. Düzəliş müraciəti üçün əvvəl hesabınıza daxil olun.
+        - region:
+          - article:
+            - generic:
+              - generic: İŞƏ BAŞLAMA TARİXİ
+              - strong: 14 aprel 2025
+          - article:
+            - generic:
+              - generic: BU AYIN QAZANCI
+              - strong: 850,00 ₼
+              - paragraph: Nümunə aylıq əsas məbləğ
+          - article:
+            - generic:
+              - generic: NÖVBƏTİ MAAŞ GÜNÜ
+              - strong: 5 noyabr
+              - paragraph: Yekun hesablaşma təsdiqdən sonra görünəcək
+        - generic: Qeydləriniz təhlükəsiz saxlanılır. Məlumatlarınızı yalnız siz və səlahiyyətli rəhbəriniz görə bilər.
+        - generic:
+          - generic: ©2026 panelim.az
+          - generic: İşin vaxtında. Hər şey qaydasında.
+    - dialog "İcazə və məzuniyyət müraciəti" [ref=e299]:
+      - generic [ref=e300]:
+        - heading "İcazə və məzuniyyət müraciəti" [level=2] [ref=e301]
+        - button "Bağla" [active] [ref=e302] [cursor=pointer]
+      - generic [ref=e306]:
+        - paragraph [ref=e307]: Müraciət rəhbər təsdiqindən sonra qüvvəyə minir.
+        - generic [ref=e308]:
+          - text: Müraciətin növü
+          - combobox "Müraciətin növü" [ref=e309]:
+            - option "Məzuniyyət" [selected]
+            - option "İcazə"
+        - generic [ref=e310]:
+          - generic [ref=e311]:
+            - text: Başlanğıc tarixi
+            - textbox "Başlanğıc tarixi" [ref=e312]
+          - generic [ref=e313]:
+            - text: Bitiş tarixi
+            - textbox "Bitiş tarixi" [ref=e314]
+        - generic [ref=e315]:
+          - text: Səbəb
+          - textbox "Səbəb" [ref=e316]:
+            - /placeholder: Qısa səbəb yazın…
+        - button "Müraciəti göndər" [ref=e317] [cursor=pointer]
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - button
+  - alert

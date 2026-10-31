@@ -1,0 +1,97 @@
+- generic [ref=e1]:
+  - link "Məzmuna keç" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - link "panelim.az" [ref=e5] [cursor=pointer]:
+        - /url: /
+      - paragraph [ref=e14]: ŞİRKƏT KABİNETİ
+      - navigation "Rəhbər naviqasiyası" [ref=e15]:
+        - button "İcmal" [ref=e16] [cursor=pointer]
+        - button "İşçilər" [ref=e23] [cursor=pointer]
+        - button "Növbələr" [ref=e29] [cursor=pointer]
+        - button "Müraciətlər" [ref=e33] [cursor=pointer]
+        - button "Hesablaşma" [ref=e38] [cursor=pointer]
+        - button "Tapşırıqlar" [ref=e42] [cursor=pointer]
+        - button "Hesabatlar" [ref=e47] [cursor=pointer]
+        - button "Abunə" [active] [ref=e51] [cursor=pointer]
+      - button "Parametrlər" [ref=e55] [cursor=pointer]
+    - main [ref=e60]:
+      - generic [ref=e61]:
+        - generic [ref=e62]:
+          - text: NÜMUNƏ KAFE · NİZAMİ FİLİALI
+          - heading "Abunə" [level=1] [ref=e164]
+        - generic [ref=e64]:
+          - generic [ref=e65]: "N"
+          - generic [ref=e66]:
+            - strong [ref=e67]: Nigar Əliyeva
+            - generic [ref=e68]: Rəhbər · nümunə hesab
+          - link "İşçi görünüşü" [ref=e69] [cursor=pointer]:
+            - /url: /demo
+      - generic [ref=e165]: Abunə və paket limitləri · 14 günlük sınaq müddəti aktivdir.
+      - generic [ref=e169]:
+        - generic [ref=e170]:
+          - generic [ref=e171]:
+            - text: CARİ PAKET
+            - heading "BUSINESS Paket" [level=2] [ref=e172]
+          - generic [ref=e173]: 14 günlük sınaq (11 gün qalıb)
+        - generic [ref=e175]:
+          - generic [ref=e176]:
+            - generic [ref=e177]: AYLIQ QİYMƏT
+            - strong [ref=e178]: 29 ₼ / ay
+            - generic [ref=e179]: Sınaq bitdikdən sonra
+          - generic [ref=e180]:
+            - generic [ref=e181]: AKTİV HEYƏT LİMİTİ
+            - strong [ref=e182]: 1 / 25 işçi
+            - generic [ref=e183]: Bütün filiallar üzrə ümumi
+        - generic [ref=e184]:
+          - paragraph [ref=e185]:
+            - strong [ref=e186]: "Filial limiti:"
+            - text: "1 / 2 filial aktivdir (Əlavə filial: +5 ₼ / ay, maks. 3)"
+          - paragraph [ref=e187]:
+            - strong [ref=e188]: "Daxildir:"
+            - text: QR və GPS davamiyyət, Növbə qrafiki, Maaş & avans uçotu, Filial hesabatları
+      - generic [ref=e189]:
+        - generic [ref=e191]:
+          - text: TARİFLƏR VƏ YENİLƏNMƏ
+          - heading "Paket Seçimi" [level=2] [ref=e192]
+        - generic [ref=e193]:
+          - generic [ref=e194] [cursor=pointer]:
+            - generic [ref=e195]:
+              - heading "Start" [level=3] [ref=e196]
+              - generic [ref=e197]: 15 ₼ / ay
+            - paragraph [ref=e198]: 10 işçiyə qədər · 1 filial
+            - list [ref=e199]:
+              - listitem [ref=e200]: Növbə cədvəli
+              - listitem [ref=e201]: İcazə və məzuniyyətlər
+              - listitem [ref=e202]: Excel çıxarışı
+          - generic [ref=e203] [cursor=pointer]:
+            - generic [ref=e204]:
+              - heading "Business" [level=3] [ref=e205]
+              - generic [ref=e206]: 29 ₼ / ay
+            - paragraph [ref=e207]: 25 işçiyə qədər · 2 filial
+            - list [ref=e208]:
+              - listitem [ref=e209]: Bütün Start imkanları
+              - listitem [ref=e210]: Daxili maaş və avans uçotu
+              - listitem [ref=e211]: Əlavə saat hesablanması
+              - listitem [ref=e212]: Tapşırıqlar və filial səlahiyyətləri
+          - generic [ref=e213] [cursor=pointer]:
+            - generic [ref=e214]:
+              - heading "Growth" [level=3] [ref=e215]
+              - generic [ref=e216]: 49 ₼ / ay
+            - paragraph [ref=e217]: 50 işçiyə qədər · 3 filial
+            - list [ref=e218]:
+              - listitem [ref=e219]: Bütün Business imkanları
+              - listitem [ref=e220]: Müqayisəli filial analitikası
+              - listitem [ref=e221]: Maksimal heyət həcmi
+        - generic [ref=e222]:
+          - generic [ref=e223]:
+            - strong [ref=e224]: "Əlavə filial (+5 ₼ / ay):"
+            - generic [ref=e225]: Maksimal 3 filiala qədər artırıla bilər
+          - generic [ref=e226]:
+            - button "-" [disabled] [ref=e227]
+            - generic [ref=e228]: "+0"
+            - button "+" [ref=e229] [cursor=pointer]
+        - button "Paketi seç və Abunə ol (29 ₼ / ay)" [ref=e231] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e160] [cursor=pointer]
+  - alert [ref=e234]

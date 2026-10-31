@@ -1,0 +1,10 @@
+{
+  "name": "qa-agent",
+  "subtitle": "Test coverage report",
+  "color": "blue",
+  "capabilities": [
+    "Run test suite nightly",
+    "Auto revert code commit on failure",
+    "CI/CD integration"
+  ]
+}

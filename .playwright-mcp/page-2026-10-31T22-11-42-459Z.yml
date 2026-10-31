@@ -1,0 +1,74 @@
+- generic [active] [ref=f1e1]:
+  - link "Məzmuna keç" [ref=f1e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f1e3]:
+    - complementary [ref=f1e4]:
+      - link "panelim.az" [ref=f1e5] [cursor=pointer]:
+        - /url: /
+      - paragraph [ref=f1e14]: ŞİRKƏT KABİNETİ
+      - navigation "Rəhbər naviqasiyası" [ref=f1e15]:
+        - button "İcmal" [ref=f1e16] [cursor=pointer]
+        - button "İşçilər" [ref=f1e23] [cursor=pointer]
+        - button "Növbələr" [ref=f1e29] [cursor=pointer]
+        - button "Müraciətlər" [ref=f1e33] [cursor=pointer]
+        - button "Hesablaşma" [ref=f1e38] [cursor=pointer]
+        - button "Tapşırıqlar" [ref=f1e42] [cursor=pointer]
+        - button "Hesabatlar" [ref=f1e47] [cursor=pointer]
+        - button "Abunə" [ref=f1e51] [cursor=pointer]
+      - button "Parametrlər" [ref=f1e55] [cursor=pointer]
+    - main [ref=f1e60]:
+      - generic [ref=f1e61]:
+        - generic [ref=f1e62]:
+          - text: NÜMUNƏ KAFE · NİZAMİ FİLİALI
+          - heading "İcmal" [level=1] [ref=f1e63]
+        - generic [ref=f1e64]:
+          - generic [ref=f1e65]: "N"
+          - generic [ref=f1e66]:
+            - strong [ref=f1e67]: Nigar Əliyeva
+            - generic [ref=f1e68]: Rəhbər · nümunə hesab
+          - link "İşçi görünüşü" [ref=f1e69] [cursor=pointer]:
+            - /url: /demo
+      - generic [ref=f1e73]: Nümunə məlumatlar · Ekrandakı işçi, davamiyyət və maaş göstəriciləri demo üçündür.
+      - generic [ref=f1e78]:
+        - paragraph [ref=f1e79]: 1 noyabr · Bazar günü
+        - heading "Salam, Nigar. Filialınızın iş günü belə gedir." [level=2] [ref=f1e80]
+        - generic [ref=f1e81]: Aylin Məmmədovanın davamiyyəti və müraciət vəziyyəti nümunə olaraq göstərilir.
+      - generic [ref=f1e86]:
+        - article [ref=f1e87]:
+          - generic [ref=f1e88]: İŞÇİLƏR
+          - strong [ref=f1e89]: "1"
+          - generic [ref=f1e90]: aktiv işçi
+        - article [ref=f1e91]:
+          - generic [ref=f1e92]: İŞDƏDİR
+          - strong [ref=f1e93]: "1"
+          - generic [ref=f1e94]: Aylin · giriş 09:00
+        - article [ref=f1e95]:
+          - generic [ref=f1e96]: GÖZLƏYƏN MÜRACİƏT
+          - strong [ref=f1e97]: "1"
+          - generic [ref=f1e98]: icazə sorğusu
+        - article [ref=f1e99]:
+          - generic [ref=f1e100]: BU AYIN ƏSAS MAAŞI
+          - strong [ref=f1e101]: 850 ₼
+          - generic [ref=f1e102]: nümunə tarif
+      - generic [ref=f1e103]:
+        - button "İşçilər Heyət, rol və maaş şərtləri" [ref=f1e104] [cursor=pointer]:
+          - strong [ref=f1e110]: İşçilər
+          - generic [ref=f1e111]: Heyət, rol və maaş şərtləri
+        - button "Növbələr Qrafik və dəyişikliklər" [ref=f1e115] [cursor=pointer]:
+          - strong [ref=f1e119]: Növbələr
+          - generic [ref=f1e120]: Qrafik və dəyişikliklər
+        - button "Müraciətlər İcazə, məzuniyyət və düzəlişlər" [ref=f1e124] [cursor=pointer]:
+          - strong [ref=f1e129]: Müraciətlər
+          - generic [ref=f1e130]: İcazə, məzuniyyət və düzəlişlər
+        - button "Hesablaşma Maaş, avans və əlavə saat" [ref=f1e134] [cursor=pointer]:
+          - strong [ref=f1e138]: Hesablaşma
+          - generic [ref=f1e139]: Maaş, avans və əlavə saat
+      - generic [ref=f1e143]:
+        - generic [ref=f1e144]:
+          - generic [ref=f1e145]: A
+          - generic [ref=f1e146]:
+            - strong [ref=f1e147]: Aylin Məmmədova
+            - generic [ref=f1e148]: İşçi · Nizami filialı
+        - generic [ref=f1e149]: İşdə · 09:00
+        - button "İşçiyə bax" [ref=f1e151] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=f1e160] [cursor=pointer]

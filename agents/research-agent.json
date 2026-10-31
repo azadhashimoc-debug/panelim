@@ -1,0 +1,10 @@
+{
+  "name": "research-agent",
+  "subtitle": "Web research paper",
+  "color": "yellow",
+  "capabilities": [
+    "Find content snippets for topic",
+    "20+ high quality, fresh quotes",
+    "Extract, format, organize"
+  ]
+}

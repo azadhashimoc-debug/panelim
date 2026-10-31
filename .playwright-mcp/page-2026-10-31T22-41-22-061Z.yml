@@ -1,0 +1,98 @@
+- generic [active] [ref=f3e1]:
+  - link "Məzmuna keç" [ref=f3e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f3e3]:
+    - complementary [ref=f3e4]:
+      - link "panelim.az" [ref=f3e5] [cursor=pointer]:
+        - /url: /
+      - paragraph [ref=f3e14]: ŞİRKƏT KABİNETİ
+      - navigation "Rəhbər naviqasiyası" [ref=f3e15]:
+        - button "İcmal" [ref=f3e16] [cursor=pointer]
+        - button "İşçilər" [ref=f3e23] [cursor=pointer]
+        - button "Növbələr" [ref=f3e29] [cursor=pointer]
+        - button "Müraciətlər" [ref=f3e33] [cursor=pointer]
+        - button "Hesablaşma" [ref=f3e38] [cursor=pointer]
+        - button "Tapşırıqlar" [ref=f3e42] [cursor=pointer]
+        - button "Hesabatlar" [ref=f3e47] [cursor=pointer]
+        - button "Abunə" [ref=f3e51] [cursor=pointer]
+      - button "Parametrlər" [ref=f3e55] [cursor=pointer]
+    - main [ref=f3e60]:
+      - generic [ref=f3e61]:
+        - generic [ref=f3e62]:
+          - text: NÜMUNƏ KAFE · NİZAMİ FİLİALI
+          - heading "Abunə" [level=1] [ref=f3e164]
+        - generic [ref=f3e64]:
+          - generic [ref=f3e65]: "N"
+          - generic [ref=f3e66]:
+            - strong [ref=f3e67]: Nigar Əliyeva
+            - generic [ref=f3e68]: Rəhbər · nümunə hesab
+          - link "İşçi görünüşü" [ref=f3e69] [cursor=pointer]:
+            - /url: /demo
+      - generic [ref=f3e165]: Abunə və paket limitləri · Aktiv ödənişli abunə.
+      - strong [ref=f3e254]: Təbriklər! BUSINESS paketi uğurla aktivləşdirildi (Sandbox).
+      - generic [ref=f3e169]:
+        - generic [ref=f3e170]:
+          - generic [ref=f3e171]:
+            - text: CARİ PAKET
+            - heading "BUSINESS Paket" [level=2] [ref=f3e172]
+          - generic [ref=f3e173]: Aktiv abunə (30 gün qalıb)
+        - generic [ref=f3e175]:
+          - generic [ref=f3e176]:
+            - generic [ref=f3e177]: AYLIQ QİYMƏT
+            - strong [ref=f3e178]: 29 ₼ / ay
+            - generic [ref=f3e179]: "Növbəti çıxarış: 30 gün sonra"
+          - generic [ref=f3e180]:
+            - generic [ref=f3e181]: AKTİV HEYƏT LİMİTİ
+            - strong [ref=f3e182]: 1 / 25 işçi
+            - generic [ref=f3e183]: Bütün filiallar üzrə ümumi
+        - generic [ref=f3e184]:
+          - paragraph [ref=f3e185]:
+            - strong [ref=f3e186]: "Filial limiti:"
+            - text: "1 / 2 filial aktivdir (Əlavə filial: +5 ₼ / ay, maks. 3)"
+          - paragraph [ref=f3e187]:
+            - strong [ref=f3e188]: "Daxildir:"
+            - text: QR və GPS davamiyyət, Növbə qrafiki, Maaş & avans uçotu, Filial hesabatları
+      - generic [ref=f3e189]:
+        - generic [ref=f3e191]:
+          - text: TARİFLƏR VƏ YENİLƏNMƏ
+          - heading "Paket Seçimi" [level=2] [ref=f3e192]
+        - generic [ref=f3e193]:
+          - generic [ref=f3e194] [cursor=pointer]:
+            - generic [ref=f3e195]:
+              - heading "Start" [level=3] [ref=f3e196]
+              - generic [ref=f3e197]: 15 ₼ / ay
+            - paragraph [ref=f3e198]: 10 işçiyə qədər · 1 filial
+            - list [ref=f3e199]:
+              - listitem [ref=f3e200]: Növbə cədvəli
+              - listitem [ref=f3e201]: İcazə və məzuniyyətlər
+              - listitem [ref=f3e202]: Excel çıxarışı
+          - generic [ref=f3e203] [cursor=pointer]:
+            - generic [ref=f3e204]:
+              - heading "Business" [level=3] [ref=f3e205]
+              - generic [ref=f3e206]: 29 ₼ / ay
+            - paragraph [ref=f3e207]: 25 işçiyə qədər · 2 filial
+            - list [ref=f3e208]:
+              - listitem [ref=f3e209]: Bütün Start imkanları
+              - listitem [ref=f3e210]: Daxili maaş və avans uçotu
+              - listitem [ref=f3e211]: Əlavə saat hesablanması
+              - listitem [ref=f3e212]: Tapşırıqlar və filial səlahiyyətləri
+          - generic [ref=f3e213] [cursor=pointer]:
+            - generic [ref=f3e214]:
+              - heading "Growth" [level=3] [ref=f3e215]
+              - generic [ref=f3e216]: 49 ₼ / ay
+            - paragraph [ref=f3e217]: 50 işçiyə qədər · 3 filial
+            - list [ref=f3e218]:
+              - listitem [ref=f3e219]: Bütün Business imkanları
+              - listitem [ref=f3e220]: Müqayisəli filial analitikası
+              - listitem [ref=f3e221]: Maksimal heyət həcmi
+        - generic [ref=f3e222]:
+          - generic [ref=f3e223]:
+            - strong [ref=f3e224]: "Əlavə filial (+5 ₼ / ay):"
+            - generic [ref=f3e225]: Maksimal 3 filiala qədər artırıla bilər
+          - generic [ref=f3e226]:
+            - button "-" [disabled] [ref=f3e227]
+            - generic [ref=f3e228]: "+0"
+            - button "+" [ref=f3e229] [cursor=pointer]
+        - button "Paketi seç və Abunə ol (29 ₼ / ay)" [ref=f3e231] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=f3e160] [cursor=pointer]
+  - alert [ref=f3e234]

@@ -1,0 +1,10 @@
+{
+  "name": "code-reviewer",
+  "subtitle": "Keep codebase clean",
+  "color": "green",
+  "capabilities": [
+    "PR approval and code review",
+    "Bug detection, style guidelines",
+    "PR comments with context"
+  ]
+}
