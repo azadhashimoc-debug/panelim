@@ -95,7 +95,7 @@ export function LoginForm({ configured }: { configured: boolean }) {
           </div>
           <Link className="auth-back" href="/">
             <ArrowLeft size={15} />
-            {tr("Ana səhifəyə qayıt")}
+            Ana səhifəyə qayıt
           </Link>
           <h1>{tr("Yenidən xoş gördük.")}</h1>
           <p>{tr("İş gününüzə başlamaq üçün hesabınıza daxil olun.")}</p>

@@ -1,0 +1,25 @@
+.next
+.next/
+.next-connected
+.next-preview
+.runtime
+.superpowers
+.playwright-mcp
+.claude
+Agentic Workflows
+Agentic Workflows/
+lead_system
+lead_system/
+node_modules
+tests
+*.log
+local_*.png
+*.png
+*.jpg
+!public/*.jpg
+!public/*.png
+*.html
+*.mjs
+*.js
+!next.config.ts
+docs

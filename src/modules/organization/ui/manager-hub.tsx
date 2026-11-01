@@ -24,7 +24,7 @@ import { api } from "@/shared/client/api";
 import { SubscriptionPanel } from "./subscription-panel";
 import { DEMO_MANAGER_DATA } from "./demo-data";
 import { DemoTourGuide } from "./demo-tour-guide";
-import type { ManagerHubData } from "@/shared/types";
+import type { ManagerHubData, SalaryAdvance } from "@/shared/types";
 import { date, formatMoney, time } from "@/shared/i18n/az";
 
 const modules = [
@@ -280,11 +280,13 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
 
     if (isDemo) {
       const amount = parseFloat((form.get("amountAZN") as string) || "0");
-      const newAdv = {
+      const newAdv: SalaryAdvance = {
         id: `demo-adv-${Date.now()}`,
+        company_id: data?.company.id || "demo-comp-1",
         membership_id:
           (form.get("membershipId") as string) || data?.team[0]?.id || "",
         amount_qepik: Math.round(amount * 100),
+        recorded_by: data?.member.id || "demo-m-owner",
         note: (form.get("note") as string) || "Avans ödənişi",
         issued_on:
           (form.get("date") as string) || new Date().toISOString().slice(0, 10),
@@ -327,8 +329,8 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
                 p.membership_id === memberId
                   ? {
                       ...p,
-                      is_closed: !p.is_closed,
-                      closed_at: p.is_closed ? null : new Date().toISOString(),
+                      status: p.status === "closed" ? "draft" : "closed",
+                      closed_at: p.status === "closed" ? null : new Date().toISOString(),
                     }
                   : p
               ),

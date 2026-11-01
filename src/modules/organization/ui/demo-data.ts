@@ -132,20 +132,20 @@ export const DEMO_MANAGER_DATA: ManagerHubData = {
     { id: "att-3", membership_id: "demo-m-emp3", branch_id: "demo-b-sahil", check_in: `${todayStr}T08:55:00Z`, check_out: null, work_date: todayStr, source: "qr" },
   ],
   leaveRequests: [
-    { id: "lr-1", company_id: "demo-comp-1", membership_id: "demo-m-emp4", starts_on: `${todayStr}`, ends_on: `${todayStr}`, leave_type: "paid", reason: "Ailə vəziyyəti ilə əlaqədar məzuniyyət", status: "pending", created_at: new Date().toISOString() },
-    { id: "lr-2", company_id: "demo-comp-1", membership_id: "demo-m-emp1", starts_on: "2026-10-20", ends_on: "2026-10-22", leave_type: "paid", reason: "Növbəti məzuniyyət", status: "approved", decision_reason: "Təsdiq edildi", created_at: "2026-10-18T10:00:00Z" },
+    { id: "lr-1", company_id: "demo-comp-1", membership_id: "demo-m-emp4", starts_on: `${todayStr}`, ends_on: `${todayStr}`, request_type: "leave", reason: "Ailə vəziyyəti ilə əlaqədar məzuniyyət", status: "pending", created_at: new Date().toISOString() },
+    { id: "lr-2", company_id: "demo-comp-1", membership_id: "demo-m-emp1", starts_on: "2026-10-20", ends_on: "2026-10-22", request_type: "leave", reason: "Növbəti məzuniyyət", status: "approved", decision_reason: "Təsdiq edildi", created_at: "2026-10-18T10:00:00Z" },
   ],
   corrections: [
     { id: "cr-1", membership_id: "demo-m-emp2", branch_id: "demo-b-nizami", attendance_id: null, requested_in: `${todayStr}T09:00:00Z`, requested_out: `${todayStr}T18:00:00Z`, reason: "Telefonun batareyası bitmişdi, vaxtında gəlmişdim.", status: "pending", decision_reason: null, created_at: new Date().toISOString() },
     { id: "cr-2", membership_id: "demo-m-emp5", branch_id: "demo-b-sahil", attendance_id: null, requested_in: "2026-10-30T14:00:00Z", requested_out: "2026-10-30T23:00:00Z", reason: "GPS siqnalı zəif idi", status: "approved", decision_reason: "Filial kamerası ilə təsdiqləndi", created_at: "2026-10-30T23:30:00Z" },
   ],
   advances: [
-    { id: "adv-1", membership_id: "demo-m-emp1", amount_qepik: 15000, issued_on: todayStr, note: "Avans tələbi", created_at: new Date().toISOString() },
-    { id: "adv-2", membership_id: "demo-m-emp3", amount_qepik: 10000, issued_on: todayStr, note: "Təcili avans", created_at: new Date().toISOString() },
+    { id: "adv-1", company_id: "demo-comp-1", recorded_by: "demo-m-owner", membership_id: "demo-m-emp1", amount_qepik: 15000, issued_on: todayStr, note: "Avans tələbi", created_at: new Date().toISOString() },
+    { id: "adv-2", company_id: "demo-comp-1", recorded_by: "demo-m-owner", membership_id: "demo-m-emp3", amount_qepik: 10000, issued_on: todayStr, note: "Təcili avans", created_at: new Date().toISOString() },
   ],
   payrollPeriods: [
-    { id: "pp-1", company_id: "demo-comp-1", membership_id: "demo-m-emp1", period_month: todayStr.slice(0, 7), gross_pay_qepik: 75000, net_pay_qepik: 60000, is_closed: false, closed_at: null, overtime_qepik: 2500, advances_qepik: 15000 },
-    { id: "pp-2", company_id: "demo-comp-1", membership_id: "demo-m-emp2", period_month: todayStr.slice(0, 7), gross_pay_qepik: 81000, net_pay_qepik: 81000, is_closed: false, closed_at: null, overtime_qepik: 4500, advances_qepik: 0 },
-    { id: "pp-3", company_id: "demo-comp-1", membership_id: "demo-m-emp3", period_month: todayStr.slice(0, 7), gross_pay_qepik: 70000, net_pay_qepik: 60000, is_closed: false, closed_at: null, overtime_qepik: 0, advances_qepik: 10000 },
+    { id: "pp-1", company_id: "demo-comp-1", membership_id: "demo-m-emp1", period_month: todayStr.slice(0, 7), base_pay_qepik: 75000, overtime_pay_qepik: 2500, advances_qepik: 15000, net_pay_qepik: 60000, status: "draft", closed_at: null, created_at: new Date().toISOString() },
+    { id: "pp-2", company_id: "demo-comp-1", membership_id: "demo-m-emp2", period_month: todayStr.slice(0, 7), base_pay_qepik: 81000, overtime_pay_qepik: 4500, advances_qepik: 0, net_pay_qepik: 81000, status: "draft", closed_at: null, created_at: new Date().toISOString() },
+    { id: "pp-3", company_id: "demo-comp-1", membership_id: "demo-m-emp3", period_month: todayStr.slice(0, 7), base_pay_qepik: 70000, overtime_pay_qepik: 0, advances_qepik: 10000, net_pay_qepik: 60000, status: "draft", closed_at: null, created_at: new Date().toISOString() },
   ],
 };
