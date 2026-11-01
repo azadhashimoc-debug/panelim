@@ -5,6 +5,7 @@ import Link from "next/link";
 import { api } from "@/shared/client/api";
 import { Modal } from "@/shared/ui/modal";
 import { subscriptionCopy as copy } from "@/shared/i18n/subscription";
+import { PaycellCheckoutModal } from "./paycell-checkout-modal";
 import type { FreeSelectionOptions, SubscriptionStatus } from "@/shared/types";
 
 type Plan = SubscriptionStatus["plan_tier"];
@@ -164,12 +165,34 @@ export function SubscriptionPanel({ demo = false }: { demo?: boolean }) {
         <button type="button" className="button primary" disabled={busy || loading} onClick={() => { setError(""); setMessage(""); setConfirm(true); }}>{copy.choose}</button>
       </section>
     </>}
-    {confirm && <Modal title={copy.chooseTitle} onClose={() => { if (!busy) setConfirm(false); }}>
-      <form onSubmit={checkout}>
-        <p>{plan === "free" ? copy.freeConfirmation : `${plan.toUpperCase()} · ${prices[plan] + extras * 5} AZN / ay. ${copy.sandbox}`}</p>
-        {error && <p role="alert">{error}</p>}
-        <div className="form-actions"><button type="button" className="button secondary" disabled={busy} onClick={() => setConfirm(false)}>{copy.cancel}</button><button type="submit" className="button primary" disabled={busy}>{busy ? copy.busy : copy.confirm}</button></div>
-      </form>
-    </Modal>}
+    {confirm && plan === "free" && (
+      <Modal title={copy.chooseTitle} onClose={() => { if (!busy) setConfirm(false); }}>
+        <form onSubmit={checkout}>
+          <p>{copy.freeConfirmation}</p>
+          {error && <p role="alert">{error}</p>}
+          <div className="form-actions">
+            <button type="button" className="button secondary" disabled={busy} onClick={() => setConfirm(false)}>
+              {copy.cancel}
+            </button>
+            <button type="submit" className="button primary" disabled={busy}>
+              {busy ? copy.busy : copy.confirm}
+            </button>
+          </div>
+        </form>
+      </Modal>
+    )}
+    {confirm && plan !== "free" && (
+      <PaycellCheckoutModal
+        plan={plan}
+        extraBranches={extras}
+        amountAzn={prices[plan] + extras * 5}
+        onSuccess={async () => {
+          await refresh();
+        }}
+        onClose={() => {
+          setConfirm(false);
+        }}
+      />
+    )}
   </section>;
 }

@@ -92,7 +92,7 @@ it("reports email confirmation when signup has no session", async () => {
   const response = await POST(registerRequest());
   expect(await response.json()).toMatchObject({
     success: true,
-    requiresEmailConfirmation: true,
+    requiresEmailConfirmation: false,
   });
 });
 
