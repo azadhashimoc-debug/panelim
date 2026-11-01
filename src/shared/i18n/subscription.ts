@@ -28,9 +28,9 @@ export const subscriptionCopy = {
   confirm: "Dəyişikliyi təsdiqlə",
   cancel: "Ləğv et",
   busy: "İcra edilir…",
-  sandbox: "Ödənişlər sandbox rejimindədir; real pul tutulmur.",
+  sandbox: "Ödənişlər Paycell təhlükəsiz ödəniş şlüzü vasitəsilə həyata keçirilir.",
   freeConfirmation: "Free paketinə keçid: ən çox 3 aktiv hesab və 1 filial. Limit aşılarsa aktiv qalacaq heyəti və filialı ayrıca seçəcəksiniz.",
   freeSaved: "Free paketinə keçid saxlanıldı.",
-  paidSaved: "Sandbox abunəliyi saxlanıldı.",
+  paidSaved: "Abunəlik uğurla yeniləndi.",
   upgradeNotice: "Limitləri aşan aktiv qeydləriniz var. Daha uyğun paket seçin.",
 } as const;
