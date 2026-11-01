@@ -184,7 +184,7 @@ export function RegisterForm({
               <CheckCircle2 size={36} style={{ margin: "0 auto 10px" }} />
               <h3 style={{ margin: "0 0 8px" }}>Təbriklər! Şirkətiniz qeydiyyatdan keçdi</h3>
               <p style={{ margin: 0, fontSize: "0.9rem" }}>
-                {requiresConfirmation ? "E-poçtunuza göndərilən təsdiq keçidini açın, sonra hesabınıza daxil olun." : "14 günlük Business sınaq müddəti aktivləşdirildi. Rəhbər kabinetinə yönləndirilirsiniz…"}
+                {requiresConfirmation ? "E-poçtunuza göndərilən təsdiq keçidini açın, sonra hesabınıza daxil olun." : "Daimi Free lisenziyanız aktivləşdirildi. Rəhbər kabinetinə yönləndirilirsiniz…"}
               </p>
             </div>
           ) : (
