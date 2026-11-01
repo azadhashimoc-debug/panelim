@@ -16,12 +16,20 @@ import {
 import { Brand } from "@/shared/ui/brand";
 import { api } from "@/shared/client/api";
 
-export function RegisterForm({ configured }: { configured: boolean }) {
+export function RegisterForm({
+  configured,
+  pendingUser,
+}: {
+  configured: boolean;
+  pendingUser?: { id: string; email?: string; displayName?: string } | null;
+}) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [requiresConfirmation, setRequiresConfirmation] = useState(false);
+  const isResuming = Boolean(pendingUser);
 
   async function submit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -45,31 +53,59 @@ export function RegisterForm({ configured }: { configured: boolean }) {
       setBusy(false);
       return;
     }
-    if (!password || password.length < 6) {
+
+    if (!isResuming && (!password || password.length < 6)) {
       setError("Şifrə ən azı 6 simvoldan ibarət olmalıdır.");
       setBusy(false);
       return;
     }
 
     try {
-      await api("/api/auth", {
-        action: "register",
-        email,
-        password,
-        displayName,
-        companyName,
-        branchName: branchName || "Baş Filial",
-      });
+      if (isResuming) {
+        await api<{ requiresEmailConfirmation: boolean }>("/api/auth", {
+          action: "complete_setup",
+          displayName,
+          companyName,
+          branchName: branchName || "Baş Filial",
+        });
+        setSuccess(true);
+        setRequiresConfirmation(false);
+      } else {
+        const result = await api<{
+          requiresEmailConfirmation: boolean;
+          recovered?: boolean;
+        }>("/api/auth", {
+          action: "register",
+          email,
+          password,
+          displayName,
+          companyName,
+          branchName: branchName || "Baş Filial",
+        });
 
-      setSuccess(true);
+        setSuccess(true);
+        setRequiresConfirmation(result.requiresEmailConfirmation);
+        if (result.requiresEmailConfirmation) return;
+      }
+
       setTimeout(() => {
         router.replace("/rehber");
         router.refresh();
       }, 1500);
-    } catch (e: any) {
+    } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Qeydiyyat tamamlanmadı.");
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function logout() {
+    try {
+      await api("/api/auth", { action: "logout" });
+      router.replace("/giris");
+      router.refresh();
+    } catch {
+      router.replace("/giris");
     }
   }
 
@@ -91,7 +127,7 @@ export function RegisterForm({ configured }: { configured: boolean }) {
           <div className="auth-features">
             <span>
               <Sparkles size={16} />
-              14 günlük Business sınaq
+              Daimi Free lisenziya (0 AZN)
             </span>
             <span>
               <QrCode size={16} />
@@ -99,7 +135,7 @@ export function RegisterForm({ configured }: { configured: boolean }) {
             </span>
             <span>
               <Building2 size={16} />
-              25 işçi və 2 filial
+              3 işçiyə qədər həmişəlik Pulsuz
             </span>
             <span>
               <ShieldCheck size={16} />
@@ -122,8 +158,12 @@ export function RegisterForm({ configured }: { configured: boolean }) {
             Ana səhifəyə qayıt
           </Link>
 
-          <h1>Yeni şirkət qeydiyyatı</h1>
-          <p>14 günlük ödənişsiz sınaqla şirkət hesabınızı indi açın.</p>
+          <h1>{isResuming ? "Şirkət qurulumuna davam edin" : "Yeni şirkət qeydiyyatı"}</h1>
+          <p>
+            {isResuming
+              ? `Hesabınız hazırdır (${pendingUser?.email}). Şirkət və ilk filial məlumatlarınızı tamamlayaraq rəhbər kabinetinə keçin.`
+              : "Daimi Free lisenziyası ilə şirkət hesabınızı dərhal açın."}
+          </p>
 
           {!configured && (
             <div className="auth-config">
@@ -144,7 +184,7 @@ export function RegisterForm({ configured }: { configured: boolean }) {
               <CheckCircle2 size={36} style={{ margin: "0 auto 10px" }} />
               <h3 style={{ margin: "0 0 8px" }}>Təbriklər! Şirkətiniz qeydiyyatdan keçdi</h3>
               <p style={{ margin: 0, fontSize: "0.9rem" }}>
-                14 günlük Business sınaq müddəti aktivləşdirildi. Rəhbər kabinetinə yönləndirilirsiniz…
+                {requiresConfirmation ? "E-poçtunuza göndərilən təsdiq keçidini açın, sonra hesabınıza daxil olun." : "14 günlük Business sınaq müddəti aktivləşdirildi. Rəhbər kabinetinə yönləndirilirsiniz…"}
               </p>
             </div>
           ) : (
@@ -167,6 +207,7 @@ export function RegisterForm({ configured }: { configured: boolean }) {
                     name="displayName"
                     type="text"
                     required
+                    defaultValue={pendingUser?.displayName || ""}
                     placeholder="Nigar Əliyeva"
                     maxLength={100}
                   />
@@ -184,41 +225,45 @@ export function RegisterForm({ configured }: { configured: boolean }) {
                 </label>
               </div>
 
-              <label className="field">
-                Rəsmi e-poçt ünvanı
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="username"
-                  placeholder="rehber@biznes.az"
-                  maxLength={254}
-                />
-              </label>
+              {!isResuming && (
+                <>
+                  <label className="field">
+                    Rəsmi e-poçt ünvanı
+                    <input
+                      name="email"
+                      type="email"
+                      required
+                      autoComplete="username"
+                      placeholder="rehber@biznes.az"
+                      maxLength={254}
+                    />
+                  </label>
 
-              <label className="field">
-                Şifrə (ən azı 6 simvol)
-                <span className="password-wrap" style={{ position: "relative", display: "block" }}>
-                  <input
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    required
-                    autoComplete="new-password"
-                    minLength={6}
-                    maxLength={256}
-                    placeholder="Şifrənizi təyin edin"
-                  />
-                  <button
-                    className="icon-button"
-                    type="button"
-                    style={{ position: "absolute", right: 4, top: 4 }}
-                    aria-label={showPassword ? "Şifrəni gizlət" : "Şifrəni göstər"}
-                    onClick={() => setShowPassword((v) => !v)}
-                  >
-                    {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
-                  </button>
-                </span>
-              </label>
+                  <label className="field">
+                    Şifrə (ən azı 6 simvol)
+                    <span className="password-wrap" style={{ position: "relative", display: "block" }}>
+                      <input
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        required
+                        autoComplete="new-password"
+                        minLength={6}
+                        maxLength={256}
+                        placeholder="Şifrənizi təyin edin"
+                      />
+                      <button
+                        className="icon-button"
+                        type="button"
+                        style={{ position: "absolute", right: 4, top: 4 }}
+                        aria-label={showPassword ? "Şifrəni gizlət" : "Şifrəni göstər"}
+                        onClick={() => setShowPassword((v) => !v)}
+                      >
+                        {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                      </button>
+                    </span>
+                  </label>
+                </>
+              )}
 
               {error && (
                 <p className="form-error" role="alert">
@@ -231,17 +276,45 @@ export function RegisterForm({ configured }: { configured: boolean }) {
                 className="button primary full"
                 disabled={busy || !configured}
               >
-                {busy ? "Qeydiyyat aparılır…" : "14 günlük sınağı başlat"}
+                {busy
+                  ? isResuming
+                    ? "Qurulum tamamlanır…"
+                    : "Qeydiyyat aparılır…"
+                  : isResuming
+                    ? "Qurulumu tamamla"
+                    : "Ödənişsiz başla"}
                 <ArrowRight size={17} />
               </button>
             </form>
           )}
 
           <div style={{ marginTop: 20, textAlign: "center", fontSize: "0.88rem", color: "#6b778c" }}>
-            Artıq hesabınız var?{" "}
-            <Link href="/giris" style={{ color: "#0052cc", fontWeight: 600 }}>
-              Daxil olun
-            </Link>
+            {isResuming ? (
+              <>
+                Fərqli hesabla daxil olmaq istəyirsiniz?{" "}
+                <button
+                  type="button"
+                  onClick={logout}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#0052cc",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    padding: 0,
+                  }}
+                >
+                  Çıxış edin
+                </button>
+              </>
+            ) : (
+              <>
+                Artıq hesabınız var?{" "}
+                <Link href="/giris" style={{ color: "#0052cc", fontWeight: 600 }}>
+                  Daxil olun
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </section>

@@ -92,6 +92,13 @@ export type SubscriptionStatus = {
   is_limit_exceeded: boolean;
 };
 
+export type FreeSelectionOptions = {
+  status: SubscriptionStatus;
+  ownerMembershipId: string;
+  members: Pick<Membership, "id" | "display_name" | "role">[];
+  branches: Pick<Branch, "id" | "name">[];
+};
+
 export type PaymentTransaction = {
   id: string;
   company_id: string;
@@ -114,5 +121,20 @@ export type Workspace = {
   advances?: SalaryAdvance[];
   subscription?: SubscriptionStatus;
   companyName: string;
+};
+
+export type ManagerHubData = {
+  company: { id: string; name: string };
+  member: Membership;
+  branches: (Branch & { plan_disabled_at?: string | null })[];
+  team: (Membership & { plan_disabled_at?: string | null })[];
+  employmentTerms: (EmploymentTerms & { id: string; company_id: string; membership_id: string })[];
+  branchAssignments: { membership_id: string; branch_id: string; company_id: string }[];
+  shifts: (Shift & { company_id: string; membership_id: string })[];
+  leaveRequests: (LeaveRequest & { company_id: string; membership_id: string; decision_reason?: string | null })[];
+  corrections: Correction[];
+  advances: SalaryAdvance[];
+  payrollPeriods: (PayrollPeriod & { overtime_qepik?: number; advances_qepik?: number })[];
+  todayAttendance: Attendance[];
 };
 

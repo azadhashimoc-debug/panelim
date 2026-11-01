@@ -1,455 +1,1410 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { BarChart3, Building2, CalendarDays, ClipboardList, CreditCard, Download, LayoutDashboard, ReceiptText, Settings, UsersRound, CheckCircle2, ArrowUpRight, Bell } from "lucide-react";
+import {
+  ArrowUpRight,
+  BarChart3,
+  Bell,
+  Building2,
+  CalendarDays,
+  CheckCircle2,
+  ClipboardList,
+  CreditCard,
+  Download,
+  LayoutDashboard,
+  Plus,
+  ReceiptText,
+  Settings,
+  UsersRound,
+} from "lucide-react";
 import { Brand } from "@/shared/ui/brand";
+import { Modal } from "@/shared/ui/modal";
+import { api } from "@/shared/client/api";
+import { SubscriptionPanel } from "./subscription-panel";
+import { DEMO_MANAGER_DATA } from "./demo-data";
+import { DemoTourGuide } from "./demo-tour-guide";
+import type { ManagerHubData } from "@/shared/types";
+import { date, formatMoney, time } from "@/shared/i18n/az";
 
 const modules = [
   ["overview", "İcmal", LayoutDashboard, "Bu günün iş axını"],
-  ["team", "İşçilər", UsersRound, "Heyət, rol və maaş şərtləri"],
-  ["schedule", "Növbələr", CalendarDays, "Qrafik və dəyişikliklər"],
-  ["requests", "Müraciətlər", ClipboardList, "İcazə, məzuniyyət və düzəlişlər"],
-  ["payroll", "Hesablaşma", ReceiptText, "Maaş, avans və əlavə saat"],
+  ["team", "İşçilər", UsersRound, "Heyət, rol və filiallar"],
+  ["schedule", "Növbələr", CalendarDays, "Qrafik və növbələr"],
+  ["requests", "Müraciətlər", ClipboardList, "İcazə və düzəliş qərarları"],
+  ["payroll", "Hesablaşma", ReceiptText, "Maaş, avans və yekun hesab"],
   ["tasks", "Tapşırıqlar", CheckCircle2, "Gündəlik işlər və nəticələr"],
   ["reports", "Hesabatlar", BarChart3, "Filial və davamiyyət göstəriciləri"],
   ["plan", "Abunə", CreditCard, "Paket və istifadə limitləri"],
 ] as const;
-export function ManagerHub() {
+
+export function ManagerHub({ demo = false }: { demo?: boolean }) {
+  const [isDemo, setIsDemo] = useState(demo);
+  const [data, setData] = useState<ManagerHubData | null>(demo ? DEMO_MANAGER_DATA : null);
+  const [loading, setLoading] = useState(!demo);
+  const [error, setError] = useState("");
   const [active, setActive] = useState<(typeof modules)[number][0]>("overview");
-  const current = modules.find(([id]) => id === active)!;
-  const Icon = current[2];
-  return <div className="hub-shell">
-    <aside className="hub-sidebar"><Link className="brand-link" href="/"><Brand /></Link><p>ŞİRKƏT KABİNETİ</p>
-      <nav aria-label="Rəhbər naviqasiyası">{modules.map(([id, label, ItemIcon]) => <button key={id} className={active === id ? "hub-nav active" : "hub-nav"} onClick={() => setActive(id)}><ItemIcon size={19}/><span>{label}</span></button>)}</nav>
-      <button className="hub-nav"><Settings size={19}/><span>Parametrlər</span></button>
-    </aside>
-    <main className="hub-main"><header className="hub-top"><div><small>NÜMUNƏ KAFE · NİZAMİ FİLİALI</small><h1>{current[1]}</h1></div><div className="hub-profile"><span className="hub-profile-avatar">N</span><span><strong>Nigar Əliyeva</strong><small>Rəhbər · nümunə hesab</small></span></div></header>
-      {active === "overview" ? <Overview onSelect={setActive}/> : active === "team" ? <TeamSample/> : active === "schedule" ? <ScheduleSample/> : active === "requests" ? <RequestsSample/> : active === "payroll" ? <PayrollSample/> : active === "tasks" ? <TasksSample/> : active === "reports" ? <ReportsSample/> : active === "plan" ? <PlanSample/> : <ModulePlaceholder icon={<Icon size={25}/>} title={current[1]} description={current[3]}/>}
-    </main>
-  </div>;
-}
-function Overview({ onSelect }: { onSelect: (v: (typeof modules)[number][0]) => void }) { return <>
-  <div className="hub-demo-note"><Bell size={16}/> Nümunə məlumatlar · Ekrandakı işçi, davamiyyət və maaş göstəriciləri demo üçündür.</div>
-  <section className="hub-hero"><div><p>1 noyabr · Bazar günü</p><h2>Salam, Nigar. Filialınızın iş günü belə gedir.</h2><span>Aylin Məmmədovanın davamiyyəti və müraciət vəziyyəti nümunə olaraq göstərilir.</span></div><Building2 size={52}/></section>
-  <section className="hub-metrics"><article><small>İŞÇİLƏR</small><strong>1</strong><span>aktiv işçi</span></article><article><small>İŞDƏDİR</small><strong>1</strong><span>Aylin · giriş 09:00</span></article><article><small>GÖZLƏYƏN MÜRACİƏT</small><strong>1</strong><span>icazə sorğusu</span></article><article><small>BU AYIN ƏSAS MAAŞI</small><strong>850 ₼</strong><span>nümunə tarif</span></article></section>
-  <section className="hub-actions">{modules.slice(1, 5).map(([id,label,ItemIcon,description]) => <button key={id} onClick={() => onSelect(id)}><span><ItemIcon size={19}/></span><strong>{label}</strong><small>{description}</small><ArrowUpRight size={16}/></button>)}</section>
-  <section className="hub-worker-row"><div><span className="hub-profile-avatar">A</span><div><strong>Aylin Məmmədova</strong><small>İşçi · Nizami filialı</small></div></div><span className="hub-presence"><i/> İşdə · 09:00</span><button onClick={() => onSelect("team")}>İşçiyə bax <ArrowUpRight size={15}/></button></section>
-</> }
-function TeamSample() { return <><div className="hub-demo-note"><Bell size={16}/> Nümunə işçi profili · Bu məlumatlar real işçi hesabına aid deyil.</div><section className="hub-data-panel"><div className="hub-panel-title"><div><small>NÜMUNƏ KAFE · 1 AKTİV İŞÇİ</small><h2>İşçilər</h2></div><button className="button primary compact" disabled title="Demo rejimində hesab yaradılmır">+ İşçi əlavə et</button></div><div className="hub-team-row"><span className="hub-profile-avatar">A</span><div><strong>Aylin Məmmədova</strong><small>İşçi · Nizami filialı · İşə başlama: 14 aprel 2025</small></div><span>850 ₼ / ay</span><b className="hub-presence"><i/> Aktiv</b></div></section><section className="hub-data-panel"><h3>Maaş şərtləri</h3><p>Aylıq əsas maaş: <strong>850,00 ₼</strong></p><p>Maaş günü: <strong>hər ayın 5-i</strong></p><small>Nümunə tarif · dəyişiklik üçün işçi profilini açın</small></section></> }
-function ScheduleSample() { return <><div className="hub-demo-note"><Bell size={16}/> Nümunə növbə qrafiki · Qrafik və dəyişikliklər demo rejimindədir.</div><section className="hub-data-panel"><div className="hub-panel-title"><div><small>NİZAMİ FİLİALI · AKTİV NÖVBƏLƏR</small><h2>Növbələr və İş Qrafiki</h2></div><button className="button primary compact" disabled title="Demo rejimində növbə yaradılmır">+ Növbə əlavə et</button></div><div className="hub-team-row"><span className="hub-profile-avatar">A</span><div><strong>Aylin Məmmədova</strong><small>Səhər növbəsi · 09:00–18:00 (1 saat fasilə) · B.e – Cümə</small></div><span>Həftəlik 40 saat</span><b className="hub-presence"><i/> Təyin edilib</b></div></section><section className="hub-data-panel"><h3>Növbə qaydaları</h3><p>Gecəni keçən növbə başladığı günə bağlanır.</p><p>Növbə dəyişikliyi yalnız rəhbər təsdiqindən sonra qüvvəyə minir.</p><small>Dəyişiklik müraciətləri «Müraciətlər» bölməsindən idarə olunur</small></section></> }
-function RequestsSample() { return <><div className="hub-demo-note"><Bell size={16}/> Nümunə müraciət · Qərarlar demo rejimində saxlanılmır.</div><section className="hub-data-panel"><div className="hub-panel-title"><div><small>NİZAMİ FİLİALI</small><h2>Gözləyən müraciətlər</h2></div><span className="hub-count">1</span></div><article className="hub-request"><span className="hub-profile-avatar">A</span><div><strong>Aylin Məmmədova · İcazə</strong><p>12 noyabr, 14:00–16:00</p><small>Şəxsi iş üçün 2 saatlıq icazə</small></div><span className="hub-pending">Gözləyir</span></article><div className="hub-decision"><button className="button primary compact" disabled title="Demo rejimində qərar saxlanılmır">Təsdiqlə</button><button className="button secondary compact" disabled title="Demo rejimində qərar saxlanılmır">Rədd et</button><small>Qərar səbəbi tələb olunur</small></div></section></> }
-function PayrollSample() {
-  const [advances, setAdvances] = useState([
-    { id: 1, date: "15 oktyabr", amount: 100, note: "Məişət xərcləri üçün" },
-  ]);
-  const [showAdvanceModal, setShowAdvanceModal] = useState(false);
-  const [advAmount, setAdvAmount] = useState("");
-  const [advNote, setAdvNote] = useState("");
-  const [closed, setClosed] = useState(false);
 
-  const basePay = 850;
-  const overtime = 45;
-  const totalAdvances = advances.reduce((sum, a) => sum + a.amount, 0);
-  const netPay = Math.max(0, basePay + overtime - totalAdvances);
+  // Modal dialog states
+  const [modal, setModal] = useState<
+    "addEmployee" | "addBranch" | "addShift" | "addAdvance" | "decision" | null
+  >(null);
+  const [decisionTarget, setDecisionTarget] = useState<{
+    type: "leave" | "correction";
+    id: string;
+    decision: "approved" | "rejected";
+    title: string;
+  } | null>(null);
 
-  const handleAddAdvance = (e: React.FormEvent) => {
+  const [busy, setBusy] = useState(false);
+  const [actionError, setActionError] = useState("");
+  const [selectedMemberId, setSelectedMemberId] = useState<string>(
+    demo ? DEMO_MANAGER_DATA.team[0]?.id || "" : ""
+  );
+
+  async function loadData(signal?: AbortSignal) {
+    if (isDemo) return;
+    try {
+      const res = await api<ManagerHubData>("/api/rehber", { signal });
+      if (signal?.aborted) return;
+      setData(res);
+      setError("");
+      if (res.team.length > 0 && !selectedMemberId) {
+        setSelectedMemberId(res.team[0].id);
+      }
+    } catch (err: unknown) {
+      if (signal?.aborted) return;
+      setData(DEMO_MANAGER_DATA);
+      setIsDemo(true);
+      setError("");
+    } finally {
+      if (!signal?.aborted) setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (isDemo) {
+      setData(DEMO_MANAGER_DATA);
+      setLoading(false);
+      return;
+    }
+
+    let active = true;
+    const controller = new AbortController();
+
+    api<ManagerHubData>("/api/rehber", undefined, controller.signal)
+      .then((res) => {
+        if (!active) return;
+        setData(res);
+        setLoading(false);
+        setError("");
+        if (res.team.length > 0) {
+          setSelectedMemberId((prev) => prev || res.team[0].id);
+        }
+      })
+      .catch((err: unknown) => {
+        if (!active || controller.signal.aborted) return;
+        setData(DEMO_MANAGER_DATA);
+        setIsDemo(true);
+        setError("");
+        setLoading(false);
+      });
+
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [isDemo]);
+
+  async function handleAddEmployee(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const val = parseFloat(advAmount);
-    if (!val || val <= 0) return;
-    setAdvances([...advances, { id: Date.now(), date: "1 noyabr", amount: val, note: advNote || "Avans ödənişi" }]);
-    setShowAdvanceModal(false);
-    setAdvAmount("");
-    setAdvNote("");
-  };
+    setBusy(true);
+    setActionError("");
+    const form = new FormData(e.currentTarget);
 
-  return (
-    <>
-      <div className="hub-demo-note"><Bell size={16}/> Nümunə maaş və avans uçotu · AZN qəpik dəqiqliyi ilə daxili hesablaşma.</div>
-      <section className="hub-data-panel">
-        <div className="hub-panel-title">
-          <div><small>AYLIQ HESABLAŞMA · NOYABR 2026</small><h2>Aylin Məmmədova</h2></div>
-          <span className={closed ? "hub-presence" : "hub-pending"}><i/> {closed ? "Ay bağlanıb" : "Cari hesab"}</span>
-        </div>
-        <div className="hub-metrics" style={{ marginTop: 16 }}>
-          <article><small>ƏSAS MAAŞ</small><strong>{basePay.toFixed(2)} ₼</strong><span>Sabit tarif</span></article>
-          <article><small>ƏLAVƏ SAAT (3 S)</small><strong style={{ color: "#236c60" }}>+{overtime.toFixed(2)} ₼</strong><span>Təsdiqlənib</span></article>
-          <article><small>AVANSLAR</small><strong style={{ color: "#c0392b" }}>-{totalAdvances.toFixed(2)} ₼</strong><span>{advances.length} ödəniş</span></article>
-          <article style={{ background: "#edf7f3", borderColor: "#c3e6dc" }}><small style={{ color: "#173d40" }}>YEKUN ÖDƏNİLƏCƏK</small><strong style={{ color: "#173d40" }}>{netPay.toFixed(2)} ₼</strong><span>Növbəti maaş: 5 noyabr</span></article>
-        </div>
-        <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
-          <button className="button primary compact" onClick={() => setShowAdvanceModal(true)} disabled={closed}>+ Avans ver</button>
-          <button className="button secondary compact" onClick={() => setClosed(!closed)}>{closed ? "Hesabı yenidən aç" : "Noyabr ayını bağla"}</button>
-        </div>
-      </section>
-
-      <section className="hub-data-panel">
-        <div className="hub-panel-title">
-          <div><small>BU AYIN ÖDƏNİŞLƏRİ</small><h2>Verilmiş Avanslar</h2></div>
-          <span className="hub-count">{advances.length} qeyd</span>
-        </div>
-        {advances.map((a) => (
-          <div key={a.id} className="hub-team-row">
-            <div>
-              <strong>{a.amount.toFixed(2)} ₼ avans</strong>
-              <small>Tarix: {a.date} · Qeyd: {a.note}</small>
-            </div>
-            <span style={{ color: "#c0392b", fontWeight: 700 }}>-{a.amount.toFixed(2)} ₼</span>
-          </div>
-        ))}
-      </section>
-
-      {showAdvanceModal && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 100, display: "grid", placeItems: "center", padding: 20 }}>
-          <div style={{ background: "#fff", padding: 24, borderRadius: 16, width: "min(400px, 100%)", boxShadow: "0 10px 40px rgba(0,0,0,0.2)" }}>
-            <h3 style={{ fontSize: 18, marginBottom: 16 }}>Yeni Avans Qeydi</h3>
-            <form onSubmit={handleAddAdvance} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12 }}>
-                Məbləğ (AZN)
-                <input type="number" step="0.01" min="1" max="1000" required value={advAmount} onChange={(e) => setAdvAmount(e.target.value)} placeholder="Məs. 50" style={{ padding: 10, border: "1px solid #dfe6e4", borderRadius: 8 }} />
-              </label>
-              <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12 }}>
-                Qeyd
-                <input type="text" value={advNote} onChange={(e) => setAdvNote(e.target.value)} placeholder="Səbəb və ya qeyd" style={{ padding: 10, border: "1px solid #dfe6e4", borderRadius: 8 }} />
-              </label>
-              <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 8 }}>
-                <button type="button" className="button secondary compact" onClick={() => setShowAdvanceModal(false)}>İmtina</button>
-                <button type="submit" className="button primary compact">Avansı təsdiqlə</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
-function TasksSample() {
-  const [tasks, setTasks] = useState([
-    { id: 1, title: "Kassa açılışı və ilkin çek hesabatı", assignee: "Aylin Məmmədova", done: true, due: "09:15" },
-    { id: 2, title: "Səhər vitrin və soyuducu dərəcələrinin qeydi", assignee: "Aylin Məmmədova", done: true, due: "10:00" },
-    { id: 3, title: "Tədarükçüdən süd və qəhvə dənələrinin qəbulu", assignee: "Aylin Məmmədova", done: false, due: "15:30" },
-    { id: 4, title: "Axşam kassa bağlama və Z-hesabat", assignee: "Aylin Məmmədova", done: false, due: "18:00" },
-  ]);
-  const toggle = (id: number) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
-  };
-  return (
-    <>
-      <div className="hub-demo-note"><Bell size={16}/> Nümunə tapşırıqlar · İşçilərə gündəlik və növbəlik tapşırıq təyinatı.</div>
-      <section className="hub-data-panel">
-        <div className="hub-panel-title">
-          <div><small>GÜNDƏLİK VƏZİFƏLƏR · NİZAMİ FİLİALI</small><h2>Tapşırıqlar</h2></div>
-          <span className="hub-count">{tasks.filter((t) => t.done).length} / {tasks.length} tamamlanıb</span>
-        </div>
-        {tasks.map((task) => (
-          <div key={task.id} className="hub-team-row" style={{ cursor: "pointer" }} onClick={() => toggle(task.id)}>
-            <input type="checkbox" checked={task.done} readOnly style={{ width: 18, height: 18, accentColor: "#10b6a7" }} />
-            <div>
-              <strong style={{ textDecoration: task.done ? "line-through" : "none", color: task.done ? "#738182" : "inherit" }}>{task.title}</strong>
-              <small>Təyin edilib: {task.assignee} · İcra vaxtı: {task.due}</small>
-            </div>
-            <b className={task.done ? "hub-presence" : "hub-pending"}>{task.done ? "Tamamlandı" : "Gözləyir"}</b>
-          </div>
-        ))}
-      </section>
-    </>
-  );
-}
-function ReportsSample() {
-  return (
-    <>
-      <div className="hub-demo-note"><Bell size={16}/> Nümunə hesabat · Filial və davamiyyət göstəriciləri demo üçündür.</div>
-      <section className="hub-metrics">
-        <article><small>DAVAMİYYƏT FAİZİ</small><strong>98%</strong><span>son 30 gündə</span></article>
-        <article><small>ÜMUMİ İŞ SAATI</small><strong>168 s</strong><span>plan: 160 s</span></article>
-        <article><small>GECİKMƏLƏR</small><strong>0 dəq</strong><span>intizam qaydasında</span></article>
-        <article><small>İCAZƏ / MƏZUNİYYƏT</small><strong>2 saat</strong><span>təsdiqlənmiş icazə</span></article>
-      </section>
-      <section className="hub-data-panel" style={{ marginTop: 16 }}>
-        <div className="hub-panel-title">
-          <div><small>FİLİAL MÜQAYİSƏSİ</small><h2>Filial Göstəriciləri</h2></div>
-          <button className="button secondary compact" title="Davamiyyət hesabatını yüklə"><Download size={14}/> Excel çıxarışı</button>
-        </div>
-        <div className="hub-team-row">
-          <div>
-            <strong>Nizami filialı</strong>
-            <small>1 aktiv işçi · Orta gündəlik iş vaxtı: 8.4 saat</small>
-          </div>
-          <span>Davamiyyət: 98%</span>
-          <b className="hub-presence"><i/> Normal</b>
-        </div>
-      </section>
-    </>
-  );
-}
-function PlanSample() {
-  const [selectedPlan, setSelectedPlan] = useState<"free" | "start" | "business" | "growth">("business");
-  const [extraBranches, setExtraBranches] = useState(0);
-  const [status, setStatus] = useState<"trialing" | "active">("trialing");
-  const [daysLeft, setDaysLeft] = useState(11);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [successMsg, setSuccessMsg] = useState("");
-  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
-
-  const planPrices = {
-    free: 0,
-    start: 15,
-    business: 29 + extraBranches * 5,
-    growth: 49,
-  };
-
-  const planEmployees = {
-    free: 3,
-    start: 10,
-    business: 25,
-    growth: 50,
-  };
-
-  const planBranches = {
-    free: 1,
-    start: 1,
-    business: 2 + extraBranches,
-    growth: 3,
-  };
-
-  const handleCheckout = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsProcessing(true);
-    setSuccessMsg("");
+    if (isDemo) {
+      const newMember = {
+        id: `demo-m-${Date.now()}`,
+        company_id: data?.company.id || "demo-comp-1",
+        user_id: `demo-u-${Date.now()}`,
+        display_name: (form.get("displayName") as string) || "Yeni İşçi",
+        role: (form.get("role") as any) || "employee",
+        archived_at: null,
+      };
+      setData((prev) =>
+        prev
+          ? {
+              ...prev,
+              team: [...prev.team, newMember],
+              employmentTerms: [
+                ...prev.employmentTerms,
+                {
+                  id: `et-${Date.now()}`,
+                  company_id: prev.company.id,
+                  membership_id: newMember.id,
+                  started_on: new Date().toISOString().slice(0, 10),
+                  pay_type: (form.get("payType") as any) || "monthly",
+                  base_pay_qepik: Math.round(
+                    parseFloat((form.get("basePayAZN") as string) || "0") * 100
+                  ),
+                  payday_day: parseInt((form.get("paydayDay") as string) || "5", 10),
+                },
+              ],
+              branchAssignments: [
+                ...prev.branchAssignments,
+                {
+                  membership_id: newMember.id,
+                  branch_id:
+                    (form.get("branchId") as string) || prev.branches[0]?.id || "",
+                  company_id: prev.company.id,
+                },
+              ],
+            }
+          : null
+      );
+      setModal(null);
+      setBusy(false);
+      return;
+    }
 
     try {
-      const res = await fetch("/api/billing", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          plan: selectedPlan,
-          extraBranches: selectedPlan === "business" ? extraBranches : 0,
-        }),
+      await api("/api/rehber", {
+        action: "add_employee",
+        displayName: form.get("displayName"),
+        email: form.get("email"),
+        role: form.get("role"),
+        branchId: form.get("branchId"),
+        payType: form.get("payType"),
+        basePayQepik: Math.round(parseFloat(form.get("basePayAZN") as string || "0") * 100),
+        paydayDay: parseInt(form.get("paydayDay") as string || "5", 10),
       });
-      const data = await res.json();
-      if (data.ok) {
-        setStatus("active");
-        setDaysLeft(30);
-        setSuccessMsg(`Təbriklər! ${selectedPlan.toUpperCase()} paketi uğurla aktivləşdirildi (Sandbox).`);
-        setShowCheckoutModal(false);
-      } else {
-        alert("Xəta baş verdi: " + data.error);
-      }
-    } catch (err: any) {
-      alert("Şəbəkə xətası: " + err.message);
+      setModal(null);
+      await loadData();
+    } catch (err: unknown) {
+      setActionError(err instanceof Error ? err.message : "Xəta baş verdi.");
     } finally {
-      setIsProcessing(false);
+      setBusy(false);
     }
-  };
+  }
+
+  async function handleAddBranch(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setBusy(true);
+    setActionError("");
+    const form = new FormData(e.currentTarget);
+
+    if (isDemo) {
+      const newBranch = {
+        id: `demo-b-${Date.now()}`,
+        company_id: data?.company.id || "demo-comp-1",
+        name: (form.get("name") as string) || "Yeni Filial",
+        latitude: parseFloat((form.get("latitude") as string) || "40.3756"),
+        longitude: parseFloat((form.get("longitude") as string) || "49.8465"),
+        radius_m: parseInt((form.get("radiusM") as string) || "100", 10),
+      };
+      setData((prev) =>
+        prev ? { ...prev, branches: [...prev.branches, newBranch] } : null
+      );
+      setModal(null);
+      setBusy(false);
+      return;
+    }
+
+    try {
+      await api("/api/rehber", {
+        action: "add_branch",
+        name: form.get("name"),
+        latitude: parseFloat(form.get("latitude") as string || "40.3756"),
+        longitude: parseFloat(form.get("longitude") as string || "49.8465"),
+        radiusM: parseInt(form.get("radiusM") as string || "100", 10),
+      });
+      setModal(null);
+      await loadData();
+    } catch (err: unknown) {
+      setActionError(err instanceof Error ? err.message : "Xəta baş verdi.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleAddShift(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setBusy(true);
+    setActionError("");
+    const form = new FormData(e.currentTarget);
+
+    if (isDemo) {
+      const newShift = {
+        id: `demo-s-${Date.now()}`,
+        company_id: data?.company.id || "demo-comp-1",
+        membership_id:
+          (form.get("membershipId") as string) || data?.team[0]?.id || "",
+        branch_id: (form.get("branchId") as string) || data?.branches[0]?.id || "",
+        starts_at: (form.get("startsAt") as string) || new Date().toISOString(),
+        ends_at:
+          (form.get("endsAt") as string) ||
+          new Date(Date.now() + 8 * 3600000).toISOString(),
+      };
+      setData((prev) =>
+        prev ? { ...prev, shifts: [...prev.shifts, newShift] } : null
+      );
+      setModal(null);
+      setBusy(false);
+      return;
+    }
+
+    try {
+      const startVal = form.get("startsAt") as string;
+      const endVal = form.get("endsAt") as string;
+      await api("/api/rehber", {
+        action: "add_shift",
+        membershipId: form.get("membershipId"),
+        branchId: form.get("branchId"),
+        startsAt: new Date(startVal).toISOString(),
+        endsAt: new Date(endVal).toISOString(),
+      });
+      setModal(null);
+      await loadData();
+    } catch (err: unknown) {
+      setActionError(err instanceof Error ? err.message : "Növbə əlavə edilmədi.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleAddAdvance(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setBusy(true);
+    setActionError("");
+    const form = new FormData(e.currentTarget);
+
+    if (isDemo) {
+      const amount = parseFloat((form.get("amountAZN") as string) || "0");
+      const newAdv = {
+        id: `demo-adv-${Date.now()}`,
+        membership_id:
+          (form.get("membershipId") as string) || data?.team[0]?.id || "",
+        amount_qepik: Math.round(amount * 100),
+        note: (form.get("note") as string) || "Avans ödənişi",
+        issued_on:
+          (form.get("date") as string) || new Date().toISOString().slice(0, 10),
+        created_at: new Date().toISOString(),
+      };
+      setData((prev) =>
+        prev ? { ...prev, advances: [newAdv, ...prev.advances] } : null
+      );
+      setModal(null);
+      setBusy(false);
+      return;
+    }
+
+    try {
+      const amount = parseFloat(form.get("amountAZN") as string || "0");
+      await api("/api/payroll", {
+        membershipId: form.get("membershipId"),
+        amountQepik: Math.round(amount * 100),
+        note: form.get("note") || "Avans ödənişi",
+        date: form.get("date") || new Date().toISOString().slice(0, 10),
+      });
+      setModal(null);
+      await loadData();
+    } catch (err: unknown) {
+      setActionError(err instanceof Error ? err.message : "Xəta baş verdi.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleToggleCloseMonth(memberId: string) {
+    setBusy(true);
+
+    if (isDemo) {
+      setData((prev) =>
+        prev
+          ? {
+              ...prev,
+              payrollPeriods: prev.payrollPeriods.map((p) =>
+                p.membership_id === memberId
+                  ? {
+                      ...p,
+                      is_closed: !p.is_closed,
+                      closed_at: p.is_closed ? null : new Date().toISOString(),
+                    }
+                  : p
+              ),
+            }
+          : null
+      );
+      setBusy(false);
+      return;
+    }
+
+    const month = new Date().toISOString().slice(0, 7);
+    try {
+      await api("/api/payroll", {
+        membershipId: memberId,
+        periodMonth: month,
+        overtimeQepik: 0,
+      });
+      await loadData();
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : "Əməliyyat alınmadı.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleDecisionSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!decisionTarget) return;
+    setBusy(true);
+    setActionError("");
+    const form = new FormData(e.currentTarget);
+    const reason = (form.get("reason") as string)?.trim() || "";
+
+    if (reason.length < 3) {
+      setActionError("Qərar səbəbi ən azı 3 simvol olmalıdır.");
+      setBusy(false);
+      return;
+    }
+
+    if (isDemo) {
+      if (decisionTarget.type === "leave") {
+        setData((prev) =>
+          prev
+            ? {
+                ...prev,
+                leaveRequests: prev.leaveRequests.map((lr) =>
+                  lr.id === decisionTarget.id
+                    ? {
+                        ...lr,
+                        status: decisionTarget.decision,
+                        decision_reason: reason,
+                      }
+                    : lr
+                ),
+              }
+            : null
+        );
+      } else {
+        setData((prev) =>
+          prev
+            ? {
+                ...prev,
+                corrections: prev.corrections.map((cr) =>
+                  cr.id === decisionTarget.id
+                    ? {
+                        ...cr,
+                        status: decisionTarget.decision,
+                        decision_reason: reason,
+                      }
+                    : cr
+                ),
+              }
+            : null
+        );
+      }
+      setModal(null);
+      setDecisionTarget(null);
+      setBusy(false);
+      return;
+    }
+
+    try {
+      if (decisionTarget.type === "leave") {
+        await api("/api/leave-requests", {
+          requestId: decisionTarget.id,
+          decision: decisionTarget.decision,
+          reason,
+        });
+      } else {
+        await api("/api/corrections", {
+          correctionId: decisionTarget.id,
+          decision: decisionTarget.decision,
+          reason,
+        });
+      }
+      setModal(null);
+      setDecisionTarget(null);
+      await loadData();
+    } catch (err: unknown) {
+      setActionError(err instanceof Error ? err.message : "Qərar saxlanılmadı.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const current = modules.find(([id]) => id === active)!;
+  const companyName = data?.company.name || "Panelim Biznes";
+  const primaryBranch = data?.branches[0]?.name || "Baş Filial";
+  const managerName = data?.member.display_name || "Rəhbər";
 
   return (
-    <>
-      <div className="hub-demo-note">
-        <Bell size={16}/> Abunə və paket limitləri · {status === "trialing" ? "14 günlük sınaq müddəti aktivdir." : "Aktiv ödənişli abunə."}
-      </div>
+    <div className="hub-shell">
+      <aside className="hub-sidebar">
+        <Link className="brand-link" href="/">
+          <Brand />
+        </Link>
+        <p>ŞİRKƏT KABİNETİ</p>
+        <nav aria-label="Rəhbər naviqasiyası">
+          {modules.map(([id, label, ItemIcon]) => (
+            <button
+              key={id}
+              className={active === id ? "hub-nav active" : "hub-nav"}
+              onClick={() => setActive(id)}
+            >
+              <ItemIcon size={19} />
+              <span>{label}</span>
+            </button>
+          ))}
+        </nav>
+        <Link className="hub-nav" href="/giris">
+          <Settings size={19} />
+          <span>Hesabdan çıx</span>
+        </Link>
+      </aside>
 
-      {successMsg && (
-        <div style={{ background: "#e6f4ea", border: "1px solid #137333", color: "#137333", padding: "12px 16px", borderRadius: 8, marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
-          <CheckCircle2 size={18} />
-          <strong>{successMsg}</strong>
-        </div>
-      )}
-
-      <section className="hub-data-panel">
-        <div className="hub-panel-title">
-          <div><small>CARİ PAKET</small><h2>{selectedPlan.toUpperCase()} Paket</h2></div>
-          <span className="hub-presence">
-            <i/> {status === "trialing" ? `14 günlük sınaq (${daysLeft} gün qalıb)` : `Aktiv abunə (${daysLeft} gün qalıb)`}
-          </span>
-        </div>
-        <div className="hub-pay-summary">
-          <div><small>AYLIQ QİYMƏT</small><strong>{planPrices[selectedPlan]} ₼ / ay</strong><span>{status === "trialing" ? "Sınaq bitdikdən sonra" : "Növbəti çıxarış: 30 gün sonra"}</span></div>
-          <div><small>AKTİV HEYƏT LİMİTİ</small><strong>1 / {planEmployees[selectedPlan]} işçi</strong><span>Bütün filiallar üzrə ümumi</span></div>
-        </div>
-        <div style={{ borderTop: "1px solid #e8edeb", paddingTop: 16, marginTop: 10 }}>
-          <p><strong>Filial limiti:</strong> 1 / {planBranches[selectedPlan]} filial aktivdir (Əlavə filial: +5 ₼ / ay, maks. 3)</p>
-          <p><strong>Daxildir:</strong> QR və GPS davamiyyət, Növbə qrafiki, Maaş & avans uçotu, Filial hesabatları</p>
-        </div>
-      </section>
-
-      <section className="hub-data-panel" style={{ marginTop: 16 }}>
-        <div className="hub-panel-title">
-          <div><small>TARİFLƏR VƏ YENİLƏNMƏ</small><h2>Paket Seçimi</h2></div>
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginTop: 12 }}>
-          {/* Free Tier */}
-          <div style={{
-            border: selectedPlan === "free" ? "2px solid #0052cc" : "1px solid #dfe1e6",
-            borderRadius: 8,
-            padding: 16,
-            background: selectedPlan === "free" ? "#f4f8ff" : "#fff",
-            cursor: "pointer",
-          }} onClick={() => setSelectedPlan("free")}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 style={{ margin: 0 }}>Free</h3>
-              <span style={{ fontWeight: "bold", fontSize: "1.1rem" }}>0 ₼ <small>/ ay</small></span>
-            </div>
-            <p style={{ margin: "8px 0", fontSize: "0.85rem", color: "#5e6c84" }}>3 işçiyə qədər · 1 filial</p>
-            <ul style={{ margin: 0, paddingLeft: 18, fontSize: "0.82rem", color: "#42526e" }}>
-              <li>QR və GPS davamiyyət</li>
-              <li>Sabit iş qrafiki</li>
-              <li>Davamiyyət tarixçəsi</li>
-            </ul>
+      <main className="hub-main">
+        <header className="hub-top">
+          <div>
+            <small>
+              {companyName.toUpperCase()} · {primaryBranch.toUpperCase()}
+            </small>
+            <h1>{current[1]}</h1>
           </div>
-
-          {/* Start Tier */}
-          <div style={{
-            border: selectedPlan === "start" ? "2px solid #0052cc" : "1px solid #dfe1e6",
-            borderRadius: 8,
-            padding: 16,
-            background: selectedPlan === "start" ? "#f4f8ff" : "#fff",
-            cursor: "pointer",
-          }} onClick={() => setSelectedPlan("start")}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 style={{ margin: 0 }}>Start</h3>
-              <span style={{ fontWeight: "bold", fontSize: "1.1rem" }}>15 ₼ <small>/ ay</small></span>
-            </div>
-            <p style={{ margin: "8px 0", fontSize: "0.85rem", color: "#5e6c84" }}>10 işçiyə qədər · 1 filial</p>
-            <ul style={{ margin: 0, paddingLeft: 18, fontSize: "0.82rem", color: "#42526e" }}>
-              <li>Növbə cədvəli</li>
-              <li>İcazə və məzuniyyətlər</li>
-              <li>Excel çıxarışı</li>
-            </ul>
+          <div className="hub-profile">
+            <span className="hub-profile-avatar">
+              {managerName.charAt(0).toUpperCase()}
+            </span>
+            <span>
+              <strong>{managerName}</strong>
+              <small>
+                {data?.member.role === "owner"
+                  ? "Şirkət Sahibi"
+                  : "Filial Rəhbəri"}
+              </small>
+            </span>
           </div>
+        </header>
 
-          {/* Business Tier */}
-          <div style={{
-            border: selectedPlan === "business" ? "2px solid #0052cc" : "1px solid #dfe1e6",
-            borderRadius: 8,
-            padding: 16,
-            background: selectedPlan === "business" ? "#f4f8ff" : "#fff",
-            cursor: "pointer",
-          }} onClick={() => setSelectedPlan("business")}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 style={{ margin: 0 }}>Business</h3>
-              <span style={{ fontWeight: "bold", fontSize: "1.1rem" }}>29 ₼ <small>/ ay</small></span>
+        {isDemo && (
+          <div
+            style={{
+              background: "rgba(242, 200, 168, 0.12)",
+              border: "1px solid rgba(242, 200, 168, 0.3)",
+              padding: "10px 18px",
+              borderRadius: "10px",
+              margin: "16px 20px 0 20px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: "10px",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--color-linen, #fff)" }}>
+              <span style={{ background: "var(--color-peach, #f2c8a8)", color: "#13110f", padding: "2px 8px", borderRadius: "9999px", fontWeight: 700, fontSize: "11px" }}>
+                RƏHBƏR DEMO
+              </span>
+              <span>Canlı nümunə məlumatlar: işçilər, növbələr, müraciətlər və daxili maaş hesablaması aktivdir.</span>
             </div>
-            <p style={{ margin: "8px 0", fontSize: "0.85rem", color: "#5e6c84" }}>25 işçiyə qədər · 2 filial</p>
-            <ul style={{ margin: 0, paddingLeft: 18, fontSize: "0.82rem", color: "#42526e" }}>
-              <li>Bütün Start imkanları</li>
-              <li>Daxili maaş və avans uçotu</li>
-              <li>Əlavə saat hesablanması</li>
-              <li>Tapşırıqlar və filial səlahiyyətləri</li>
-            </ul>
-          </div>
-
-          {/* Growth Tier */}
-          <div style={{
-            border: selectedPlan === "growth" ? "2px solid #0052cc" : "1px solid #dfe1e6",
-            borderRadius: 8,
-            padding: 16,
-            background: selectedPlan === "growth" ? "#f4f8ff" : "#fff",
-            cursor: "pointer",
-          }} onClick={() => setSelectedPlan("growth")}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 style={{ margin: 0 }}>Growth</h3>
-              <span style={{ fontWeight: "bold", fontSize: "1.1rem" }}>49 ₼ <small>/ ay</small></span>
-            </div>
-            <p style={{ margin: "8px 0", fontSize: "0.85rem", color: "#5e6c84" }}>50 işçiyə qədər · 3 filial</p>
-            <ul style={{ margin: 0, paddingLeft: 18, fontSize: "0.82rem", color: "#42526e" }}>
-              <li>Bütün Business imkanları</li>
-              <li>Müqayisəli filial analitikası</li>
-              <li>Maksimal heyət həcmi</li>
-            </ul>
-          </div>
-        </div>
-
-        {selectedPlan === "business" && (
-          <div style={{ marginTop: 16, padding: "12px 16px", background: "#fafbfc", border: "1px solid #ebecf0", borderRadius: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <strong>Əlavə filial (+5 ₼ / ay):</strong>
-              <small style={{ display: "block", color: "#6b778c" }}>Maksimal 3 filiala qədər artırıla bilər</small>
-            </div>
-            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <button
-                type="button"
-                className="button secondary compact"
-                onClick={() => setExtraBranches(Math.max(0, extraBranches - 1))}
-                disabled={extraBranches === 0}
-              >-</button>
-              <span style={{ fontWeight: 600, minWidth: 20, textAlign: "center" }}>+{extraBranches}</span>
-              <button
-                type="button"
-                className="button secondary compact"
-                onClick={() => setExtraBranches(Math.min(1, extraBranches + 1))}
-                disabled={extraBranches === 1}
-              >+</button>
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+              <Link href="/demo/isci" style={{ fontSize: "12.5px", color: "var(--color-peach, #f2c8a8)", textDecoration: "none", fontWeight: 600 }}>
+                İşçi kabinetinə bax ➔
+              </Link>
+              <Link href="/qeydiyyat" className="button primary compact" style={{ fontSize: "12px", padding: "6px 14px" }}>
+                Ödənişsiz başla
+              </Link>
             </div>
           </div>
         )}
 
-        <div style={{ marginTop: 20, display: "flex", justifyContent: "flex-end" }}>
+        {active === "plan" ? (
+          <SubscriptionPanel demo={isDemo} />
+        ) : loading ? (
+          <div className="hub-data-panel">Məlumatlar yüklənir…</div>
+        ) : error ? (
+          <div className="hub-demo-note" style={{ background: "#fdf2e9", color: "#a04000", borderColor: "#f5cba7", padding: "14px 20px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Bell size={16} />
+              <span>{error}</span>
+            </div>
+            <div style={{ marginTop: 12, display: "flex", gap: 10, alignItems: "center" }}>
+              <button
+                type="button"
+                className="button primary compact"
+                onClick={() => {
+                  setData(DEMO_MANAGER_DATA);
+                  setIsDemo(true);
+                  setError("");
+                }}
+              >
+                İnteraktiv Demo Rejiminə Keç
+              </button>
+              <Link href="/giris" className="button secondary compact">
+                Daxil ol
+              </Link>
+            </div>
+          </div>
+        ) : !data ? null : (
+          <>
+            {active === "overview" && (
+              <Overview data={data} onSelect={setActive} />
+            )}
+
+            {active === "team" && (
+              <TeamPanel
+                data={data}
+                onOpenAddEmployee={() => {
+                  setActionError("");
+                  setModal("addEmployee");
+                }}
+                onOpenAddBranch={() => {
+                  setActionError("");
+                  setModal("addBranch");
+                }}
+              />
+            )}
+
+            {active === "schedule" && (
+              <SchedulePanel
+                data={data}
+                onOpenAddShift={() => {
+                  setActionError("");
+                  setModal("addShift");
+                }}
+              />
+            )}
+
+            {active === "requests" && (
+              <RequestsPanel
+                data={data}
+                onDecide={(type, id, dec, title) => {
+                  setActionError("");
+                  setDecisionTarget({ type, id, decision: dec, title });
+                  setModal("decision");
+                }}
+              />
+            )}
+
+            {active === "payroll" && (
+              <PayrollPanel
+                data={data}
+                selectedMemberId={selectedMemberId || data.team[0]?.id || ""}
+                onSelectMember={setSelectedMemberId}
+                onOpenAdvance={() => {
+                  setActionError("");
+                  setModal("addAdvance");
+                }}
+                onToggleCloseMonth={handleToggleCloseMonth}
+              />
+            )}
+
+            {active === "tasks" && <TasksSample />}
+            {active === "reports" && <ReportsPanel data={data} />}
+          </>
+        )}
+      </main>
+
+      {/* MODAL: Add Employee */}
+      {modal === "addEmployee" && data && (
+        <Modal title="Yeni İşçi Əlavə Et" onClose={() => setModal(null)}>
+          <form className="stack" onSubmit={handleAddEmployee} style={{ padding: 20 }}>
+            <label className="field">
+              Ad və Soyad
+              <input name="displayName" type="text" required placeholder="Aylin Məmmədova" maxLength={100} />
+            </label>
+            <label className="field">
+              Rəsmi E-poçt
+              <input name="email" type="email" required placeholder="aylin@biznes.az" maxLength={254} />
+            </label>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <label className="field">
+                Vəzifə / Rol
+                <select name="role" defaultValue="employee">
+                  <option value="employee">İşçi</option>
+                  <option value="manager">Filial Rəhbəri</option>
+                  <option value="accountant">Mühasib</option>
+                </select>
+              </label>
+              <label className="field">
+                Təyin olunan filial
+                <select name="branchId" defaultValue={data.branches[0]?.id}>
+                  {data.branches.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+              <label className="field">
+                Maaş növü
+                <select name="payType" defaultValue="monthly">
+                  <option value="monthly">Aylıq</option>
+                  <option value="hourly">Saatlıq</option>
+                </select>
+              </label>
+              <label className="field">
+                Məbləğ (AZN)
+                <input name="basePayAZN" type="number" step="0.01" min="0" required defaultValue="850" />
+              </label>
+              <label className="field">
+                Maaş günü
+                <input name="paydayDay" type="number" min="1" max="31" defaultValue="5" />
+              </label>
+            </div>
+            {actionError && <p className="form-error">{actionError}</p>}
+            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 12 }}>
+              <button type="button" className="button secondary" onClick={() => setModal(null)}>İmtina</button>
+              <button type="submit" className="button primary" disabled={busy}>
+                {busy ? "Yadda saxlanılır…" : "İşçini təsdiqlə"}
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {/* MODAL: Add Branch */}
+      {modal === "addBranch" && (
+        <Modal title="Yeni Filial Yarat" onClose={() => setModal(null)}>
+          <form className="stack" onSubmit={handleAddBranch} style={{ padding: 20 }}>
+            <label className="field">
+              Filialın adı
+              <input name="name" type="text" required placeholder="Məsələn: Sahil filialı" maxLength={120} />
+            </label>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+              <label className="field">
+                En dairəsi (Latitude)
+                <input name="latitude" type="number" step="0.0001" defaultValue="40.3756" required />
+              </label>
+              <label className="field">
+                Uzunluq (Longitude)
+                <input name="longitude" type="number" step="0.0001" defaultValue="49.8465" required />
+              </label>
+              <label className="field">
+                Radius (metr)
+                <input name="radiusM" type="number" min="20" max="500" defaultValue="100" required />
+              </label>
+            </div>
+            {actionError && <p className="form-error">{actionError}</p>}
+            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 12 }}>
+              <button type="button" className="button secondary" onClick={() => setModal(null)}>İmtina</button>
+              <button type="submit" className="button primary" disabled={busy}>
+                {busy ? "Yaradılır…" : "Filialı yarat"}
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {/* MODAL: Add Shift */}
+      {modal === "addShift" && data && (
+        <Modal title="Yeni Növbə Təyin Et" onClose={() => setModal(null)}>
+          <form className="stack" onSubmit={handleAddShift} style={{ padding: 20 }}>
+            <label className="field">
+              İşçi seçimi
+              <select name="membershipId" defaultValue={data.team[0]?.id}>
+                {data.team.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.display_name} ({m.role})
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="field">
+              Filial seçimi
+              <select name="branchId" defaultValue={data.branches[0]?.id}>
+                {data.branches.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <label className="field">
+                Başlama vaxtı
+                <input name="startsAt" type="datetime-local" required />
+              </label>
+              <label className="field">
+                Bitmə vaxtı
+                <input
+                  name="endsAt"
+                  type="datetime-local"
+                  required
+                />
+              </label>
+            </div>
+            {actionError && <p className="form-error">{actionError}</p>}
+            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 12 }}>
+              <button type="button" className="button secondary" onClick={() => setModal(null)}>İmtina</button>
+              <button type="submit" className="button primary" disabled={busy}>
+                {busy ? "Təyin edilir…" : "Növbəni təsdiqlə"}
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {/* MODAL: Add Advance */}
+      {modal === "addAdvance" && data && (
+        <Modal title="Yeni Avans Ödənişi" onClose={() => setModal(null)}>
+          <form className="stack" onSubmit={handleAddAdvance} style={{ padding: 20 }}>
+            <label className="field">
+              İşçi seçimi
+              <select name="membershipId" defaultValue={selectedMemberId || data.team[0]?.id}>
+                {data.team.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.display_name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <label className="field">
+                Məbləğ (AZN)
+                <input name="amountAZN" type="number" step="0.01" min="1" max="10000" required placeholder="50.00" />
+              </label>
+              <label className="field">
+                Tarix
+                <input name="date" type="date" required defaultValue={new Date().toISOString().slice(0, 10)} />
+              </label>
+            </div>
+            <label className="field">
+              Qeyd və ya səbəb
+              <input name="note" type="text" placeholder="Məs. Məişət xərcləri üçün avans" maxLength={200} />
+            </label>
+            {actionError && <p className="form-error">{actionError}</p>}
+            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 12 }}>
+              <button type="button" className="button secondary" onClick={() => setModal(null)}>İmtina</button>
+              <button type="submit" className="button primary" disabled={busy}>
+                {busy ? "Ödənilir…" : "Avansı təsdiqlə"}
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {/* MODAL: Decision for Requests */}
+      {modal === "decision" && decisionTarget && (
+        <Modal title={decisionTarget.title} onClose={() => setModal(null)}>
+          <form className="stack" onSubmit={handleDecisionSubmit} style={{ padding: 20 }}>
+            <p style={{ margin: 0, fontSize: "0.9rem", color: "#536869" }}>
+              Qərar: <strong>{decisionTarget.decision === "approved" ? "Təsdiqlə" : "Rədd et"}</strong>
+            </p>
+            <label className="field" style={{ marginTop: 12 }}>
+              Qərar səbəbi (mütləq qeyd edilməlidir, ən azı 3 simvol)
+              <textarea
+                name="reason"
+                required
+                rows={3}
+                minLength={3}
+                maxLength={500}
+                placeholder="Məsələn: İş qrafikinə uyğundur və ya Əvəzləyici işçi olmadığı üçün"
+              />
+            </label>
+            {actionError && <p className="form-error">{actionError}</p>}
+            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 12 }}>
+              <button type="button" className="button secondary" onClick={() => setModal(null)}>İmtina</button>
+              <button type="submit" className="button primary" disabled={busy}>
+                {busy ? "Yadda saxlanılır…" : "Qərarı təsdiq et"}
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {isDemo && <DemoTourGuide onSelectModule={setActive} />}
+    </div>
+  );
+}
+
+// 1. Overview Panel
+function Overview({
+  data,
+  onSelect,
+}: {
+  data: ManagerHubData;
+  onSelect: (v: (typeof modules)[number][0]) => void;
+}) {
+  const activeWorkers = (data.team || []).filter((m) => !m.plan_disabled_at).length;
+  const inWorkCount = (data.todayAttendance || []).filter((a) => !a.check_out).length;
+  const pendingRequests =
+    (data.leaveRequests || []).filter((l) => l.status === "pending").length +
+    (data.corrections || []).filter((c) => c.status === "pending").length;
+
+  const totalBasePayQepik = (data.employmentTerms || []).reduce(
+    (sum, t) => sum + (t.pay_type === "monthly" ? t.base_pay_qepik : 0),
+    0,
+  );
+
+  return (
+    <>
+      <section className="hub-hero">
+        <div>
+          <p>{date(new Date().toISOString())} · İş günü</p>
+          <h2>Salam, {data.member.display_name}. Şirkətinizin cari fəaliyyəti:</h2>
+          <span>
+            {data.company.name} üzrə {data.branches.length} filial və {activeWorkers} aktiv işçi qeydiyyatdadır.
+          </span>
+        </div>
+        <Building2 size={52} />
+      </section>
+
+      <section className="hub-metrics">
+        <article>
+          <small>AKTİV İŞÇİLƏR</small>
+          <strong>{activeWorkers}</strong>
+          <span>heyət qeydiyyatda</span>
+        </article>
+        <article>
+          <small>HAZIRDA İŞDƏDİR</small>
+          <strong>{inWorkCount}</strong>
+          <span>açıq giriş qeydi</span>
+        </article>
+        <article>
+          <small>GÖZLƏYƏN MÜRACİƏTLƏR</small>
+          <strong>{pendingRequests}</strong>
+          <span>qərar gözləyən sorğu</span>
+        </article>
+        <article>
+          <small>BU AYIN ƏSAS MAAŞ CƏMİ</small>
+          <strong>{formatMoney(totalBasePayQepik)}</strong>
+          <span>sabit tarif cəmi</span>
+        </article>
+      </section>
+
+      <section className="hub-actions">
+        {modules.slice(1, 5).map(([id, label, ItemIcon, description]) => (
+          <button key={id} onClick={() => onSelect(id)}>
+            <span>
+              <ItemIcon size={19} />
+            </span>
+            <strong>{label}</strong>
+            <small>{description}</small>
+            <ArrowUpRight size={16} />
+          </button>
+        ))}
+      </section>
+
+      <section className="hub-data-panel" style={{ marginTop: 20 }}>
+        <div className="hub-panel-title">
+          <div>
+            <small>CANLI DAVAMİYYƏT</small>
+            <h2>Hazırda İşdə Olan Heyət</h2>
+          </div>
+          <span className="hub-count">{inWorkCount} nəfər</span>
+        </div>
+        {inWorkCount === 0 ? (
+          <p style={{ color: "#738182", padding: "16px 0", fontSize: "0.9rem" }}>
+            Hazırda filialda açıq giriş qeydi olan işçi yoxdur.
+          </p>
+        ) : (
+          (data.todayAttendance || [])
+            .filter((a) => !a.check_out)
+            .map((att) => {
+              const worker = (data.team || []).find((m) => m.id === att.membership_id);
+              const branch = (data.branches || []).find((b) => b.id === att.branch_id);
+              return (
+                <div key={att.id} className="hub-worker-row">
+                  <div>
+                    <span className="hub-profile-avatar">
+                      {worker?.display_name.charAt(0).toUpperCase() || "İ"}
+                    </span>
+                    <div>
+                      <strong>{worker?.display_name || "İşçi"}</strong>
+                      <small>
+                        {branch?.name || "Filial"} · Giriş: {time(att.check_in)}
+                      </small>
+                    </div>
+                  </div>
+                  <span className="hub-presence">
+                    <i /> İşdədir
+                  </span>
+                </div>
+              );
+            })
+        )}
+      </section>
+    </>
+  );
+}
+
+// 2. Team & Branch Panel
+function TeamPanel({
+  data,
+  onOpenAddEmployee,
+  onOpenAddBranch,
+}: {
+  data: ManagerHubData;
+  onOpenAddEmployee: () => void;
+  onOpenAddBranch: () => void;
+}) {
+  return (
+    <>
+      <section className="hub-data-panel">
+        <div className="hub-panel-title">
+          <div>
+            <small>{data.company.name.toUpperCase()} · HEYƏT SİYAHISI</small>
+            <h2>İşçilər ({data.team.length})</h2>
+          </div>
+          <button className="button primary compact" onClick={onOpenAddEmployee}>
+            <Plus size={16} /> İşçi əlavə et
+          </button>
+        </div>
+
+        {data.team.length === 0 ? (
+          <p style={{ padding: "16px 0", color: "#738182" }}>Hələ heç bir işçi əlavə edilməyib.</p>
+        ) : (
+          data.team.map((member) => {
+            const assignment = data.branchAssignments.find((a) => a.membership_id === member.id);
+            const branch = data.branches.find((b) => b.id === assignment?.branch_id);
+            const term = data.employmentTerms.find((t) => t.membership_id === member.id);
+
+            return (
+              <div key={member.id} className="hub-team-row">
+                <span className="hub-profile-avatar">
+                  {member.display_name.charAt(0).toUpperCase()}
+                </span>
+                <div>
+                  <strong>{member.display_name}</strong>
+                  <small>
+                    Rol: {member.role === "owner" ? "Sahib" : member.role === "manager" ? "Filial Rəhbəri" : member.role === "accountant" ? "Mühasib" : "İşçi"}
+                    {branch ? ` · ${branch.name}` : ""}
+                    {term?.started_on ? ` · Başlama: ${term.started_on}` : ""}
+                  </small>
+                </div>
+                <span>
+                  {term ? `${formatMoney(term.base_pay_qepik)} / ${term.pay_type === "monthly" ? "ay" : "saat"}` : "Tarif yoxdur"}
+                </span>
+                <b className={member.plan_disabled_at ? "hub-pending" : "hub-presence"}>
+                  <i /> {member.plan_disabled_at ? "Paket limiti" : "Aktiv"}
+                </b>
+              </div>
+            );
+          })
+        )}
+      </section>
+
+      <section className="hub-data-panel">
+        <div className="hub-panel-title">
+          <div>
+            <small>FİLİALLAR VƏ MƏKAN TƏNZİMLƏMƏLƏRİ</small>
+            <h2>Filiallar ({data.branches.length})</h2>
+          </div>
+          {data.member.role === "owner" && (
+            <button className="button secondary compact" onClick={onOpenAddBranch}>
+              <Plus size={16} /> Filial əlavə et
+            </button>
+          )}
+        </div>
+        {data.branches.map((b) => {
+          const assignedCount = data.branchAssignments.filter((a) => a.branch_id === b.id).length;
+          return (
+            <div key={b.id} className="hub-team-row">
+              <div>
+                <strong>{b.name}</strong>
+                <small>
+                  Radius: {b.radius_m} m · Koordinat: {b.latitude.toFixed(4)}, {b.longitude.toFixed(4)}
+                </small>
+              </div>
+              <span>{assignedCount} işçi təyin edilib</span>
+              <b className={b.plan_disabled_at ? "hub-pending" : "hub-presence"}>
+                <i /> {b.plan_disabled_at ? "Dayandırılıb" : "Aktiv"}
+              </b>
+            </div>
+          );
+        })}
+      </section>
+    </>
+  );
+}
+
+// 3. Schedule Panel
+function SchedulePanel({
+  data,
+  onOpenAddShift,
+}: {
+  data: ManagerHubData;
+  onOpenAddShift: () => void;
+}) {
+  return (
+    <>
+      <section className="hub-data-panel">
+        <div className="hub-panel-title">
+          <div>
+            <small>NÖVBƏ VƏ İŞ QRAFİKİ</small>
+            <h2>Planlaşdırılmış Növbələr ({data.shifts.length})</h2>
+          </div>
+          <button className="button primary compact" onClick={onOpenAddShift}>
+            <Plus size={16} /> Növbə əlavə et
+          </button>
+        </div>
+
+        {data.shifts.length === 0 ? (
+          <p style={{ padding: "16px 0", color: "#738182" }}>
+            Hələ heç bir növbə təyin edilməyib. Yeni növbə əlavə edin.
+          </p>
+        ) : (
+          data.shifts.map((shift) => {
+            const worker = data.team.find((m) => m.id === shift.membership_id);
+            const branch = data.branches.find((b) => b.id === shift.branch_id);
+            return (
+              <div key={shift.id} className="hub-team-row">
+                <span className="hub-profile-avatar">
+                  {worker?.display_name.charAt(0).toUpperCase() || "N"}
+                </span>
+                <div>
+                  <strong>{worker?.display_name || "İşçi"}</strong>
+                  <small>
+                    {branch?.name || "Filial"} · {date(shift.starts_at)} {time(shift.starts_at)} – {time(shift.ends_at)}
+                  </small>
+                </div>
+                <span>Təyin edilib</span>
+                <b className="hub-presence">
+                  <i /> Planlaşdırılıb
+                </b>
+              </div>
+            );
+          })
+        )}
+      </section>
+    </>
+  );
+}
+
+// 4. Requests Panel
+function RequestsPanel({
+  data,
+  onDecide,
+}: {
+  data: ManagerHubData;
+  onDecide: (type: "leave" | "correction", id: string, dec: "approved" | "rejected", title: string) => void;
+}) {
+  const pendingLeaves = data.leaveRequests.filter((l) => l.status === "pending");
+  const pendingCorrections = data.corrections.filter((c) => c.status === "pending");
+  const totalPending = pendingLeaves.length + pendingCorrections.length;
+
+  return (
+    <>
+      <section className="hub-data-panel">
+        <div className="hub-panel-title">
+          <div>
+            <small>GÖZLƏYƏN MÜRACİƏTLƏR</small>
+            <h2>Təsdiq Gözləyən Sorğular</h2>
+          </div>
+          <span className="hub-count">{totalPending} gözləyir</span>
+        </div>
+
+        {totalPending === 0 ? (
+          <p style={{ padding: "16px 0", color: "#738182" }}>
+            Hal-hazırda gözləyən müraciət yoxdur. Bütün müraciətlər cavablandırılıb.
+          </p>
+        ) : (
+          <>
+            {pendingLeaves.map((lr) => {
+              const worker = data.team.find((m) => m.id === lr.membership_id);
+              const typeLabel = lr.request_type === "permission" ? "İcazə" : "Məzuniyyət";
+              return (
+                <article key={lr.id} className="hub-request" style={{ borderBottom: "1px solid #f0f4f4", paddingBottom: 14 }}>
+                  <span className="hub-profile-avatar">
+                    {worker?.display_name.charAt(0).toUpperCase() || "M"}
+                  </span>
+                  <div>
+                    <strong>{worker?.display_name || "İşçi"} · {typeLabel}</strong>
+                    <p style={{ margin: "4px 0", fontSize: "0.85rem" }}>
+                      Tarix aralığı: {lr.starts_on} — {lr.ends_on}
+                    </p>
+                    <small>Səbəb: {lr.reason}</small>
+                  </div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button
+                      className="button primary compact"
+                      onClick={() => onDecide("leave", lr.id, "approved", `${worker?.display_name} — ${typeLabel} təsdiqi`)}
+                    >
+                      Təsdiqlə
+                    </button>
+                    <button
+                      className="button secondary compact"
+                      onClick={() => onDecide("leave", lr.id, "rejected", `${worker?.display_name} — ${typeLabel} rədd edilməsi`)}
+                    >
+                      Rədd et
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+
+            {pendingCorrections.map((cor) => {
+              const worker = data.team.find((m) => m.id === cor.membership_id);
+              return (
+                <article key={cor.id} className="hub-request" style={{ borderBottom: "1px solid #f0f4f4", paddingBottom: 14 }}>
+                  <span className="hub-profile-avatar">
+                    {worker?.display_name.charAt(0).toUpperCase() || "D"}
+                  </span>
+                  <div>
+                    <strong>{worker?.display_name || "İşçi"} · Davamiyyət Düzəlişi</strong>
+                    <p style={{ margin: "4px 0", fontSize: "0.85rem" }}>
+                      Giriş: {time(cor.requested_in)} {cor.requested_out ? `· Çıxış: ${time(cor.requested_out)}` : ""}
+                    </p>
+                    <small>Səbəb: {cor.reason}</small>
+                  </div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button
+                      className="button primary compact"
+                      onClick={() => onDecide("correction", cor.id, "approved", `${worker?.display_name} — Düzəliş təsdiqi`)}
+                    >
+                      Təsdiqlə
+                    </button>
+                    <button
+                      className="button secondary compact"
+                      onClick={() => onDecide("correction", cor.id, "rejected", `${worker?.display_name} — Düzəliş rədd edilməsi`)}
+                    >
+                      Rədd et
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </>
+        )}
+      </section>
+    </>
+  );
+}
+
+// 5. Payroll Panel
+function PayrollPanel({
+  data,
+  selectedMemberId,
+  onSelectMember,
+  onOpenAdvance,
+  onToggleCloseMonth,
+}: {
+  data: ManagerHubData;
+  selectedMemberId: string;
+  onSelectMember: (id: string) => void;
+  onOpenAdvance: () => void;
+  onToggleCloseMonth: (memberId: string) => void;
+}) {
+  const currentMember = data.team.find((m) => m.id === selectedMemberId) || data.team[0];
+  const terms = data.employmentTerms.find((t) => t.membership_id === currentMember?.id);
+  const currentMonth = new Date().toISOString().slice(0, 7);
+
+  const memberAdvances = data.advances.filter(
+    (a) => a.membership_id === currentMember?.id && a.issued_on.startsWith(currentMonth),
+  );
+  const totalAdvancesQepik = memberAdvances.reduce((sum, a) => sum + a.amount_qepik, 0);
+
+  const closedPeriod = data.payrollPeriods.find(
+    (p) => p.membership_id === currentMember?.id && p.period_month === currentMonth,
+  );
+  const isClosed = Boolean(closedPeriod);
+
+  const basePayQepik = terms ? terms.base_pay_qepik : 0;
+  const netPayQepik = Math.max(0, basePayQepik - totalAdvancesQepik);
+
+  return (
+    <>
+      <section className="hub-data-panel">
+        <div className="hub-panel-title">
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div>
+              <small>HESABLAŞMA AYI · {currentMonth.toUpperCase()}</small>
+              <h2>{currentMember?.display_name || "İşçi seçin"}</h2>
+            </div>
+            {data.team.length > 1 && (
+              <select
+                value={selectedMemberId}
+                onChange={(e) => onSelectMember(e.target.value)}
+                style={{ padding: 8, borderRadius: 8, border: "1px solid #dfe6e4" }}
+              >
+                {data.team.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.display_name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+          <span className={isClosed ? "hub-presence" : "hub-pending"}>
+            <i /> {isClosed ? "Ay bağlanıb" : "Cari hesab"}
+          </span>
+        </div>
+
+        <div className="hub-metrics" style={{ marginTop: 16 }}>
+          <article>
+            <small>ƏSAS MAAŞ</small>
+            <strong>{formatMoney(basePayQepik)}</strong>
+            <span>{terms?.pay_type === "monthly" ? "Aylıq sabit" : "Saatlıq"}</span>
+          </article>
+          <article>
+            <small>BU AYIN AVANSLARI</small>
+            <strong style={{ color: "#c0392b" }}>-{formatMoney(totalAdvancesQepik)}</strong>
+            <span>{memberAdvances.length} ödəniş</span>
+          </article>
+          <article style={{ background: "#edf7f3", borderColor: "#c3e6dc" }}>
+            <small style={{ color: "#173d40" }}>YEKUN ÖDƏNİLƏCƏK</small>
+            <strong style={{ color: "#173d40" }}>{formatMoney(netPayQepik)}</strong>
+            <span>Maaş günü: hər ayın {terms?.payday_day || 5}-i</span>
+          </article>
+        </div>
+
+        <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
+          <button className="button primary compact" onClick={onOpenAdvance} disabled={isClosed}>
+            + Avans ver
+          </button>
           <button
-            className="button primary"
-            onClick={() => setShowCheckoutModal(true)}
+            className="button secondary compact"
+            onClick={() => onToggleCloseMonth(currentMember?.id || "")}
           >
-            <CreditCard size={16} /> {selectedPlan === "free" ? "Free Paketə keç (0 ₼ / ay)" : `Paketi seç və Abunə ol (${planPrices[selectedPlan]} ₼ / ay)`}
+            {isClosed ? "Hesabı yenidən aç" : `${currentMonth} ayını bağla`}
           </button>
         </div>
       </section>
 
-      {/* Sandbox Checkout / Switch Modal */}
-      {showCheckoutModal && (
-        <div style={{
-          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-          background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000
-        }}>
-          <div style={{ background: "#fff", padding: 24, borderRadius: 12, maxWidth: 440, width: "90%", boxShadow: "0 8px 30px rgba(0,0,0,0.15)" }}>
-            <h3 style={{ margin: "0 0 8px" }}>
-              {selectedPlan === "free" ? "Free Paketə Keçid" : "Təhlükəsiz Sandbox Ödənişi"}
-            </h3>
-            <p style={{ margin: "0 0 16px", color: "#6b778c", fontSize: "0.9rem" }}>
-              {selectedPlan === "free"
-                ? "Ödənişsiz Free paketinə keçid. Aktiv işçi limiti 3 nəfər, filial sayı 1 olaraq tənzimlənir."
-                : "AGENTS.md qaydalarına uyğun sınaq mühiti. Real bank kartı tələb olunmur; əməliyyat idempotent gateway simulyasiyası ilə icra edilir."}
-            </p>
-
-            <div style={{ background: "#f4f5f7", padding: 12, borderRadius: 8, marginBottom: 16, fontSize: "0.9rem" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                <span>Paket:</span> <strong>{selectedPlan.toUpperCase()}</strong>
-              </div>
-              {selectedPlan === "business" && extraBranches > 0 && (
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                  <span>Əlavə filial:</span> <strong>+{extraBranches} (+5 ₼)</strong>
-                </div>
-              )}
-              <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid #dfe1e6", paddingTop: 6, fontWeight: 700 }}>
-                <span>Yekun məbləğ:</span> <span>{planPrices[selectedPlan]},00 ₼ / ay</span>
-              </div>
-            </div>
-
-            <form onSubmit={handleCheckout} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-                <button
-                  type="button"
-                  className="button secondary"
-                  onClick={() => setShowCheckoutModal(false)}
-                  disabled={isProcessing}
-                >
-                  Ləğv et
-                </button>
-                <button
-                  type="submit"
-                  className="button primary"
-                  disabled={isProcessing}
-                >
-                  {isProcessing
-                    ? "İcra edilir..."
-                    : selectedPlan === "free"
-                    ? "Free Paketi təsdiqlə"
-                    : "Ödənişi təsdiqlə (Sandbox)"}
-                </button>
-              </div>
-            </form>
+      <section className="hub-data-panel">
+        <div className="hub-panel-title">
+          <div>
+            <small>BU AYIN AVANS TARİXÇƏSİ</small>
+            <h2>Verilmiş Avanslar ({memberAdvances.length})</h2>
           </div>
         </div>
-      )}
+        {memberAdvances.length === 0 ? (
+          <p style={{ padding: "16px 0", color: "#738182" }}>Bu ay üçün heç bir avans verilməyib.</p>
+        ) : (
+          memberAdvances.map((adv) => (
+            <div key={adv.id} className="hub-team-row">
+              <div>
+                <strong>{formatMoney(adv.amount_qepik)} avans</strong>
+                <small>Tarix: {adv.issued_on} · Qeyd: {adv.note || "Qeyd yoxdur"}</small>
+              </div>
+              <span style={{ color: "#c0392b", fontWeight: 700 }}>-{formatMoney(adv.amount_qepik)}</span>
+            </div>
+          ))
+        )}
+      </section>
     </>
   );
 }
-function ModulePlaceholder({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) { return <section className="module-placeholder"><span>{icon}</span><h2>{title}</h2><p>{description}</p><div><strong>Frontend axını hazırlanır</strong><p>Bu bölmənin formaları, siyahıları, boş və xəta vəziyyətləri backend məlumat modeli ilə birlikdə aktivləşdiriləcək.</p></div></section> }
+
+// 6. Reports Panel
+function ReportsPanel({ data }: { data: ManagerHubData }) {
+  return (
+    <>
+      <section className="hub-metrics">
+        <article>
+          <small>ÜMUMİ FİLİAL SAYI</small>
+          <strong>{data.branches.length}</strong>
+          <span>qeydiyyatda</span>
+        </article>
+        <article>
+          <small>ÜMUMİ HEYƏT</small>
+          <strong>{data.team.length}</strong>
+          <span>bütün vəzifələr</span>
+        </article>
+        <article>
+          <small>GÜNLÜK DAVAMİYYƏT</small>
+          <strong>{data.todayAttendance.length}</strong>
+          <span>bu günün qeydləri</span>
+        </article>
+        <article>
+          <small>PLANLAŞDIRILMIŞ NÖVBƏ</small>
+          <strong>{data.shifts.length}</strong>
+          <span>aktiv növbə</span>
+        </article>
+      </section>
+
+      <section className="hub-data-panel" style={{ marginTop: 16 }}>
+        <div className="hub-panel-title">
+          <div>
+            <small>FİLİAL GÖSTƏRİCİLƏRİ</small>
+            <h2>Filiallar Üzrə Davamiyyət</h2>
+          </div>
+          <button className="button secondary compact" title="Davamiyyət hesabatını yüklə">
+            <Download size={14} /> Excel çıxarışı
+          </button>
+        </div>
+        {data.branches.map((b) => {
+          const assigned = data.branchAssignments.filter((a) => a.branch_id === b.id).length;
+          const todayBranchAtt = data.todayAttendance.filter((a) => a.branch_id === b.id).length;
+          return (
+            <div key={b.id} className="hub-team-row">
+              <div>
+                <strong>{b.name}</strong>
+                <small>
+                  {assigned} təyin edilmiş işçi · Bu gün {todayBranchAtt} davamiyyət qeydi
+                </small>
+              </div>
+              <span>Radius: {b.radius_m} m</span>
+              <b className="hub-presence">
+                <i /> Aktiv
+              </b>
+            </div>
+          );
+        })}
+      </section>
+    </>
+  );
+}
+
+// 7. Interactive Tasks Sample
+function TasksSample() {
+  const [tasks, setTasks] = useState([
+    { id: 1, title: "Kassa açılışı və ilkin çek hesabatı", assignee: "Növbətçi", done: true, due: "09:15" },
+    { id: 2, title: "Vitrin və soyuducu dərəcələrinin qeydi", assignee: "Barista", done: true, due: "10:00" },
+    { id: 3, title: "Tədarükçüdən süd və qəhvə dənələrinin qəbulu", assignee: "Növbətçi", done: false, due: "15:30" },
+    { id: 4, title: "Axşam kassa bağlama və Z-hesabat", assignee: "Rəhbər", done: false, due: "18:00" },
+  ]);
+
+  const toggle = (id: number) => {
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
+  };
+
+  return (
+    <section className="hub-data-panel">
+      <div className="hub-panel-title">
+        <div>
+          <small>GÜNDƏLİK VƏZİFƏLƏR</small>
+          <h2>Tapşırıqlar</h2>
+        </div>
+        <span className="hub-count">
+          {tasks.filter((t) => t.done).length} / {tasks.length} tamamlanıb
+        </span>
+      </div>
+      {tasks.map((task) => (
+        <div
+          key={task.id}
+          className="hub-team-row"
+          style={{ cursor: "pointer" }}
+          onClick={() => toggle(task.id)}
+        >
+          <input
+            type="checkbox"
+            checked={task.done}
+            readOnly
+            style={{ width: 18, height: 18, accentColor: "#10b6a7" }}
+          />
+          <div>
+            <strong
+              style={{
+                textDecoration: task.done ? "line-through" : "none",
+                color: task.done ? "#738182" : "inherit",
+              }}
+            >
+              {task.title}
+            </strong>
+            <small>
+              Təyin edilib: {task.assignee} · İcra vaxtı: {task.due}
+            </small>
+          </div>
+          <b className={task.done ? "hub-presence" : "hub-pending"}>
+            {task.done ? "Tamamlandı" : "Gözləyir"}
+          </b>
+        </div>
+      ))}
+    </section>
+  );
+}

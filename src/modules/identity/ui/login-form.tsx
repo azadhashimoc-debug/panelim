@@ -25,16 +25,25 @@ export function LoginForm({ configured }: { configured: boolean }) {
     setError("");
     const form = new FormData(event.currentTarget);
     try {
-      await api("/api/auth", {
+      const result = await api<{
+        success: boolean;
+        needsSetup?: boolean;
+        redirect?: string;
+      }>("/api/auth", {
         action: "login",
         email: form.get("email"),
         password: form.get("password"),
       });
       const qr = new URL(window.location.href).searchParams.get("qr");
+      if (result.needsSetup) {
+        router.replace("/qeydiyyat?qurulum=davam");
+        router.refresh();
+        return;
+      }
       router.replace(
         qr && qr.length <= 1024
           ? `/isci?qr=${encodeURIComponent(qr)}`
-          : "/isci",
+          : result.redirect || "/isci",
       );
       router.refresh();
     } catch (e) {
@@ -84,9 +93,9 @@ export function LoginForm({ configured }: { configured: boolean }) {
           <div className="auth-mobile-brand">
             <Brand />
           </div>
-          <Link className="auth-back" href="/isci">
+          <Link className="auth-back" href="/">
             <ArrowLeft size={15} />
-            {tr("İşçi kabinetinə qayıt")}
+            {tr("Ana səhifəyə qayıt")}
           </Link>
           <h1>{tr("Yenidən xoş gördük.")}</h1>
           <p>{tr("İş gününüzə başlamaq üçün hesabınıza daxil olun.")}</p>
@@ -152,10 +161,10 @@ export function LoginForm({ configured }: { configured: boolean }) {
               "İşçi hesabı və şifrə bərpası üçün biznes sahibinizə müraciət edin. Məxfi məlumatlarınızı heç kimlə paylaşmayın.",
             )}
           </p>
-          <div style={{ marginTop: 16, textAlign: "center", fontSize: "0.88rem", color: "#6b778c" }}>
+          <div style={{ marginTop: 20, textAlign: "center", fontSize: "0.88rem", color: "var(--dim)" }}>
             Yeni şirkət hesabı açmaq istəyirsiniz?{" "}
-            <Link href="/qeydiyyat" style={{ color: "#0052cc", fontWeight: 600 }}>
-              14 günlük sınaqla qeydiyyatdan keçin
+            <Link href="/qeydiyyat" style={{ color: "var(--accent)", fontWeight: 600 }}>
+              Qeydiyyatdan keçin
             </Link>
           </div>
         </div>

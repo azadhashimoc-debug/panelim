@@ -2,28 +2,32 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-  ArrowDownLeft,
   ArrowRight,
   ArrowUpRight,
   Building2,
   CalendarDays,
   Check,
-  CheckCheck,
   ChevronRight,
+  Clock,
   Coffee,
   FilePenLine,
-  History,
+  FileSpreadsheet,
+  FileText,
   MapPin,
   Menu,
+  Play,
   Plus,
   QrCode,
   ReceiptText,
-  ScanLine,
+  Search,
   ShieldCheck,
+  Sparkles,
   Store,
+  UserCheck,
   UsersRound,
+  Wallet,
   X,
 } from "lucide-react";
 import { marketing as m } from "../content";
@@ -37,39 +41,152 @@ function MarketingLogo({ light = false }: { light?: boolean }) {
       className={`${styles.logo} ${light ? styles.lightLogo : ""}`}
     >
       <span className={styles.logoMark}>
-        <Image src="/logo.png" alt="" width={154} height={103} priority />
+        <QrCode size={17} strokeWidth={2.4} />
       </span>
-      <span>
+      <span className={styles.logoText}>
         panelim<span className={styles.logoDomain}>.az</span>
       </span>
     </Link>
   );
 }
-function DemoLink({
-  dark = false,
-  small = false,
-}: {
-  dark?: boolean;
-  small?: boolean;
-}) {
-  return (
-    <Link
-      href="/demo"
-      className={`${styles.demoButton} ${dark ? styles.darkDemo : ""} ${small ? styles.smallDemo : ""}`}
-    >
-      {m.demo}
-      <ArrowUpRight size={17} aria-hidden="true" />
-    </Link>
-  );
-}
+
 const featureIcons = [QrCode, CalendarDays, ReceiptText, FilePenLine, Building2];
 const audienceIcons = [Coffee, Store, UsersRound];
 
+// Distinct Cockpit Interactive Scenarios for panelim.az
+const AUDIT_SCENARIOS = [
+  {
+    id: "late-check",
+    question: "Bu gün hansı filialda gecikmə və ya növbə çatışmazlığı var?",
+    readingText: "2 filial və 18 işçi qrafiki analiz edilir...",
+    tags: ["Nizami filialı", "Sahil filialı", "Gündüz növbəsi", "QR Loqları"],
+    stats: { activeStaff: "15 / 18", shiftTime: "09:00 – 18:00", advanceTotal: "180.00 ₼" },
+    answerHeading: "Nizami filialında 1 gecikmə qeydə alınıb",
+    answerLead: "Rəşad Əliyev saat 09:18-də GPS (12m radius) və QR ilə giriş edib (18 dəqiqə gecikmə). Sahil filialında bütün 8 işçi vaxtında növbədədir.",
+    sources: [
+      { name: "Nizami filialı QR canlı jurnalı", ext: "LIVE", time: "09:18:04", status: "ok" },
+      { name: "Oktyabr növbə qrafiki.xlsx", ext: "XLSX", time: "18 işçi", status: "verified" },
+      { name: "Sahil filialı GPS radius yoxlaması", ext: "GEO", time: "8/8 heyət", status: "verified" },
+    ],
+  },
+  {
+    id: "payroll-check",
+    question: "Bu ay təsdiq gözləyən əlavə saat və avans ödənişləri nə qədərdir?",
+    readingText: "Daxili maaş modulu və avans blankları hesablanır...",
+    tags: ["Maaş uçotu", "Avans sorğuları", "Əlavə saatlar", "Rəhbər təsdiqi"],
+    stats: { activeStaff: "18 / 18", shiftTime: "Aylıq bağlama", advanceTotal: "340.00 ₼" },
+    answerHeading: "2 əlavə saat və 1 avans müraciəti təsdiq gözləyir",
+    answerLead: "Mətbəx heyətindən 4 saatlıq əlavə iş vaxtı (28 ₼) və servis heyətindən 100 ₼ avans sorğusu rəhbər qərarı üçün hazırdır.",
+    sources: [
+      { name: "Aylıq daxili maaş cədvəli.pdf", ext: "PDF", time: "Cari dövr", status: "verified" },
+      { name: "Avans blankları (Nizami filialı)", ext: "DOC", time: "340.00 ₼", status: "ok" },
+      { name: "Audit & qərar tarixçəsi", ext: "SEC", time: "2 gözləmədə", status: "verified" },
+    ],
+  },
+];
+
 export function WelcomePage({ year }: { year: number }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeFeature, setActiveFeature] = useState(0);
+  const [activeScenarioIdx, setActiveScenarioIdx] = useState(0);
+  const [isTyping, setIsTyping] = useState(false);
+  const [streamProgress, setStreamProgress] = useState(100);
+  const [sidebarTab, setSidebarTab] = useState<"davamiyyet" | "nobveler" | "maas">("davamiyyet");
+  const [cursorPos, setCursorPos] = useState({ x: 340, y: 38, isClicking: false, visible: true });
+  const [isUserInteracting, setIsUserInteracting] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
+  const cockpitRef = useRef<HTMLDivElement>(null);
+
+  const scenario = AUDIT_SCENARIOS[activeScenarioIdx];
+
+  // Switch scenario smoothly with animated stream effect
+  const handleSwitchScenario = (nextIdx: number) => {
+    if (nextIdx === activeScenarioIdx) return;
+    setIsTyping(true);
+    setStreamProgress(20);
+    setActiveScenarioIdx(nextIdx);
+    setTimeout(() => {
+      setStreamProgress(70);
+    }, 300);
+    setTimeout(() => {
+      setStreamProgress(100);
+      setIsTyping(false);
+    }, 700);
+  };
+
+  // Autonomous Self-Playing Cursor Simulation (Framer-grade cinematic demo)
+  useEffect(() => {
+    if (isUserInteracting) return;
+
+    let step = 0;
+    // Pre-calculated target coordinates inside the cockpit screen:
+    // Tab 0: { x: 310, y: 44 }
+    // Tab 1: { x: 470, y: 44 }
+    // Sources card: { x: 740, y: 140 }
+    // Sidebar nav: { x: 80, y: 120 }
+    const script = [
+      // Step 0: Move to Tab 1 (Maaş & Avans)
+      { x: 475, y: 46, click: false, delay: 1800, action: () => {} },
+      // Step 1: Click Tab 1
+      { x: 475, y: 46, click: true, delay: 600, action: () => handleSwitchScenario(1) },
+      // Step 2: Move toward response result
+      { x: 430, y: 220, click: false, delay: 2200, action: () => {} },
+      // Step 3: Move over to sources panel
+      { x: 740, y: 155, click: false, delay: 2000, action: () => {} },
+      // Step 4: Click a source preview
+      { x: 740, y: 155, click: true, delay: 500, action: () => {} },
+      // Step 5: Hover left sidebar menu
+      { x: 90, y: 118, click: false, delay: 2200, action: () => setSidebarTab("nobveler") },
+      // Step 6: Move back to Tab 0 (Davamiyyət & Gecikmələr)
+      { x: 310, y: 46, click: false, delay: 2000, action: () => {} },
+      // Step 7: Click Tab 0
+      { x: 310, y: 46, click: true, delay: 600, action: () => {
+        handleSwitchScenario(0);
+        setSidebarTab("davamiyyet");
+      } },
+      // Step 8: Rest in center
+      { x: 390, y: 180, click: false, delay: 2600, action: () => {} },
+    ];
+
+    let timer: NodeJS.Timeout;
+
+    const runScriptStep = (idx: number) => {
+      const current = script[idx];
+      setCursorPos((prev) => ({
+        ...prev,
+        x: current.x,
+        y: current.y,
+        isClicking: current.click,
+        visible: true,
+      }));
+
+      if (current.action) {
+        current.action();
+      }
+
+      const nextIdx = (idx + 1) % script.length;
+      timer = setTimeout(() => {
+        runScriptStep(nextIdx);
+      }, current.delay);
+    };
+
+    timer = setTimeout(() => {
+      runScriptStep(0);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [isUserInteracting]);
+
+  // Split title into animated words for the staggered blur-fade entrance
+  const titleWords = m.title.split(" ");
+
   return (
     <div className={styles.site}>
+      {/* Framer Sunset Sky Atmosphere & Dusk Fog */}
+      <div className={styles.heroAtmosphere} aria-hidden="true" />
+      <div className={styles.duskFog} aria-hidden="true" />
+
+      {/* Navigation Header */}
       <header
         className={styles.header}
         onKeyDown={(event) => {
@@ -92,10 +209,13 @@ export function WelcomePage({ year }: { year: number }) {
             <Link href="/giris" className={styles.loginLink}>
               {m.login}
             </Link>
-            <Link href="/qeydiyyat" className={styles.loginLink} style={{ color: "#0052cc", fontWeight: 600 }}>
-              Qeydiyyat
+            <Link href="/demo" className={styles.demoLink}>
+              {m.demo}
+              <ArrowUpRight size={13} aria-hidden="true" />
             </Link>
-            <DemoLink small />
+            <Link href="/qeydiyyat" className={styles.primaryCta}>
+              Ödənişsiz başla
+            </Link>
             <button
               ref={menuButton}
               className={styles.menuButton}
@@ -104,10 +224,11 @@ export function WelcomePage({ year }: { year: number }) {
               aria-controls="mobile-site-navigation"
               onClick={() => setMenuOpen((open) => !open)}
             >
-              {menuOpen ? <X size={22} /> : <Menu size={22} />}
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
+
         {menuOpen && (
           <nav
             id="mobile-site-navigation"
@@ -121,474 +242,630 @@ export function WelcomePage({ year }: { year: number }) {
                 onClick={() => setMenuOpen(false)}
               >
                 {link.label}
-                <ChevronRight size={17} aria-hidden="true" />
+                <ChevronRight size={16} aria-hidden="true" />
               </a>
             ))}
-            <Link
-              href="/qeydiyyat"
-              style={{ fontWeight: 600, color: "#0052cc", padding: "12px 16px", display: "flex", justifyContent: "space-between" }}
-              onClick={() => setMenuOpen(false)}
-            >
-              Qeydiyyat (14 günlük sınaq)
-              <ChevronRight size={17} aria-hidden="true" />
-            </Link>
+            <div className={styles.mobileActionBox}>
+              <Link
+                href="/giris"
+                className={styles.mobileLoginBtn}
+                onClick={() => setMenuOpen(false)}
+              >
+                {m.login}
+              </Link>
+              <Link
+                href="/demo"
+                className={styles.mobileDemoBtn}
+                onClick={() => setMenuOpen(false)}
+              >
+                {m.demo}
+              </Link>
+              <Link
+                href="/qeydiyyat"
+                className={styles.mobileCta}
+                onClick={() => setMenuOpen(false)}
+              >
+                Ödənişsiz başla
+                <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </div>
           </nav>
         )}
       </header>
+
       <main id="main">
+        {/* Luxury Framer Hero Section */}
         <section className={`${styles.hero} ${styles.container}`}>
-          <div className={styles.heroCopy}>
-            <p className={styles.eyebrow}>
-              <span />
-              {m.eyebrow}
-            </p>
-            <h1>
-              {m.titleFirst}
-              <br />
-              <span>{m.titleAccent}</span>
-            </h1>
-            <p className={styles.heroIntro}>{m.intro}</p>
-            <div className={styles.heroActions}>
-              <Link href="/qeydiyyat" className={styles.demoButton} style={{ background: "#0052cc", color: "#fff" }}>
-                14 günlük sınağa başla
-              </Link>
-              <DemoLink />
-              <Link href="/giris" className={styles.secondaryLink}>
-                {m.login}
-                <ArrowRight size={17} aria-hidden="true" />
-              </Link>
+          <div className={styles.heroContent}>
+            <div className={styles.badgePill}>
+              <span className={styles.badgeDot} />
+              <span>{m.eyebrow}</span>
             </div>
-            <p className={styles.demoNote}>{m.demoNote}</p>
-            <div className={styles.heroChecks}>
-              {m.heroChecks.map((text) => (
-                <span key={text}>
-                  <Check size={14} aria-hidden="true" />
-                  {text}
+
+            <h1 className={styles.heroTitle} aria-label={m.title}>
+              {titleWords.map((word, index) => (
+                <span
+                  key={`${word}-${index}`}
+                  className={styles.animatedWord}
+                  style={{ animationDelay: `${index * 0.08}s` }}
+                >
+                  {word}&nbsp;
                 </span>
               ))}
+            </h1>
+
+            <p className={styles.heroSubHeadline}>
+              Kağız jurnallara və bahalı turniketlərə son: Dinamik QR davamiyyət, dəqiq növbələr və daxili maaş uçotu cibinizdə.
+            </p>
+
+            {/* Framer-style Input Pill */}
+            <div className={styles.heroActionBar}>
+              <input
+                type="email"
+                placeholder="İş e-poçt ünvanınız"
+                className={styles.actionEmailInput}
+                aria-label="E-poçt ünvanınız"
+              />
+              <Link href="/qeydiyyat" className={styles.heroButtonPrimary}>
+                Ödənişsiz başla
+                <ArrowRight size={15} />
+              </Link>
+            </div>
+
+            <div style={{ marginTop: "12px" }}>
+              <Link href="/demo" className={styles.heroWatchDemo}>
+                <Play size={13} fill="currentColor" />
+                <span>Canlı 2 dəqiqəlik demoya bax</span>
+              </Link>
             </div>
           </div>
-          <figure className={styles.heroArt} aria-label={m.sampleDescription}>
-            <div className={styles.sampleLabel}>
-              <span />
-              {m.sample}
+
+          {/* Floating Cinematic Distinct Cockpit for panelim.az */}
+          <div
+            ref={cockpitRef}
+            className={styles.heroFloatingCockpit}
+            onMouseEnter={() => setIsUserInteracting(true)}
+            onMouseLeave={() => setIsUserInteracting(false)}
+          >
+            {/* Autonomous Virtual Mouse Cursor */}
+            <div
+              className={`${styles.virtualCursor} ${cursorPos.isClicking ? styles.virtualCursorClick : ""} ${
+                !cursorPos.visible || isUserInteracting ? styles.virtualCursorHidden : ""
+              }`}
+              style={{
+                transform: `translate3d(${cursorPos.x}px, ${cursorPos.y}px, 0)`,
+              }}
+              aria-hidden="true"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className={styles.cursorSvg}>
+                <path
+                  d="M4.5 3.5L10.5 20.5L13.5 13.5L20.5 10.5L4.5 3.5Z"
+                  fill="#ffffff"
+                  stroke="#13110f"
+                  strokeWidth="1.8"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <div className={styles.cursorRipple} />
             </div>
-            <div className={styles.artCircle} />
-            <div className={styles.artCircleSmall} />
-            <div className={styles.productWindow} aria-hidden="true">
-              <div className={styles.windowBar}>
-                <span className={styles.windowBrand}>
-                  panelim<span>.az</span>
-                </span>
-                <span>{m.sampleCompany}</span>
-                <span className={styles.windowAvatar}>P</span>
-              </div>
-              <div className={styles.windowBody}>
-                <div className={styles.miniSidebar}>
-                  <ScanLine size={16} />
-                  <History size={16} />
-                  <FilePenLine size={16} />
-                  <span />
+
+            <div className={styles.cockpitScreen}>
+              {/* Cockpit Top Bar */}
+              <div className={styles.cockpitTopNav}>
+                <div className={styles.cockpitNavLeft}>
+                  <div className={styles.cockpitBrand}>
+                    <Sparkles size={16} className={styles.sparkleIcon} />
+                    <span>panelim.az Köməkçi</span>
+                  </div>
+                  <div className={styles.branchSelector}>
+                    <span>Mado · Nizami filialı</span>
+                    <span className={styles.branchTagLive}>Canlı</span>
+                  </div>
                 </div>
-                <div className={styles.miniMain}>
-                  <div className={styles.miniGreeting}>
-                    <span>{m.sampleGreeting}</span>
-                    <CalendarDays size={15} />
+
+                <div className={styles.cockpitNavRight}>
+                  <div className={styles.cockpitGpsBadge}>
+                    <MapPin size={12} />
+                    <span>Geolokasiya: 12m aktiv</span>
                   </div>
-                  <div className={styles.miniClock}>
-                    <div>
-                      <small>{m.sampleClockLabel}</small>
-                      <span className={styles.workingPill}>
-                        {m.sampleStatus}
-                      </span>
-                    </div>
-                    <strong>
-                      09:01<span>:24</span>
-                    </strong>
-                    <p>{m.sampleTime}</p>
-                    <div className={styles.miniConfirmation}>
-                      <CheckCheck size={18} />
-                      {m.sampleRecorded}
+                  <div className={styles.cockpitDateFilter}>
+                    <Clock size={12} />
+                    <span>Bugün · Canlı izləmə</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Cockpit 3-Column Glass Layout */}
+              <div className={styles.cockpitBody}>
+                {/* Left Navigation & Agent Panel */}
+                <div className={styles.cockpitSidebar}>
+                  <div className={styles.cockpitSearchBox}>
+                    <Search size={13} className={styles.searchIcon} />
+                    <input
+                      type="text"
+                      placeholder="İşçi və ya filial axtar..."
+                      readOnly
+                      value=""
+                      className={styles.cockpitSearchInput}
+                      aria-label="Axtarış paneli"
+                    />
+                    <kbd className={styles.cockpitKbd}>⌘K</kbd>
+                  </div>
+
+                  <div className={styles.cockpitNavMenu}>
+                    <button
+                      type="button"
+                      className={`${styles.cockpitNavItem} ${sidebarTab === "davamiyyet" ? styles.activeNavItem : ""}`}
+                      onClick={() => setSidebarTab("davamiyyet")}
+                    >
+                      <QrCode size={15} />
+                      <span>Davamiyyət</span>
+                      <span className={styles.navCountBadge}>15/18</span>
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.cockpitNavItem} ${sidebarTab === "nobveler" ? styles.activeNavItem : ""}`}
+                      onClick={() => setSidebarTab("nobveler")}
+                    >
+                      <CalendarDays size={15} />
+                      <span>Növbə qrafiki</span>
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.cockpitNavItem} ${sidebarTab === "maas" ? styles.activeNavItem : ""}`}
+                      onClick={() => setSidebarTab("maas")}
+                    >
+                      <Wallet size={15} />
+                      <span>Daxili maaş & avans</span>
+                    </button>
+                  </div>
+
+                  <div className={styles.cockpitAgentsSection}>
+                    <span className={styles.agentsTitle}>CANLI FİLİAL HEYƏTİ</span>
+                    <div className={styles.agentsList}>
+                      <div className={styles.agentItem}>
+                        <span className={`${styles.agentStatusDot} ${styles.dotLive}`} />
+                        <span className={styles.agentName}>Mətbəx heyəti</span>
+                        <span className={styles.agentStateTag}>Canlı</span>
+                      </div>
+                      <div className={styles.agentItem}>
+                        <span className={`${styles.agentStatusDot} ${styles.dotLive}`} />
+                        <span className={styles.agentName}>Servis & Zal</span>
+                        <span className={styles.agentStateTag}>Canlı</span>
+                      </div>
+                      <div className={styles.agentItem}>
+                        <span className={`${styles.agentStatusDot} ${styles.dotPaused}`} />
+                        <span className={styles.agentName}>Təchizat & Anbar</span>
+                        <span className={styles.agentStatePaused}>Fasilə</span>
+                      </div>
                     </div>
                   </div>
-                  <div className={styles.miniShift}>
-                    <CalendarDays size={18} />
-                    <span>
-                      {m.sampleShift}
-                      <strong>{m.sampleSchedule}</strong>
+
+                  {/* Quick User Identity */}
+                  <div className={styles.cockpitManagerFooter}>
+                    <div className={styles.managerAvatar}>RM</div>
+                    <div className={styles.managerInfo}>
+                      <span className={styles.managerName}>Rəhbər / Menecer</span>
+                      <span className={styles.managerRole}>Baş inzibatçı</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Center AI Auditor & Stream Dialogue */}
+                <div className={styles.cockpitMainStage}>
+                  {/* Scenario Toggle Pills */}
+                  <div className={styles.scenarioPills}>
+                    <button
+                      type="button"
+                      className={`${styles.scenarioTab} ${activeScenarioIdx === 0 ? styles.scenarioTabActive : ""}`}
+                      onClick={() => handleSwitchScenario(0)}
+                    >
+                      Davamiyyət & Gecikmələr
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.scenarioTab} ${activeScenarioIdx === 1 ? styles.scenarioTabActive : ""}`}
+                      onClick={() => handleSwitchScenario(1)}
+                    >
+                      Maaş & Avans Hesablaması
+                    </button>
+                  </div>
+
+                  {/* Manager Query Message Bubble */}
+                  <div className={styles.dialogueBubbleWrapper}>
+                    <div className={styles.managerBubble}>
+                      <span>{scenario.question}</span>
+                    </div>
+                  </div>
+
+                  {/* Response Engine Card */}
+                  <div className={styles.assistantResponseCard}>
+                    <div className={styles.responseStatusHeader}>
+                      <span className={styles.pulsingIndicator} />
+                      <span className={styles.readingLabel}>{scenario.readingText}</span>
+                    </div>
+
+                    {/* Chips for scanned entities */}
+                    <div className={styles.analyzedChips}>
+                      {scenario.tags.map((tag) => (
+                        <div key={tag} className={styles.analyzedChip}>
+                          <FileText size={11} className={styles.chipIcon} />
+                          <span>{tag}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Verified Result Card */}
+                    <div className={`${styles.resultBox} ${isTyping ? styles.resultBoxBlur : ""}`}>
+                      <div className={styles.resultHeader}>
+                        <UserCheck size={16} className={styles.resultCheckIcon} />
+                        <h4>{scenario.answerHeading}</h4>
+                      </div>
+                      <p className={styles.resultParagraph}>{scenario.answerLead}</p>
+
+                      {/* Stream Progress Bar */}
+                      <div className={styles.streamProgressTrack}>
+                        <div
+                          className={styles.streamProgressBar}
+                          style={{ width: `${streamProgress}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom Interactive Command Bar */}
+                  <div className={styles.cockpitInputBar}>
+                    <Plus size={14} className={styles.inputPlusIcon} />
+                    <span className={styles.inputPlaceholderText}>
+                      Əmrlər: &quot;Filial üzrə bu günün çıxarışını hazırla&quot; və ya &quot;İcazə ver&quot;...
                     </span>
-                    <span className={styles.miniShiftDot} />
+                    <button type="button" className={styles.inputSendBtn} aria-label="Sorğu göndər">
+                      <ArrowRight size={13} />
+                    </button>
                   </div>
-                  <div className={styles.miniHistory}>
-                    <span>{m.sampleHistory}</span>
-                    <div>
-                      <span>
-                        <ArrowDownLeft size={13} />
-                        {m.sampleIn}
-                      </span>
-                      <strong>09:01</strong>
-                      <span>{m.sampleConfirmed}</span>
+                </div>
+
+                {/* Right Verified Sources & Realtime Log */}
+                <div className={styles.cockpitRightInspector}>
+                  <div className={styles.sourcesHeader}>
+                    <div className={styles.sourcesTitle}>
+                      <FileSpreadsheet size={13} className={styles.sourcesIcon} />
+                      <span>Yoxlanılan Mənbələr</span>
                     </div>
-                    <div>
-                      <span>
-                        <ArrowUpRight size={13} />
-                        {m.sampleOut}
-                      </span>
-                      <strong>— : —</strong>
-                      <span>{m.samplePending}</span>
+                    <span className={styles.sourcesCount}>{scenario.sources.length} aktiv</span>
+                  </div>
+
+                  <div className={styles.sourcesList}>
+                    {scenario.sources.map((src) => (
+                      <div key={src.name} className={styles.sourceCard}>
+                        <div className={styles.sourceCardTop}>
+                          <span className={styles.sourceBadge}>{src.ext}</span>
+                          <span className={styles.sourceStatusIndicator}>
+                            <ShieldCheck size={12} />
+                            {src.status === "verified" ? "Doğrulandı" : "Canlı"}
+                          </span>
+                        </div>
+                        <span className={styles.sourceName}>{src.name}</span>
+                        <div className={styles.sourceMeta}>
+                          <span>{src.time}</span>
+                          <span className={styles.sourceDetailDot}>•</span>
+                          <span>Audit qeydi #2026</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Live Verification Summary Footer */}
+                  <div className={styles.sourcesAuditFooter}>
+                    <div className={styles.auditSecurityNote}>
+                      <ShieldCheck size={14} className={styles.shieldIcon} />
+                      <div>
+                        <strong>100% Audit Bütövlüyü</strong>
+                        <p>QR oxunuşu və GPS mütləq yoxlanılır, manual dəyişikliklər qeyd olunur.</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className={styles.floatingQr} aria-hidden="true">
-              <QrCode size={39} strokeWidth={1.4} />
-              <span>
-                {m.sampleQr}
-                <strong>{m.sampleSecure}</strong>
-              </span>
-              <span className={styles.verified}>
-                <Check size={12} />
-              </span>
-            </div>
-            <div className={styles.locationBubble} aria-hidden="true">
-              <MapPin size={16} />
-              {m.sampleLocation}
-              <span />
-            </div>
-          </figure>
-        </section>
-        <section className={`${styles.audience} ${styles.container}`}>
-          <p>{m.audienceLead}</p>
-          <div>
-            {m.audiences.map((text, index) => {
-              const Icon = audienceIcons[index];
-              return (
-                <span key={text}>
-                  <Icon size={24} strokeWidth={1.5} aria-hidden="true" />
-                  {text}
-                </span>
-              );
-            })}
           </div>
         </section>
-        <section
-          id="imkanlar"
-          className={`${styles.features} ${styles.container}`}
-        >
-          <div className={styles.sectionHeading}>
-            <p className={styles.eyebrow}>{m.featureEyebrow}</p>
-            <h2>{m.featureTitle}</h2>
-            <p>{m.featureIntro}</p>
+
+        {/* Audience Strip */}
+        <section className={styles.audienceSection}>
+          <div className={styles.container}>
+            <div className={styles.audienceGrid}>
+              <div>
+                <span className={styles.audienceIntroTitle}>Hədəf auditoriyamız:</span>
+                <p className={styles.audienceIntroDesc}>5–50 işçili növbəli xidmət və ticarət şəbəkələri</p>
+              </div>
+              <div className={styles.audiencePills}>
+                {m.audiences.map((text, idx) => {
+                  const Icon = audienceIcons[idx];
+                  return (
+                    <div key={text} className={styles.audiencePill}>
+                      <Icon size={16} className={styles.audienceIcon} />
+                      <span>{text}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-          <div className={styles.featureLayout}>
-            <div className={styles.accordions}>
+        </section>
+
+        {/* Features Workbench */}
+        <section id="imkanlar" className={`${styles.featuresSection} ${styles.container}`}>
+          <div className={styles.sectionHeader}>
+            <div className={styles.badgePill}>{m.featureEyebrow}</div>
+            <h2 className={styles.sectionHeading}>{m.featureTitle}</h2>
+            <p className={styles.sectionLead}>{m.featureIntro}</p>
+          </div>
+
+          <div className={styles.featureWorkbench}>
+            {/* Interactive Feature Accordion */}
+            <div className={styles.featureAccordionList}>
               {m.features.map((feature, index) => {
                 const Icon = featureIcons[index];
+                const isSelected = activeFeature === index;
                 return (
-                  <details
+                  <div
                     key={feature.title}
-                    name="panelim-features"
-                    open={index === 0}
-                    className={styles.feature}
+                    className={`${styles.featureItem} ${isSelected ? styles.featureItemActive : ""}`}
+                    onClick={() => setActiveFeature(index)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") setActiveFeature(index);
+                    }}
                   >
-                    <summary>
-                      <span className={styles.featureIcon}>
-                        <Icon size={21} />
-                      </span>
-                      <h3>{feature.title}</h3>
-                      <Plus size={19} className={styles.plus} />
-                    </summary>
-                    <div className={styles.featureContent}>
-                      <p>{feature.description}</p>
-                      <ul>
-                        {feature.bullets.map((item) => (
-                          <li key={item}>
-                            <Check size={15} aria-hidden="true" />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                      <Link
-                        href={
-                          index === 3
-                            ? "/demo/muracietler"
-                            : index === 0
-                              ? "/demo"
-                              : "/rehber"
-                        }
-                      >
-                        {feature.link}
-                        <ArrowRight size={16} aria-hidden="true" />
-                      </Link>
+                    <div className={styles.featureItemHeader}>
+                      <div className={styles.featureIconWrap}>
+                        <Icon size={18} />
+                      </div>
+                      <h3 className={styles.featureItemTitle}>{feature.title}</h3>
                     </div>
-                  </details>
+                    {isSelected && (
+                      <>
+                        <p className={styles.featureItemDesc}>{feature.description}</p>
+                        <ul className={styles.featureBulletList}>
+                          {feature.bullets.map((b) => (
+                            <li key={b}>
+                              <Check size={14} className={styles.bulletCheck} />
+                              <span>{b}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+                  </div>
                 );
               })}
             </div>
-            <div className={styles.featureIllustration}>
-              <div className={styles.bigQr}>
-                <QrCode size={110} strokeWidth={1.2} aria-hidden="true" />
-                <span>
-                  <ScanLine size={17} />
-                  {m.sampleQr}
-                </span>
-              </div>
-              <div className={styles.scanPath}>
-                <span />
-                <span />
-                <span />
-                <span />
-              </div>
-              <div className={styles.featurePhone}>
-                <div className={styles.phoneNotch} />
-                <div className={styles.phoneCheck}>
-                  <Check size={34} />
+
+            {/* Visual Feature Showcase */}
+            <div className={styles.featureDisplayCard}>
+              <div className={styles.displayCardHeader}>
+                <div className={styles.displayIconBox}>
+                  <QrCode size={24} />
                 </div>
-                <strong>{m.sampleRecorded}</strong>
-                <p>09:01 · {m.sampleTime}</p>
-                <span>
-                  <MapPin size={13} />
-                  {m.sampleLocation}
-                </span>
+                <div>
+                  <h4 className={styles.displayTitle}>{m.features[activeFeature].title}</h4>
+                  <span className={styles.displaySub}>panelim.az daxili modul</span>
+                </div>
               </div>
-              <div className={styles.illustrationBadge}>
-                <ShieldCheck size={16} />
-                {m.sampleSecure}
+
+              <div className={styles.displayMetricBox}>
+                <div className={styles.metricItem}>
+                  <Clock size={16} color="var(--color-peach)" />
+                  <span>Dəqiq qeydiyyat: <strong>09:01:24</strong></span>
+                </div>
+                <div className={styles.metricItem}>
+                  <MapPin size={16} color="var(--color-sage)" />
+                  <span>Məkan statusu: <strong>Filial daxili (12 m)</strong></span>
+                </div>
+                <div className={styles.metricItem}>
+                  <Wallet size={16} color="var(--color-peach)" />
+                  <span>Maaş hesablaması: <strong>Avtomatik</strong></span>
+                </div>
+              </div>
+
+              <div style={{ marginTop: "24px" }}>
+                <Link href="/demo" className={styles.featureActionBtn}>
+                  Canlı demoda sına
+                  <ArrowRight size={14} />
+                </Link>
               </div>
             </div>
           </div>
         </section>
-        <section id="tarifler" className={`${styles.features} ${styles.container}`} style={{ marginTop: 60, marginBottom: 60 }}>
-          <div className={styles.sectionHeading}>
-            <p className={styles.eyebrow}>ŞƏFFAF QİYMƏTLƏR</p>
-            <h2>Biznesinizə uyğun sadə tariflər.</h2>
-            <p>14 günlük ödənişsiz sınaqla dərhal başlayın. Kredit kartı tələb olunmur.</p>
+
+        {/* Pricing Matrix */}
+        <section id="tarifler" className={`${styles.pricingSection} ${styles.container}`}>
+          <div className={styles.sectionHeader}>
+            <div className={styles.badgePill}>Şəffaf tariflər</div>
+            <h2 className={styles.sectionHeading}>Biznesinizə uyğun dəqiq tariflər.</h2>
+            <p className={styles.sectionLead}>
+              3 işçiyə qədər həmişəlik Pulsuz. Bütün imkanları dərhal sınaqdan keçirin. Kart tələb olunmur.
+            </p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 20, marginTop: 30 }}>
+          <div className={styles.pricingGrid}>
             {/* Free */}
-            <div style={{ background: "#fff", border: "1px solid #dfe1e6", borderRadius: 12, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
+            <div className={styles.priceCard}>
               <div>
-                <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#6b778c", letterSpacing: 0.5 }}>BAŞLANĞIC</span>
-                <h3 style={{ fontSize: "1.5rem", margin: "8px 0 4px" }}>Free</h3>
-                <p style={{ fontSize: "1.6rem", fontWeight: 800, margin: "8px 0 16px", color: "#172b4d" }}>0 ₼ <small style={{ fontSize: "0.85rem", fontWeight: 500, color: "#6b778c" }}>/ ömürlük</small></p>
-                <p style={{ fontSize: "0.9rem", color: "#5e6c84", marginBottom: 16 }}>3 aktiv işçi · 1 filial</p>
-                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 10, fontSize: "0.88rem" }}>
-                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> QR və GPS ilə davamiyyət</li>
-                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Sadə sabit iş qrafiki</li>
-                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Giriş-çıxış tarixçəsi</li>
+                <span className={styles.tierTag}>Başlanğıc</span>
+                <h3 className={styles.tierName}>Free</h3>
+                <div className={styles.tierPrice}>
+                  0 ₼ <small className={styles.tierPricePeriod}>/ ömürlük</small>
+                </div>
+                <p className={styles.tierScope}>3 aktiv işçi · 1 filial</p>
+                <ul className={styles.tierList}>
+                  <li><Check size={15} className={styles.tierCheck} /> QR və GPS ilə davamiyyət</li>
+                  <li><Check size={15} className={styles.tierCheck} /> Sabit iş qrafiki</li>
+                  <li><Check size={15} className={styles.tierCheck} /> Giriş-çıxış tarixçəsi</li>
                 </ul>
               </div>
-              <Link href="/qeydiyyat" className="button secondary full" style={{ textAlign: "center" }}>
+              <Link href="/qeydiyyat" className={styles.priceButtonSecondary}>
                 Free ilə başla
               </Link>
             </div>
 
             {/* Start */}
-            <div style={{ background: "#fff", border: "1px solid #dfe1e6", borderRadius: 12, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
+            <div className={styles.priceCard}>
               <div>
-                <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#0052cc", letterSpacing: 0.5 }}>KİÇİK KOMANDA</span>
-                <h3 style={{ fontSize: "1.5rem", margin: "8px 0 4px" }}>Start</h3>
-                <p style={{ fontSize: "1.6rem", fontWeight: 800, margin: "8px 0 16px", color: "#172b4d" }}>15 ₼ <small style={{ fontSize: "0.85rem", fontWeight: 500, color: "#6b778c" }}>/ ay</small></p>
-                <p style={{ fontSize: "0.9rem", color: "#5e6c84", marginBottom: 16 }}>10 aktiv işçi · 1 filial</p>
-                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 10, fontSize: "0.88rem" }}>
-                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Bütün Free imkanları</li>
-                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Növbə cədvəli & gecə növbəsi</li>
-                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> İcazə və məzuniyyətlər</li>
-                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Excel çıxarışı (BOM dəstəkli)</li>
+                <span className={styles.tierTag}>Kiçik komanda</span>
+                <h3 className={styles.tierName}>Start</h3>
+                <div className={styles.tierPrice}>
+                  15 ₼ <small className={styles.tierPricePeriod}>/ ay</small>
+                </div>
+                <p className={styles.tierScope}>10 aktiv işçi · 1 filial</p>
+                <ul className={styles.tierList}>
+                  <li><Check size={15} className={styles.tierCheck} /> Bütün Free imkanları</li>
+                  <li><Check size={15} className={styles.tierCheck} /> Növbə cədvəli & gecə növbəsi</li>
+                  <li><Check size={15} className={styles.tierCheck} /> İcazə və məzuniyyətlər</li>
+                  <li><Check size={15} className={styles.tierCheck} /> Excel çıxarışı (BOM dəstəkli)</li>
                 </ul>
               </div>
-              <Link href="/qeydiyyat" className="button secondary full" style={{ textAlign: "center" }}>
+              <Link href="/qeydiyyat" className={styles.priceButtonSecondary}>
                 Start seç
               </Link>
             </div>
 
             {/* Business */}
-            <div style={{ background: "#f4f8ff", border: "2px solid #0052cc", borderRadius: 12, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", boxShadow: "0 8px 24px rgba(0,82,204,0.12)" }}>
-              <span style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", background: "#0052cc", color: "#fff", fontSize: "0.75rem", fontWeight: 700, padding: "4px 12px", borderRadius: 20 }}>
-                ƏN ÇOX SEÇİLƏN · 14 GÜN PULSUZ
-              </span>
+            <div className={`${styles.priceCard} ${styles.priceCardFeatured}`}>
+              <div className={styles.featuredBadge}>
+                Ən çox seçilən · Tam imkanlar
+              </div>
               <div>
-                <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#0052cc", letterSpacing: 0.5 }}>BİZNES İDARƏETMƏ</span>
-                <h3 style={{ fontSize: "1.5rem", margin: "8px 0 4px" }}>Business</h3>
-                <p style={{ fontSize: "1.6rem", fontWeight: 800, margin: "8px 0 16px", color: "#0052cc" }}>29 ₼ <small style={{ fontSize: "0.85rem", fontWeight: 500, color: "#5e6c84" }}>/ ay</small></p>
-                <p style={{ fontSize: "0.9rem", color: "#5e6c84", marginBottom: 16 }}>25 aktiv işçi · 2 filial</p>
-                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 10, fontSize: "0.88rem" }}>
-                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Bütün Start imkanları</li>
-                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Daxili maaş və avans uçotu</li>
-                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Təsdiqlənmiş əlavə saatlar</li>
-                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Tapşırıqlar və filial rolları</li>
+                <span className={styles.tierTagFeatured}>Biznes idarəetmə</span>
+                <h3 className={styles.tierName}>Business</h3>
+                <div className={styles.tierPriceFeatured}>
+                  29 ₼ <small className={styles.tierPricePeriod}>/ ay</small>
+                </div>
+                <p className={styles.tierScope}>25 aktiv işçi · 2 filial</p>
+                <ul className={styles.tierList}>
+                  <li><Check size={15} className={styles.tierCheckFeatured} /> Bütün Start imkanları</li>
+                  <li><Check size={15} className={styles.tierCheckFeatured} /> Daxili maaş və avans uçotu</li>
+                  <li><Check size={15} className={styles.tierCheckFeatured} /> Təsdiqlənmiş əlavə saatlar</li>
+                  <li><Check size={15} className={styles.tierCheckFeatured} /> Tapşırıqlar və filial rolları</li>
                 </ul>
               </div>
-              <Link href="/qeydiyyat" className="button primary full" style={{ textAlign: "center" }}>
-                14 günlük sınaqla başla
+              <Link href="/qeydiyyat" className={styles.priceButtonPrimary}>
+                Ödənişsiz başla
               </Link>
             </div>
 
             {/* Growth */}
-            <div style={{ background: "#fff", border: "1px solid #dfe1e6", borderRadius: 12, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
+            <div className={styles.priceCard}>
               <div>
-                <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#6b778c", letterSpacing: 0.5 }}>BÖYÜK ŞƏBƏKƏ</span>
-                <h3 style={{ fontSize: "1.5rem", margin: "8px 0 4px" }}>Growth</h3>
-                <p style={{ fontSize: "1.6rem", fontWeight: 800, margin: "8px 0 16px", color: "#172b4d" }}>49 ₼ <small style={{ fontSize: "0.85rem", fontWeight: 500, color: "#6b778c" }}>/ ay</small></p>
-                <p style={{ fontSize: "0.9rem", color: "#5e6c84", marginBottom: 16 }}>50 aktiv işçi · 3 filial</p>
-                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 10, fontSize: "0.88rem" }}>
-                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Bütün Business imkanları</li>
-                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Filialların müqayisəli analitikası</li>
-                  <li style={{ display: "flex", alignItems: "center", gap: 8 }}><Check size={16} color="#0052cc" /> Maksimal işçi və filial həcmi</li>
+                <span className={styles.tierTag}>Şəbəkələr</span>
+                <h3 className={styles.tierName}>Growth</h3>
+                <div className={styles.tierPrice}>
+                  49 ₼ <small className={styles.tierPricePeriod}>/ ay</small>
+                </div>
+                <p className={styles.tierScope}>50 aktiv işçi · 3 filial</p>
+                <ul className={styles.tierList}>
+                  <li><Check size={15} className={styles.tierCheck} /> Bütün Business imkanları</li>
+                  <li><Check size={15} className={styles.tierCheck} /> Filialların müqayisəli analitikası</li>
+                  <li><Check size={15} className={styles.tierCheck} /> Maksimal işçi və filial həcmi</li>
                 </ul>
               </div>
-              <Link href="/qeydiyyat" className="button secondary full" style={{ textAlign: "center" }}>
+              <Link href="/qeydiyyat" className={styles.priceButtonSecondary}>
                 Growth seç
               </Link>
             </div>
           </div>
         </section>
-        <section id="yol-xeritesi" className={styles.roadmapSection}>
-          <div className={`${styles.container} ${styles.roadmapInner}`}>
-            <div className={styles.roadmapHeading}>
-              <p className={styles.eyebrow}>{m.roadmapEyebrow}</p>
-              <h2>{m.roadmapTitle}</h2>
-              <p>{m.roadmapIntro}</p>
-            </div>
-            <div className={styles.roadmapList}>
-              {m.roadmapItems.map((item, index) => (
-                <article key={item.title} className={styles.roadmapItem}>
-                  <span aria-hidden="true">0{index + 1}</span>
-                  <div>
-                    <h3>{item.title}</h3>
-                    <p>{item.description}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
+
+        {/* 3-Step Setup */}
+        <section id="nece-isleyir" className={`${styles.stepsSection} ${styles.container}`}>
+          <div className={styles.sectionHeader}>
+            <div className={styles.badgePill}>{m.stepsEyebrow}</div>
+            <h2 className={styles.sectionHeading}>{m.stepsTitle}</h2>
           </div>
-        </section>
-        <section id="nece-isleyir" className={styles.stepsSection}>
-          <div className={styles.container}>
-            <div className={styles.stepsHeading}>
-              <p className={styles.eyebrow}>{m.stepsEyebrow}</p>
-              <h2>{m.stepsTitle}</h2>
-            </div>
-            <div className={styles.steps}>
-              {m.steps.map((step, index) => (
-                <article key={step.title}>
-                  <span className={styles.stepNumber}>0{index + 1}</span>
-                  <h3>{step.title}</h3>
-                  <p>{step.text}</p>
-                </article>
-              ))}
-            </div>
-            <p className={styles.locationNote}>
-              <MapPin size={17} aria-hidden="true" />
-              {m.locationNote}
-            </p>
-          </div>
-        </section>
-        <section className={`${styles.records} ${styles.container}`}>
-          <div className={styles.recordIllustration}>
-            <span className={styles.historyLabel}>
-              <History size={15} />
-              {m.sampleHistory}
-              <span>{m.sample}</span>
-            </span>
-            <div className={styles.recordTimeline}>
-              {m.recordItems.map((item, index) => (
-                <div key={item.title}>
-                  <span className={styles.timelineCheck}>
-                    {index === 0 ? (
-                      <QrCode size={19} />
-                    ) : index === 1 ? (
-                      <Check size={19} />
-                    ) : (
-                      <History size={19} />
-                    )}
-                  </span>
-                  <div>
-                    <strong>{item.title}</strong>
-                    <p>{item.text}</p>
-                  </div>
-                  <time>{item.time}</time>
-                </div>
-              ))}
-            </div>
-            <div className={styles.recordFoot}>
-              <ShieldCheck size={15} />
-              <span>{m.privacyTitle}</span>
-            </div>
-          </div>
-          <div className={styles.recordCopy}>
-            <p className={styles.eyebrow}>{m.recordEyebrow}</p>
-            <h2>{m.recordTitle}</h2>
-            <p>{m.recordIntro}</p>
-            <div className={styles.privacy}>
-              <ShieldCheck size={23} />
-              <div>
-                <strong>{m.privacyTitle}</strong>
-                <p>{m.privacyText}</p>
+
+          <div className={styles.stepGrid}>
+            {m.steps.map((step, idx) => (
+              <div key={step.title} className={styles.stepCard}>
+                <div className={styles.stepBadge}>Addım 0{idx + 1}</div>
+                <h3 className={styles.stepTitle}>{step.title}</h3>
+                <p className={styles.stepText}>{step.text}</p>
               </div>
-            </div>
-            <Link className={styles.textCta} href="/demo/tarixce">
-              {m.features[0].link}
-              <ArrowUpRight size={17} aria-hidden="true" />
-            </Link>
+            ))}
+          </div>
+
+          <div className={styles.locationNoteBanner}>
+            <MapPin size={18} className={styles.locationNoteIcon} />
+            <span>{m.locationNote}</span>
           </div>
         </section>
-        <section
-          id="suallar"
-          className={`${styles.faqSection} ${styles.container}`}
-        >
-          <div>
-            <p className={styles.eyebrow}>{m.faqEyebrow}</p>
-            <h2>{m.faqTitle}</h2>
+
+        {/* FAQ */}
+        <section id="suallar" className={`${styles.faqSection} ${styles.container}`}>
+          <div className={styles.sectionHeader}>
+            <div className={styles.badgePill}>{m.faqEyebrow}</div>
+            <h2 className={styles.sectionHeading}>{m.faqTitle}</h2>
           </div>
-          <div className={styles.faqs}>
+
+          <div className={styles.faqList}>
             {m.faqs.map((faq) => (
-              <details key={faq.question}>
-                <summary>
-                  <h3>{faq.question}</h3>
-                  <Plus size={19} className={styles.plus} />
+              <details key={faq.question} className={styles.faqItem}>
+                <summary className={styles.faqSummary}>
+                  <h3 className={styles.faqQuestion}>{faq.question}</h3>
+                  <Plus size={18} className={styles.faqPlus} />
                 </summary>
-                <p>{faq.answer}</p>
+                <div className={styles.faqAnswerWrap}>
+                  <p className={styles.faqAnswer}>{faq.answer}</p>
+                </div>
               </details>
             ))}
           </div>
         </section>
-        <section className={styles.finalSection}>
+
+        {/* Final CTA */}
+        <section className={styles.finalCallout}>
           <div className={styles.container}>
-            <span className={styles.finalMark}>
-              <ScanLine size={30} />
-            </span>
-            <p className={styles.eyebrow}>{m.finalEyebrow}</p>
-            <h2>{m.finalTitle}</h2>
-            <p>{m.finalIntro}</p>
-            <DemoLink />
-            <span className={styles.finalLogin}>
-              {m.existingAccount}
-              <Link href="/giris">
-                {m.login}
-                <ArrowUpRight size={14} />
-              </Link>
-            </span>
+            <div className={styles.finalCard}>
+              <div className={styles.finalContent}>
+                <h2 className={styles.finalHeading}>Kollektivinizdə davamiyyət və maaş nizamını bu gün qurun.</h2>
+                <p className={styles.finalLead}>Daimi Pulsuz paketlə dərhal başlayın. Kart tələb olunmur.</p>
+                <div className={styles.finalActions}>
+                  <Link href="/qeydiyyat" className={styles.priceButtonPrimary} style={{ padding: "12px 28px" }}>
+                    Ödənişsiz başla
+                  </Link>
+                  <Link href="/demo" className={styles.priceButtonSecondary} style={{ padding: "12px 24px" }}>
+                    {m.demo}
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>
-      <footer className={`${styles.footer} ${styles.container}`}>
-        <div>
-          <MarketingLogo />
-          <p>{m.footerTagline}</p>
+
+      {/* Footer */}
+      <footer className={styles.footer}>
+        <div className={`${styles.container} ${styles.footerInner}`}>
+          <div>
+            <MarketingLogo light />
+            <p className={styles.footerTagline}>{m.footerTagline}</p>
+            <div style={{ marginTop: "8px", fontSize: "12px", color: "var(--color-dim)", display: "flex", flexDirection: "column", gap: "4px" }}>
+              <span>Ünvan: {m.footerAddress}</span>
+              <span>Dəstək: <a href={`mailto:${m.footerSupportEmail}`} style={{ color: "var(--color-peach)" }}>{m.footerSupportEmail}</a></span>
+            </div>
+          </div>
+          <div className={styles.footerLinks}>
+            {m.links.map((link) => (
+              <a key={link.href} href={link.href}>
+                {link.label}
+              </a>
+            ))}
+            <Link href="/giris">{m.login}</Link>
+          </div>
         </div>
-        <nav aria-label={m.navigation}>
-          {m.links.map((link) => (
-            <a key={link.href} href={link.href}>
-              {link.label}
-            </a>
-          ))}
-          <Link href="/giris">{m.login}</Link>
-        </nav>
-        <div className={styles.footerBottom}>
-          <span>© {year} panelim.az</span>
+        <div className={`${styles.container} ${styles.footerBottom}`}>
+          <span>© {year} panelim.az · Bütün hüquqlar qorunur.</span>
           <span>{m.footerCountry}</span>
         </div>
       </footer>

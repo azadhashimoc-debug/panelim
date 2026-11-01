@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests/e2e",
+  outputDir: "test-results/preview",
   fullyParallel: false,
   workers: 1,
   timeout: 60000,
@@ -31,6 +32,7 @@ export default defineConfig({
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "",
       SUPABASE_SERVICE_ROLE_KEY: "",
       QR_SIGNING_SECRET: "",
+      NODE_OPTIONS: "--max-old-space-size=4096",
     },
   },
 });

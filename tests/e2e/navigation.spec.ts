@@ -2,6 +2,8 @@ import { test, expect } from "@playwright/test";
 test("history and requests remain reachable on mobile", async ({ page }) => {
   await page.goto("/isci");
   await page.getByRole("link", { name: "Davamiyyətim", exact: true }).click();
+  // Development routes compile on first navigation; wait for that route before its UI.
+  await expect(page).toHaveURL(/\/isci\/tarixce$/, { timeout: 30000 });
   await expect(
     page.getByRole("heading", { name: "Davamiyyət tarixçəniz" }),
   ).toBeVisible();
@@ -9,6 +11,7 @@ test("history and requests remain reachable on mobile", async ({ page }) => {
     .getByRole("link", { name: "Müraciətlərim", exact: true })
     .first()
     .click();
+  await expect(page).toHaveURL(/\/isci\/muracietler$/, { timeout: 30000 });
   await expect(
     page.getByRole("heading", { name: "Müraciətləriniz" }),
   ).toBeVisible();

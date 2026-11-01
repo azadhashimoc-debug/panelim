@@ -16,6 +16,12 @@ const schema = z.discriminatedUnion("action", [
     companyName: z.string().trim().min(2).max(120),
     branchName: z.string().trim().max(120).optional(),
   }),
+  z.object({
+    action: z.literal("complete_setup"),
+    displayName: z.string().trim().min(2).max(100),
+    companyName: z.string().trim().min(2).max(120),
+    branchName: z.string().trim().max(120).optional(),
+  }),
   z.object({ action: z.literal("logout") }),
 ]);
 
@@ -32,54 +38,154 @@ export async function POST(request: Request) {
     }
 
     if (parsed.data.action === "login") {
-      await rateLimit(`login:${parsed.data.email.trim().toLowerCase()}`, 8, 900);
-      const { error } = await client.auth.signInWithPassword({
+      await rateLimit(
+        `login:${parsed.data.email.trim().toLowerCase()}`,
+        8,
+        900,
+      );
+      const { data: signInData, error } = await client.auth.signInWithPassword({
         email: parsed.data.email,
         password: parsed.data.password,
       });
-      if (error) throw new Error("AUTH_FAILED");
-      return ok({ success: true });
+      if (error || !signInData.user) throw new Error("AUTH_FAILED");
+
+      const { data: member } = await serviceClient()
+        .from("memberships")
+        .select("role, company_id")
+        .eq("user_id", signInData.user.id)
+        .is("archived_at", null)
+        .maybeSingle();
+
+      if (!member) {
+        return ok({
+          success: true,
+          needsSetup: true,
+          redirect: "/qeydiyyat?qurulum=davam",
+        });
+      }
+
+      return ok({
+        success: true,
+        needsSetup: false,
+        role: member.role,
+        redirect: member.role === "owner" ? "/rehber" : "/isci",
+      });
+    }
+
+    if (parsed.data.action === "complete_setup") {
+      const { data: authData, error: authError } = await client.auth.getUser();
+      if (authError || !authData.user) throw new Error("UNAUTHENTICATED");
+      const userId = authData.user.id;
+
+      await rateLimit(`complete_setup:${userId}`, 5, 3600);
+
+      const { data: existingMember } = await serviceClient()
+        .from("memberships")
+        .select("id")
+        .eq("user_id", userId)
+        .is("archived_at", null)
+        .maybeSingle();
+
+      if (existingMember) throw new Error("ALREADY_EXISTS");
+
+      const { data: registration, error: rpcError } = await serviceClient().rpc(
+        "register_company",
+        {
+          p_user_id: userId,
+          p_display_name: parsed.data.displayName,
+          p_company_name: parsed.data.companyName,
+          p_branch_name: parsed.data.branchName || "Baş Filial",
+        },
+      );
+      if (rpcError || !registration || registration.success !== true)
+        throw new Error("INTERNAL");
+
+      return ok({
+        success: true,
+        requiresEmailConfirmation: false,
+      });
     }
 
     if (parsed.data.action === "register") {
       const email = parsed.data.email.trim().toLowerCase();
       await rateLimit(`register:${email}`, 5, 3600);
 
-      const { data: signUpData, error: signUpError } = await client.auth.signUp({
-        email: parsed.data.email,
-        password: parsed.data.password,
-        options: {
-          data: {
-            display_name: parsed.data.displayName,
+      const { data: signUpData, error: signUpError } = await client.auth.signUp(
+        {
+          email: parsed.data.email,
+          password: parsed.data.password,
+          options: {
+            data: {
+              display_name: parsed.data.displayName,
+            },
           },
         },
-      });
+      );
 
-      if (signUpError) {
-        if (signUpError.message.includes("already registered") || signUpError.message.includes("unique")) {
+      let targetUserId = signUpData?.user?.id;
+      let requiresEmailConfirmation = !signUpData?.session;
+      let isRecovery = false;
+
+      const isExistingUser =
+        Boolean(
+          signUpError &&
+            (signUpError.message.includes("already registered") ||
+              signUpError.message.includes("unique") ||
+              signUpError.message.includes("exists")),
+        ) ||
+        Boolean(
+          !signUpError &&
+            (!signUpData?.user || signUpData.user.identities?.length === 0),
+        );
+
+      if (isExistingUser) {
+        const { data: signInData, error: signInError } =
+          await client.auth.signInWithPassword({
+            email: parsed.data.email,
+            password: parsed.data.password,
+          });
+
+        if (signInError || !signInData.user) {
           throw new Error("ALREADY_EXISTS");
         }
+
+        const { data: existingMember } = await serviceClient()
+          .from("memberships")
+          .select("id")
+          .eq("user_id", signInData.user.id)
+          .is("archived_at", null)
+          .maybeSingle();
+
+        if (existingMember) {
+          throw new Error("ALREADY_EXISTS");
+        }
+
+        targetUserId = signInData.user.id;
+        requiresEmailConfirmation = false;
+        isRecovery = true;
+      } else if (signUpError) {
         throw new Error("INTERNAL");
       }
 
-      if (signUpData.user) {
-        try {
-          const { error: rpcError } = await serviceClient().rpc("register_company", {
-            p_user_id: signUpData.user.id,
-            p_display_name: parsed.data.displayName,
-            p_company_name: parsed.data.companyName,
-            p_branch_name: parsed.data.branchName || "Baş Filial",
-          });
-          if (rpcError) {
-            // Log but don't crash if already initialized
-            console.error("register_company rpc error:", rpcError);
-          }
-        } catch (e) {
-          console.error("register_company exception:", e);
-        }
-      }
+      if (!targetUserId) throw new Error("INTERNAL");
 
-      return ok({ success: true, user: signUpData.user });
+      const { data: registration, error: rpcError } = await serviceClient().rpc(
+        "register_company",
+        {
+          p_user_id: targetUserId,
+          p_display_name: parsed.data.displayName,
+          p_company_name: parsed.data.companyName,
+          p_branch_name: parsed.data.branchName || "Baş Filial",
+        },
+      );
+      if (rpcError || !registration || registration.success !== true)
+        throw new Error("INTERNAL");
+
+      return ok({
+        success: true,
+        requiresEmailConfirmation,
+        ...(isRecovery ? { recovered: true } : {}),
+      });
     }
 
     throw new Error("INVALID_INPUT");

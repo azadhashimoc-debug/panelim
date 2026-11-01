@@ -1,5 +1,9 @@
 # panelim.az
 
+> 1 noyabr 2026 təhlükəsizlik yeniləməsi: aşağıdakı ilkin mərhələ qeydlərinin bir hissəsi köhnədir. Git repozitoriyası mövcuddur; qeydiyyat, icazə, hesablaşma və sandbox abunə üçün əlavə kod var, lakin Business axınları tam hazır deyil. Yeni quraşdırmada `supabase/migrations/0001`–`0009` fayllarının hamısını sıra ilə tətbiq edin. Mövcud `0008` bazasına yalnız yeni `0009_security_hardening.sql` tətbiq edilir. `supabase/setup.sql` köhnə, yalnız ilk üç migrasiyanı əhatə edən fayldır; tam quraşdırma üçün istifadə etməyin.
+>
+> `0009` qeydiyyat RPC-sini yalnız service role-a bağlayır, müdür avanslarını filial təyinatı ilə məhdudlaşdırır, abunə auditində real sahib kimliyini saxlayır və Free keçidinin təkrar sorğularını yadda saxlayır. Tətbiq bu migrasiya olmadan abunə əməliyyatında xəta qaytaracaq; uydurma uğur cavabı yoxdur. Əvvəl test layihəsində tətbiq və backup/restore yoxlaması aparılmalıdır. Bu işdə canlı migrasiya və deploy edilməyib.
+
 Azərbaycan dilində, mobil-first davamiyyət tətbiqinin ilk mərhələsi. Next.js App Router, TypeScript, Supabase Auth və PostgreSQL istifadə olunur. Mövcud `panelim-kreativ/` təqdimat layihəsi ayrıca saxlanılır.
 
 ## Lokal işlətmə
@@ -67,6 +71,8 @@ npm.cmd audit --omit=dev
 ```
 
 Brauzer testləri quraşdırılmış Google Chrome istifadə edir. Başqa mühitdə Playwright konfiqurasiyasındakı `channel` seçimini mövcud brauzerə uyğunlaşdırın.
+
+Windows-da E2E komandalarını test serverinin proses ağacını sonlandırmağa icazəsi olan terminalda ardıcıl işlədin. Məhdud agent mühitində ssenarilər keçsə də Playwright-ın `taskkill` ilə serveri bağlaması bloklana bilər; yekun `exit 0` olmadan dəsti uğurlu saymayın. Səbəb, təkrar yoxlama və nəticələr: [desktop demo və proses bağlanması](docs/2026-11-01-dogrulama-tamamlanmasi.md).
 
 Unit testlər məsafə, məkan dəqiqliyi, QR imzası/sürəsi, vaxt və səlahiyyət qaydalarını yoxlayır. İnteqrasiya testləri migrasiyaları **PGlite PostgreSQL motorunda** tətbiq edib RLS, service-only yazı qadağaları, gecə növbəsi və correction/audit tranzaksiyalarını işlədərək yoxlayır. Testdə Supabase `auth.uid()` minimal uyğun funksiyayla təmin edilir. Bu testlər canlı Supabase xidmətinin yoxlanılması deyil və ayrıca bağlantılarda real paralel kilid yarışını sübut etmir.
 

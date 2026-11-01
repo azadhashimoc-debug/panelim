@@ -1,6 +1,9 @@
 import { PGlite } from "@electric-sql/pglite";
 import { readFile } from "node:fs/promises";
 import { beforeAll, afterAll, describe, expect, it } from "vitest";
+import type { SubscriptionStatus } from "@/shared/types";
+type PaymentResult = { success: boolean; idempotent: boolean; transaction_id: string };
+type RegistrationResult = { success: boolean; company_id: string; branch_id: string; membership_id: string };
 
 let db: PGlite;
 const owner = "10000000-0000-4000-8000-000000000001";
@@ -42,6 +45,8 @@ beforeAll(async () => {
     "0006_payroll_and_advances.sql",
     "0007_subscriptions_and_billing.sql",
     "0008_company_registration.sql",
+    "0009_security_hardening.sql",
+    "0010_subscription_limits.sql",
   ]) {
     await db.exec(await readFile(`supabase/migrations/${file}`, "utf8"));
   }
@@ -62,6 +67,12 @@ afterAll(async () => {
 });
 
 describe("PostgreSQL tenant isolation", () => {
+  it("does not expose company registration to browser database roles", async () => {
+    const rows = await db.query<{ allowed: boolean }>("select has_function_privilege('authenticated','public.register_company(uuid,text,text,text,double precision,double precision,integer)','execute') as allowed");
+    expect(rows.rows[0].allowed).toBe(false);
+    const anon = await db.query<{ allowed: boolean }>("select has_function_privilege('anon','public.register_company(uuid,text,text,text,double precision,double precision,integer)','execute') as allowed");
+    expect(anon.rows[0].allowed).toBe(false);
+  });
   it("does not reveal other companies or branches", async () => {
     expect(await asUser(worker, "select name from companies")).toEqual([
       { name: "Company A" },
@@ -90,7 +101,7 @@ describe("PostgreSQL tenant isolation", () => {
       db.exec(
         `insert into branch_assignments values ('${membership}', '${otherBranch}', 'a0000000-0000-4000-8000-000000000001')`,
       ),
-    ).rejects.toThrow(/foreign key/);
+    ).rejects.toThrow("FORBIDDEN");
   });
 });
 
@@ -412,6 +423,7 @@ describe("review regressions", () => {
   });
 
   it("enforces advance recording, payroll calculation and tenant boundaries", async () => {
+    await expect(command("record_advance", [manager, membership, 1000, "2026-11-01", "Other branch"])).rejects.toThrow("FORBIDDEN");
     // Foreign user cannot record advance
     await expect(
       command("record_advance", [
@@ -502,7 +514,7 @@ describe("review regressions", () => {
 
 describe("stage 5 subscription limits and billing", () => {
   it("computes subscription status with 14-day trial defaults", async () => {
-    const res = await command<{ get_subscription_status: any }>(
+    const res = await command<{ get_subscription_status: SubscriptionStatus }>(
       "get_subscription_status",
       ["a0000000-0000-4000-8000-000000000001"],
     );
@@ -528,25 +540,26 @@ describe("stage 5 subscription limits and billing", () => {
         "start",
         1000,
         0,
+        owner,
       ]),
     ).rejects.toThrow("INVALID_AMOUNT");
 
     // Successful payment for Business with 1 extra branch (29 AZN + 5 AZN = 34 AZN / 3400 qəpik)
-    const payRes = await command<{ process_subscription_payment: any }>(
+    const payRes = await command<{ process_subscription_payment: PaymentResult }>(
       "process_subscription_payment",
-      [idempotencyKey, txId, companyId, "business", 3400, 1],
+      [idempotencyKey, txId, companyId, "business", 3400, 1, owner],
     );
     expect(payRes[0].process_subscription_payment.success).toBe(true);
 
     // Idempotent retry with same key returns success without re-charging
-    const replay = await command<{ process_subscription_payment: any }>(
+    const replay = await command<{ process_subscription_payment: PaymentResult }>(
       "process_subscription_payment",
-      [idempotencyKey, txId, companyId, "business", 3400, 1],
+      [idempotencyKey, txId, companyId, "business", 3400, 1, owner],
     );
     expect(replay[0].process_subscription_payment.idempotent).toBe(true);
 
     // Verify upgraded status
-    const statusRes = await command<{ get_subscription_status: any }>(
+    const statusRes = await command<{ get_subscription_status: SubscriptionStatus }>(
       "get_subscription_status",
       [companyId],
     );
@@ -555,6 +568,20 @@ describe("stage 5 subscription limits and billing", () => {
     expect(updated.effective_plan).toBe("business");
     expect(updated.max_branches).toBe(3); // 2 + 1 extra = 3
     expect(updated.extra_branches).toBe(1);
+    const audit = await db.query<{ actor_id: string }>("select actor_id from audit_events where action='subscription.activated' order by created_at desc limit 1");
+    expect(audit.rows[0].actor_id).toBe(owner);
+    await expect(command("process_subscription_payment", ["foreign-owner", "foreign-tx", companyId, "business", 2900, 0, foreign])).rejects.toThrow("FORBIDDEN");
+    await expect(command("process_subscription_payment", [idempotencyKey, "replay-other-company", "b0000000-0000-4000-8000-000000000001", "business", 3400, 1, foreign])).rejects.toThrow("INVALID_INPUT");
+    await expect(command("switch_to_free", [worker, companyId, "free-test"])).rejects.toThrow("FORBIDDEN");
+    const free = await command<{ switch_to_free: PaymentResult }>("switch_to_free", [owner, companyId, "free-test"]);
+    expect(free[0].switch_to_free.success).toBe(true);
+    await command("process_subscription_payment", ["new-paid", "new-paid-tx", companyId, "business", 2900, 0, owner]);
+    const replayFree = await command<{ switch_to_free: PaymentResult }>("switch_to_free", [owner, companyId, "free-test"]);
+    expect(replayFree[0].switch_to_free.idempotent).toBe(true);
+    const freeAudits = await db.query("select id from audit_events where action='subscription.free'");
+    expect(freeAudits.rows).toHaveLength(1);
+    const afterReplay = await command<{ get_subscription_status: SubscriptionStatus }>("get_subscription_status", [companyId]);
+    expect(afterReplay[0].get_subscription_status.effective_plan).toBe("business");
   });
 
   it("registers a new company atomically with initial branch, owner and trial", async () => {
@@ -567,7 +594,7 @@ describe("stage 5 subscription limits and billing", () => {
     ).rejects.toThrow("INVALID_INPUT");
 
     // Successful registration
-    const res = await command<{ register_company: any }>("register_company", [
+    const res = await command<{ register_company: RegistrationResult }>("register_company", [
       newOwnerId,
       "Rəşad Qasımov",
       "Qasımov Kafe",
@@ -592,7 +619,7 @@ describe("stage 5 subscription limits and billing", () => {
     expect(members[0].display_name).toBe("Rəşad Qasımov");
 
     // Check subscription initialized with 14-day business trial
-    const statusRes = await command<{ get_subscription_status: any }>(
+    const statusRes = await command<{ get_subscription_status: SubscriptionStatus }>(
       "get_subscription_status",
       [result.company_id],
     );

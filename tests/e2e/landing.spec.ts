@@ -12,17 +12,23 @@ test("welcome screen leads to a separate demo and login", async ({ page }) => {
     header.getByRole("link", { name: "Daxil ol", exact: true }),
   ).toHaveAttribute("href", "/giris");
   await header.getByRole("link", { name: "Demoya bax", exact: true }).click();
-  await expect(page).toHaveURL(/\/demo$/, { timeout: 15000 });
+  await expect(page).toHaveURL(/\/demo$/, { timeout: 30000 });
   await expect(
     page.getByText("Tanışlıq rejimi", { exact: true }),
   ).toBeVisible({ timeout: 15000 });
   await page.getByRole("link", { name: "Davamiyyətim", exact: true }).click();
-  await expect(page).toHaveURL(/\/demo\/tarixce$/, { timeout: 15000 });
+  await expect(page).toHaveURL(/\/demo\/tarixce$/, { timeout: 30000 });
+  await expect(
+    page.getByRole("heading", { name: "Davamiyyət tarixçəniz" }),
+  ).toBeVisible();
   await page
     .getByRole("link", { name: "Müraciətlərim", exact: true })
     .first()
     .click();
-  await expect(page).toHaveURL(/\/demo\/muracietler$/, { timeout: 15000 });
+  await expect(page).toHaveURL(/\/demo\/muracietler$/, { timeout: 30000 });
+  await expect(
+    page.getByRole("heading", { name: "Müraciətləriniz" }),
+  ).toBeVisible();
   expect(errors).toEqual([]);
 });
 

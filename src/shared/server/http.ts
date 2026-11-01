@@ -9,6 +9,10 @@ const statusCodes: Record<string, number> = {
   FORBIDDEN: 403,
   RATE_LIMITED: 429,
   AUTH_FAILED: 401,
+  ALREADY_EXISTS: 409,
+  EMPLOYEE_LIMIT_REACHED: 409,
+  BRANCH_LIMIT_REACHED: 409,
+  PLAN_SELECTION_REQUIRED: 409,
   INTERNAL: 500,
 };
 export function fail(error: unknown) {

@@ -120,7 +120,7 @@ test("demo stays isolated even when Supabase is configured", async ({
   });
   await page.goto("/demo");
   await page.waitForLoadState("networkidle");
-  await page.getByRole("button", { name: "QR ilə giriş et" }).click();
+  await page.getByRole("button", { name: /QR ilə (giriş|çıxış) et/ }).click();
   await expect(page.getByRole("dialog")).toContainText(
     "Tanışlıq rejimində davamiyyət qeydi yaradılmır",
   );

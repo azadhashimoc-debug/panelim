@@ -197,20 +197,7 @@ export function EmployeeWorkspace({
     setDialog(value);
   }
   async function submitAttendance() {
-    if (!workspace || busy) return;
-    if (demo) {
-      setBusy(true);
-      setTimeout(() => {
-        setBusy(false);
-        setDialog(null);
-        setNotice(
-          open
-            ? "Çıxışınız qeydə alındı (demo simulyasiyası)."
-            : "Girişiniz qeydə alındı (demo simulyasiyası).",
-        );
-      }, 400);
-      return;
-    }
+    if (!workspace || busy || demo) return;
     setBusy(true);
     setError("");
     try {
@@ -295,7 +282,7 @@ export function EmployeeWorkspace({
           ))}
         </nav>
         {(demo || (workspace && ["owner", "manager"].includes(workspace.member.role))) && (
-          <Link className="nav-item manager-link" href="/rehber">
+          <Link className="nav-item manager-link" href={demo ? "/demo" : "/rehber"}>
             <Building2 size={20} />
             <span>{tr("Rəhbər paneli")}</span>
             <ArrowUpRight size={15} />
@@ -338,7 +325,7 @@ export function EmployeeWorkspace({
             {demo && (
               <Link
                 className="button secondary compact"
-                href="/rehber"
+                href="/demo"
                 style={{ gap: "6px", display: "inline-flex", alignItems: "center" }}
               >
                 <Building2 size={15} />
@@ -414,7 +401,7 @@ export function EmployeeWorkspace({
                 <strong>
                   {configured && !demo
                     ? tr("Şəxsi kabinetiniz sizi gözləyir")
-                    : "İşçi baxışı (Tanışlıq rejimi)"}
+                    : <><span>Tanışlıq rejimi</span> · İşçi baxışı</>}
                 </strong>
                 <p>
                   {loadError ||
@@ -426,7 +413,7 @@ export function EmployeeWorkspace({
               {demo ? (
                 <Link
                   className="button primary compact"
-                  href="/rehber"
+                  href="/demo"
                   style={{ display: "inline-flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}
                 >
                   <Building2 size={16} />
@@ -782,7 +769,7 @@ export function EmployeeWorkspace({
                 )}
               </p>
             </div>
-          ) : !workspace ? (
+          ) : !workspace || demo ? (
             <div className="login-prompt">
               <span className="prompt-icon">
                 <UserRound size={28} />
