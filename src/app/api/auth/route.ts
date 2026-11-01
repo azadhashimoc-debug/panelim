@@ -169,6 +169,13 @@ export async function POST(request: Request) {
 
       if (!targetUserId) throw new Error("INTERNAL");
 
+      // Auto-confirm user so they are immediately active without email confirmation friction
+      try {
+        await serviceClient().auth.admin.updateUserById(targetUserId, { email_confirm: true });
+      } catch {
+        // Fallback silently if already confirmed
+      }
+
       const { data: registration, error: rpcError } = await serviceClient().rpc(
         "register_company",
         {
@@ -181,9 +188,19 @@ export async function POST(request: Request) {
       if (rpcError || !registration || registration.success !== true)
         throw new Error("INTERNAL");
 
+      // Establish session cookies immediately
+      try {
+        await client.auth.signInWithPassword({
+          email: parsed.data.email,
+          password: parsed.data.password,
+        });
+      } catch {
+        // Continue if client sign-in needs manual entry
+      }
+
       return ok({
         success: true,
-        requiresEmailConfirmation,
+        requiresEmailConfirmation: false,
         ...(isRecovery ? { recovered: true } : {}),
       });
     }
