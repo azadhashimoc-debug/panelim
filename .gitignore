@@ -11,4 +11,10 @@ playwright-report/
 .superpowers/
 .runtime/
 .vercel/
-
+.claude/
+.playwright-mcp/
+*.log
+*.png
+verrity_dump.html
+extract_animations.js
+get_site_animations.mjs
