@@ -79,6 +79,12 @@ export function DemoTourGuide({
   const [dismissed, setDismissed] = useState(false);
   const [minimized, setMinimized] = useState(false);
 
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth <= 768) {
+      setMinimized(true);
+    }
+  }, []);
+
   const step = TOUR_STEPS[stepIdx];
   const Icon = step.icon;
 
