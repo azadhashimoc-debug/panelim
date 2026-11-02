@@ -76,7 +76,7 @@ export function DemoTourGuide({
 }) {
   const [isOpen, setIsOpen] = useState(true);
   const [stepIdx, setStepIdx] = useState(0);
-  const [dismissed, setDismissed] = useState(false);
+  const [dismissed, setDismissed] = useState(true);
   const [minimized, setMinimized] = useState(false);
 
   useEffect(() => {
