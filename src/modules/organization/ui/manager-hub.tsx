@@ -490,31 +490,16 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
         </header>
 
         {isDemo && (
-          <div
-            style={{
-              background: "rgba(242, 200, 168, 0.12)",
-              border: "1px solid rgba(242, 200, 168, 0.3)",
-              padding: "10px 18px",
-              borderRadius: "10px",
-              margin: "16px 20px 0 20px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: "10px",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--color-linen, #fff)" }}>
-              <span style={{ background: "var(--color-peach, #f2c8a8)", color: "#13110f", padding: "2px 8px", borderRadius: "9999px", fontWeight: 700, fontSize: "11px" }}>
-                RƏHBƏR DEMO
-              </span>
-              <span>Canlı nümunə məlumatlar: işçilər, növbələr, müraciətlər və daxili maaş hesablaması aktivdir.</span>
+          <div className="demo-header-banner">
+            <div className="demo-header-info">
+              <span className="demo-header-badge">RƏHBƏR DEMO</span>
+              <p>Canlı nümunə məlumatlar: işçilər, növbələr və daxili maaş aktivdir.</p>
             </div>
-            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-              <Link href="/demo/isci" style={{ fontSize: "12.5px", color: "var(--color-peach, #f2c8a8)", textDecoration: "none", fontWeight: 600 }}>
+            <div className="demo-header-actions">
+              <Link href="/demo/isci" className="demo-switch-link">
                 İşçi kabinetinə bax ➔
               </Link>
-              <Link href="/qeydiyyat" className="button primary compact" style={{ fontSize: "12px", padding: "6px 14px" }}>
+              <Link href="/qeydiyyat" className="button primary compact">
                 Ödənişsiz başla
               </Link>
             </div>

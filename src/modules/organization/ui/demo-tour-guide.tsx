@@ -105,28 +105,10 @@ export function DemoTourGuide({
           setDismissed(false);
           setIsOpen(true);
         }}
-        style={{
-          position: "fixed",
-          bottom: 24,
-          right: 24,
-          zIndex: 100,
-          background: "linear-gradient(135deg, #26221f 0%, #171513 100%)",
-          color: "#fff",
-          border: "1px solid rgba(242, 200, 168, 0.35)",
-          borderRadius: 9999,
-          padding: "10px 18px",
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          fontSize: 13,
-          fontWeight: 600,
-          cursor: "pointer",
-          boxShadow: "0 10px 30px rgba(0, 0, 0, 0.6)",
-          transition: "transform 0.2s ease",
-        }}
+        className="tour-guide-floating-btn"
       >
         <Sparkles size={15} style={{ color: "#f2c8a8" }} />
-        <span>Bələdçi turunu aç</span>
+        <span>Bələdçi turu</span>
       </button>
     );
   }
@@ -136,48 +118,15 @@ export function DemoTourGuide({
   return (
     <aside
       aria-label="Demo Bələdçi Turu"
-      style={{
-        position: "fixed",
-        bottom: 28,
-        right: 28,
-        zIndex: 99,
-        maxWidth: 420,
-        width: "calc(100vw - 40px)",
-        background: "rgba(22, 19, 17, 0.94)",
-        border: "1px solid rgba(242, 200, 168, 0.3)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        borderRadius: 18,
-        padding: "20px 22px",
-        boxShadow: "0 24px 60px rgba(0, 0, 0, 0.75), 0 0 30px rgba(242, 200, 168, 0.12)",
-        animation: "slideTourUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-      }}
+      className="tour-guide-aside"
     >
       {/* Top Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: "50%",
-              background: "rgba(242, 200, 168, 0.15)",
-              color: "#f2c8a8",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Icon size={14} />
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+          <span className="tour-guide-icon-badge">
+            <Icon size={13} />
           </span>
-          <span
-            style={{
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: "0.06em",
-              color: "#f2c8a8",
-            }}
-          >
+          <span className="tour-guide-badge-text">
             {step.badge}
           </span>
         </div>
@@ -186,67 +135,29 @@ export function DemoTourGuide({
           type="button"
           onClick={() => setDismissed(true)}
           aria-label="Turu bağla"
-          style={{
-            background: "transparent",
-            border: "none",
-            color: "rgba(255, 255, 255, 0.4)",
-            cursor: "pointer",
-            padding: 4,
-            display: "flex",
-            alignItems: "center",
-          }}
+          className="tour-guide-close-btn"
         >
           <X size={16} />
         </button>
       </div>
 
       {/* Content */}
-      <h3
-        style={{
-          fontSize: 16,
-          fontWeight: 700,
-          color: "#ffffff",
-          letterSpacing: "-0.02em",
-          lineHeight: 1.35,
-          marginBottom: 8,
-        }}
-      >
+      <h3 className="tour-guide-title">
         {step.title}
       </h3>
 
-      <p
-        style={{
-          fontSize: 13,
-          color: "rgba(255, 255, 255, 0.72)",
-          lineHeight: 1.5,
-          marginBottom: 12,
-        }}
-      >
+      <p className="tour-guide-desc">
         {step.description}
       </p>
 
       {/* Highlight Pill */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          background: "rgba(180, 199, 166, 0.12)",
-          border: "1px solid rgba(180, 199, 166, 0.25)",
-          borderRadius: 8,
-          padding: "6px 10px",
-          marginBottom: 16,
-          fontSize: 11.5,
-          color: "#b4c7a6",
-          fontWeight: 500,
-        }}
-      >
+      <div className="tour-guide-highlight">
         <Check size={13} style={{ flexShrink: 0 }} />
         <span>{step.highlight}</span>
       </div>
 
       {/* Bottom Navigation & CTAs */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 12, borderTop: "1px solid rgba(255, 255, 255, 0.08)" }}>
+      <div className="tour-guide-footer">
         {/* Step Indicator Dots */}
         <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
           {TOUR_STEPS.map((s, idx) => (
