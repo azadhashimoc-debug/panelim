@@ -200,12 +200,17 @@ export function PaycellCheckoutModal({
                 border: "none",
                 color: "#94a3b8",
                 cursor: "pointer",
-                padding: "6px",
-                borderRadius: "8px",
+                padding: "10px",
+                minWidth: "44px",
+                minHeight: "44px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "10px",
               }}
               title="Bağla"
             >
-              <X size={18} />
+              <X size={20} />
             </button>
           )}
         </div>
@@ -415,19 +420,22 @@ export function PaycellCheckoutModal({
                 </label>
                 <input
                   type="text"
+                  inputMode="numeric"
+                  autoComplete="cc-number"
                   placeholder="0000 0000 0000 0000"
                   value={cardNumber}
                   onChange={handleCardNumberChange}
                   disabled={processing}
                   style={{
                     width: "100%",
-                    padding: "10px 12px",
-                    borderRadius: "10px",
+                    minHeight: "48px",
+                    padding: "12px 14px",
+                    borderRadius: "12px",
                     background: "#1e222d",
                     border: "1px solid #32384a",
                     color: "#fff",
                     fontFamily: "monospace",
-                    fontSize: "14px",
+                    fontSize: "16px",
                     boxSizing: "border-box",
                   }}
                 />
@@ -440,19 +448,22 @@ export function PaycellCheckoutModal({
                   </label>
                   <input
                     type="text"
+                    inputMode="numeric"
+                    autoComplete="cc-exp"
                     placeholder="MM / YY"
                     value={expiry}
                     onChange={handleExpiryChange}
                     disabled={processing}
                     style={{
                       width: "100%",
-                      padding: "10px 12px",
-                      borderRadius: "10px",
+                      minHeight: "48px",
+                      padding: "12px 14px",
+                      borderRadius: "12px",
                       background: "#1e222d",
                       border: "1px solid #32384a",
                       color: "#fff",
                       fontFamily: "monospace",
-                      fontSize: "14px",
+                      fontSize: "16px",
                       boxSizing: "border-box",
                     }}
                   />
@@ -463,6 +474,8 @@ export function PaycellCheckoutModal({
                   </label>
                   <input
                     type="password"
+                    inputMode="numeric"
+                    autoComplete="cc-csc"
                     placeholder="•••"
                     value={cvv}
                     onChange={handleCvvChange}
@@ -470,13 +483,14 @@ export function PaycellCheckoutModal({
                     maxLength={3}
                     style={{
                       width: "100%",
-                      padding: "10px 12px",
-                      borderRadius: "10px",
+                      minHeight: "48px",
+                      padding: "12px 14px",
+                      borderRadius: "12px",
                       background: "#1e222d",
                       border: "1px solid #32384a",
                       color: "#fff",
                       fontFamily: "monospace",
-                      fontSize: "14px",
+                      fontSize: "16px",
                       letterSpacing: "3px",
                       boxSizing: "border-box",
                     }}
@@ -490,18 +504,20 @@ export function PaycellCheckoutModal({
                 </label>
                 <input
                   type="text"
+                  autoComplete="cc-name"
                   placeholder="ADƏM NOVRUZLU"
                   value={cardHolder}
                   onChange={(e) => setCardHolder(e.target.value.toUpperCase())}
                   disabled={processing}
                   style={{
                     width: "100%",
-                    padding: "10px 12px",
-                    borderRadius: "10px",
+                    minHeight: "48px",
+                    padding: "12px 14px",
+                    borderRadius: "12px",
                     background: "#1e222d",
                     border: "1px solid #32384a",
                     color: "#fff",
-                    fontSize: "13px",
+                    fontSize: "16px",
                     textTransform: "uppercase",
                     boxSizing: "border-box",
                   }}
