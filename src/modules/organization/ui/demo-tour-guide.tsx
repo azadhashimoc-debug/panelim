@@ -77,6 +77,7 @@ export function DemoTourGuide({
   const [isOpen, setIsOpen] = useState(true);
   const [stepIdx, setStepIdx] = useState(0);
   const [dismissed, setDismissed] = useState(false);
+  const [minimized, setMinimized] = useState(false);
 
   const step = TOUR_STEPS[stepIdx];
   const Icon = step.icon;
@@ -104,16 +105,73 @@ export function DemoTourGuide({
         onClick={() => {
           setDismissed(false);
           setIsOpen(true);
+          setMinimized(false);
         }}
         className="tour-guide-floating-btn"
       >
-        <Sparkles size={15} style={{ color: "#f2c8a8" }} />
-        <span>Bələdçi turu</span>
+        <Sparkles size={14} style={{ color: "#f2c8a8" }} />
+        <span>Bələdçi turu ({stepIdx + 1}/4)</span>
       </button>
     );
   }
 
   if (!isOpen) return null;
+
+  if (minimized) {
+    return (
+      <aside aria-label="Demo Bələdçi Turu" className="tour-guide-mini-bar">
+        <button
+          type="button"
+          onClick={() => setMinimized(false)}
+          className="tour-guide-mini-content"
+          aria-label="Turu genişləndir"
+        >
+          <span className="tour-guide-icon-badge">
+            <Icon size={12} />
+          </span>
+          <span className="tour-guide-mini-title">
+            <strong>{stepIdx + 1}/4</strong> · {step.title}
+          </span>
+        </button>
+
+        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          {stepIdx < TOUR_STEPS.length - 1 ? (
+            <button
+              type="button"
+              onClick={handleNext}
+              className="tour-guide-mini-next"
+            >
+              Növbəti
+              <ChevronRight size={13} />
+            </button>
+          ) : (
+            <Link href="/qeydiyyat" className="tour-guide-mini-cta">
+              Başla
+            </Link>
+          )}
+
+          <button
+            type="button"
+            onClick={() => setMinimized(false)}
+            aria-label="Genişləndir"
+            className="tour-guide-close-btn"
+            style={{ padding: "4px 6px" }}
+          >
+            <ChevronLeft size={14} style={{ transform: "rotate(90deg)" }} />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setDismissed(true)}
+            aria-label="Turu bağla"
+            className="tour-guide-close-btn"
+          >
+            <X size={15} />
+          </button>
+        </div>
+      </aside>
+    );
+  }
 
   return (
     <aside
@@ -131,14 +189,26 @@ export function DemoTourGuide({
           </span>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setDismissed(true)}
-          aria-label="Turu bağla"
-          className="tour-guide-close-btn"
-        >
-          <X size={16} />
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <button
+            type="button"
+            onClick={() => setMinimized(true)}
+            aria-label="Turu yığcamlaşdır"
+            className="tour-guide-close-btn"
+            title="Yığcamlaşdır"
+          >
+            <ChevronRight size={15} style={{ transform: "rotate(90deg)" }} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setDismissed(true)}
+            aria-label="Turu bağla"
+            className="tour-guide-close-btn"
+            title="Bağla"
+          >
+            <X size={16} />
+          </button>
+        </div>
       </div>
 
       {/* Content */}

@@ -2559,6 +2559,78 @@ button:active:not(:disabled),
   transition: transform 0.2s ease;
 }
 
+/* Tour Guide Mini Floating Bar */
+.tour-guide-mini-bar {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 99;
+  max-width: 440px;
+  width: calc(100vw - 40px);
+  background: rgba(22, 19, 17, 0.96);
+  border: 1px solid rgba(242, 200, 168, 0.3);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 9999px;
+  padding: 6px 10px 6px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(242, 200, 168, 0.1);
+  animation: slideTourUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tour-guide-mini-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 0;
+  min-width: 0;
+  flex: 1;
+  text-align: left;
+}
+.tour-guide-mini-title {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tour-guide-mini-title strong {
+  color: #f2c8a8;
+}
+.tour-guide-mini-next {
+  background: #ffffff;
+  color: #13110f;
+  border: none;
+  border-radius: 9999px;
+  padding: 5px 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+.tour-guide-mini-cta {
+  background: linear-gradient(135deg, #f2c8a8 0%, #ffffff 100%);
+  color: #13110f;
+  border-radius: 9999px;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
 @media (max-width: 760px) {
   .tour-guide-aside {
     bottom: calc(66px + env(safe-area-inset-bottom, 0px));
@@ -2588,6 +2660,14 @@ button:active:not(:disabled),
     right: 12px;
     padding: 7px 12px;
     font-size: 11.5px;
+  }
+  .tour-guide-mini-bar {
+    bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-width: none;
+    padding: 5px 8px 5px 10px;
   }
 }
 
