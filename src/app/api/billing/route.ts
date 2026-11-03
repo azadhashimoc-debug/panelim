@@ -1,4 +1,5 @@
 import {
+  createPaycellCheckout,
   fetchSubscriptionStatus,
   processSandboxCheckout,
 } from "@/modules/organization/server/billing";
@@ -12,7 +13,21 @@ export async function GET() {
 }
 export async function POST(request: Request) {
   try {
-    return ok(await processSandboxCheckout(await readMutation(request)));
+    const body = await readMutation(request);
+    if (
+      body &&
+      typeof body === "object" &&
+      "mode" in body &&
+      (body as { mode?: unknown }).mode === "paycell"
+    ) {
+      return ok(
+        await createPaycellCheckout(
+          body,
+          request.headers.get("origin") ?? undefined,
+        ),
+      );
+    }
+    return ok(await processSandboxCheckout(body));
   } catch (error) {
     return fail(error);
   }

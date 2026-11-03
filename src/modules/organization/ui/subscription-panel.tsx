@@ -61,6 +61,12 @@ export function SubscriptionPanel({ demo = false }: { demo?: boolean }) {
   }
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("payment") === "success") {
+        setMessage(copy.paidSaved);
+      }
+    }
     if (demo) return;
     const controller = new AbortController();
     api<{ status: SubscriptionStatus }>("/api/billing", undefined, controller.signal)
@@ -182,6 +188,7 @@ export function SubscriptionPanel({ demo = false }: { demo?: boolean }) {
         plan={plan}
         extraBranches={extras}
         amountAzn={prices[plan] + extras * 5}
+        demo={demo}
         onSuccess={async () => {
           await refresh();
         }}

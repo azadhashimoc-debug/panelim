@@ -19,8 +19,11 @@ vi.mock("@/shared/server/http", () => ({
   },
 }));
 import {
+  createPaycellCheckout,
+  createPaycellOrderId,
   fetchSubscriptionStatus,
   processSandboxCheckout,
+  verifyPaycellOrderId,
 } from "@/modules/organization/server/billing";
 
 function memberSession(role = "owner") {
@@ -111,4 +114,34 @@ it("only confirms a persisted successful RPC result", async () => {
   await expect(
     processSandboxCheckout({ plan: "business", idempotencyKey: "valid-2" }),
   ).rejects.toThrow("INTERNAL");
+});
+
+it("generates a real signed Paycell.az checkout URL and verifies order_id HMAC", async () => {
+  const result = await createPaycellCheckout(
+    {
+      mode: "paycell",
+      plan: "business",
+      extraBranches: 1,
+      idempotencyKey: "paycell-1",
+    },
+    "https://panelim.az",
+  );
+  expect(result.ok).toBe(true);
+  expect(result.amountAzn).toBe(34);
+  expect(result.checkoutUrl).toContain("https://paycell.az/pay/?");
+  expect(result.checkoutUrl).toContain("site=panelim.az");
+  expect(result.checkoutUrl).toContain("amount=34");
+  expect(verifyPaycellOrderId(result.orderId)).toEqual({
+    companyId: "a0000000-0000-4000-8000-000000000001",
+    plan: "business",
+    extraBranches: 1,
+  });
+  expect(verifyPaycellOrderId(`${result.orderId}tampered`)).toBeNull();
+  const expiredOrder = createPaycellOrderId(
+    "a0000000-0000-4000-8000-000000000001",
+    "start",
+    0,
+    Date.now() - 90_000_000,
+  );
+  expect(verifyPaycellOrderId(expiredOrder)).toBeNull();
 });
