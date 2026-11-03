@@ -109,7 +109,7 @@ export function DemoTourGuide({
         }}
         className="tour-guide-floating-btn"
       >
-        <Sparkles size={14} style={{ color: "#f2c8a8" }} />
+        <Sparkles size={14} style={{ color: "#0f766e" }} />
         <span>Bələdçi turu ({stepIdx + 1}/4)</span>
       </button>
     );
@@ -242,7 +242,7 @@ export function DemoTourGuide({
                 width: idx === stepIdx ? 20 : 6,
                 height: 6,
                 borderRadius: 9999,
-                background: idx === stepIdx ? "#f2c8a8" : "rgba(255, 255, 255, 0.2)",
+                background: idx === stepIdx ? "#0f766e" : "#cbd5e1",
                 border: "none",
                 cursor: "pointer",
                 padding: 0,
@@ -260,9 +260,9 @@ export function DemoTourGuide({
               type="button"
               onClick={handlePrev}
               style={{
-                background: "rgba(255, 255, 255, 0.06)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                color: "#fff",
+                background: "#f8fafc",
+                border: "1px solid #cbd5e1",
+                color: "#0f172a",
                 borderRadius: 8,
                 padding: "7px 10px",
                 fontSize: 12,
@@ -280,8 +280,8 @@ export function DemoTourGuide({
               type="button"
               onClick={handleNext}
               style={{
-                background: "#ffffff",
-                color: "#13110f",
+                background: "#0f766e",
+                color: "#ffffff",
                 border: "none",
                 borderRadius: 8,
                 padding: "7px 14px",
@@ -300,8 +300,8 @@ export function DemoTourGuide({
             <Link
               href="/qeydiyyat"
               style={{
-                background: "linear-gradient(135deg, #f2c8a8 0%, #ffffff 100%)",
-                color: "#13110f",
+                background: "#0f766e",
+                color: "#ffffff",
                 borderRadius: 8,
                 padding: "8px 16px",
                 fontSize: 12.5,
@@ -310,7 +310,6 @@ export function DemoTourGuide({
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
-                boxShadow: "0 4px 14px rgba(242, 200, 168, 0.3)",
               }}
             >
               <span>Ödənişsiz başla</span>

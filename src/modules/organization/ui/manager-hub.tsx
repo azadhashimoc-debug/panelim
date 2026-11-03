@@ -14,6 +14,7 @@ import {
   Download,
   LayoutDashboard,
   Plus,
+  QrCode,
   ReceiptText,
   Settings,
   UsersRound,
@@ -58,9 +59,47 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
 
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState("");
+  const [qrState, setQrState] = useState<{
+    branchId: string;
+    branchName: string;
+    image: string | null;
+    expiresAt: number;
+  } | null>(null);
   const [selectedMemberId, setSelectedMemberId] = useState<string>(
     demo ? DEMO_MANAGER_DATA.team[0]?.id || "" : ""
   );
+
+  async function handleOpenQr(branchId?: string, branchName?: string) {
+    const targetId = branchId || data?.branches[0]?.id || "";
+    const targetName = branchName || data?.branches[0]?.name || "Baş Filial";
+    if (!targetId) return;
+    if (isDemo) {
+      setQrState({
+        branchId: targetId,
+        branchName: targetName,
+        image: null,
+        expiresAt: Date.now() + 120_000,
+      });
+      return;
+    }
+    setBusy(true);
+    setActionError("");
+    try {
+      const result = await api<{ image: string; expiresAt: number }>("/api/qr", {
+        branchId: targetId,
+      });
+      setQrState({
+        branchId: targetId,
+        branchName: targetName,
+        image: result.image,
+        expiresAt: result.expiresAt,
+      });
+    } catch (err: unknown) {
+      setActionError(err instanceof Error ? err.message : "QR kod yaradılmadı.");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   async function loadData(signal?: AbortSignal) {
     if (isDemo) return;
@@ -460,7 +499,15 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
             </button>
           ))}
         </nav>
-        <Link className="hub-nav" href="/giris">
+        <Link
+          className="hub-nav"
+          href={isDemo ? "/demo/isci" : "/isci"}
+          style={{ marginTop: "auto", border: "1px solid var(--line)", background: "var(--bg)" }}
+        >
+          <QrCode size={18} />
+          <span>İşçi kabineti (QR)</span>
+        </Link>
+        <Link className="hub-nav" href="/giris" style={{ marginTop: 4 }}>
           <Settings size={19} />
           <span>Hesabdan çıx</span>
         </Link>
@@ -475,6 +522,17 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
             <h1>{current[1]}</h1>
           </div>
           <div className="hub-profile">
+            {data && data.branches.length > 0 && (
+              <button
+                type="button"
+                className="button secondary compact"
+                disabled={busy}
+                onClick={() => handleOpenQr()}
+              >
+                <QrCode size={15} />
+                <span>Filial QR kodu</span>
+              </button>
+            )}
             <span className="hub-profile-avatar">
               {managerName.charAt(0).toUpperCase()}
             </span>
@@ -549,6 +607,9 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
                 onOpenAddBranch={() => {
                   setActionError("");
                   setModal("addBranch");
+                }}
+                onOpenBranchQr={(branchId, branchName) => {
+                  void handleOpenQr(branchId, branchName);
                 }}
               />
             )}
@@ -803,6 +864,58 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
         </Modal>
       )}
 
+      {qrState && (
+        <Modal
+          title={`${qrState.branchName} · Filial QR kodu`}
+          onClose={() => setQrState(null)}
+        >
+          <div className="qr-display" style={{ padding: "8px 4px" }}>
+            {qrState.image ? (
+              <img
+                src={qrState.image}
+                alt={`${qrState.branchName} üçün giriş-çıxış QR kodu`}
+              />
+            ) : (
+              <div
+                style={{
+                  width: 200,
+                  height: 200,
+                  margin: "0 auto 12px",
+                  borderRadius: 12,
+                  border: "1.5px dashed var(--line-strong)",
+                  background: "var(--bg)",
+                  display: "grid",
+                  placeItems: "center",
+                  color: "var(--accent)",
+                }}
+              >
+                <QrCode size={84} strokeWidth={1.3} />
+              </div>
+            )}
+            <p>
+              İşçilər öz kabinetlərində (<strong>/isci</strong>) və ya telefon
+              kamerası ilə bu QR kodu oxudaraq giriş-çıxış edirlər.
+            </p>
+            <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 14 }}>
+              <button
+                type="button"
+                className="button secondary compact"
+                disabled={busy}
+                onClick={() => void handleOpenQr(qrState.branchId, qrState.branchName)}
+              >
+                QR kodu yenilə
+              </button>
+              <Link
+                href={isDemo ? "/demo/isci" : "/isci"}
+                className="button primary compact"
+              >
+                İşçi QR oxuyucusuna keç
+              </Link>
+            </div>
+          </div>
+        </Modal>
+      )}
+
       {isDemo && <DemoTourGuide onSelectModule={setActive} />}
     </div>
   );
@@ -924,10 +1037,12 @@ function TeamPanel({
   data,
   onOpenAddEmployee,
   onOpenAddBranch,
+  onOpenBranchQr,
 }: {
   data: ManagerHubData;
   onOpenAddEmployee: () => void;
   onOpenAddBranch: () => void;
+  onOpenBranchQr: (branchId: string, branchName: string) => void;
 }) {
   return (
     <>
@@ -998,6 +1113,13 @@ function TeamPanel({
                 </small>
               </div>
               <span>{assignedCount} işçi təyin edilib</span>
+              <button
+                type="button"
+                className="button secondary compact"
+                onClick={() => onOpenBranchQr(b.id, b.name)}
+              >
+                <QrCode size={14} /> QR kod
+              </button>
               <b className={b.plan_disabled_at ? "hub-pending" : "hub-presence"}>
                 <i /> {b.plan_disabled_at ? "Dayandırılıb" : "Aktiv"}
               </b>
@@ -1229,12 +1351,12 @@ function PayrollPanel({
           </article>
           <article>
             <small>BU AYIN AVANSLARI</small>
-            <strong style={{ color: "#c0392b" }}>-{formatMoney(totalAdvancesQepik)}</strong>
+            <strong style={{ color: "#b91c1c" }}>-{formatMoney(totalAdvancesQepik)}</strong>
             <span>{memberAdvances.length} ödəniş</span>
           </article>
-          <article style={{ background: "#edf7f3", borderColor: "#c3e6dc" }}>
-            <small style={{ color: "#173d40" }}>YEKUN ÖDƏNİLƏCƏK</small>
-            <strong style={{ color: "#173d40" }}>{formatMoney(netPayQepik)}</strong>
+          <article style={{ background: "#f0fdfa", borderColor: "#99f6e4" }}>
+            <small style={{ color: "#115e59" }}>YEKUN ÖDƏNİLƏCƏK</small>
+            <strong style={{ color: "#0f766e" }}>{formatMoney(netPayQepik)}</strong>
             <span>Maaş günü: hər ayın {terms?.payday_day || 5}-i</span>
           </article>
         </div>
@@ -1394,12 +1516,13 @@ function TasksSample() {
           style={{ cursor: "pointer" }}
           onClick={() => toggle(task.id)}
         >
-          <input
-            type="checkbox"
-            checked={task.done}
-            readOnly
-            style={{ width: 18, height: 18, accentColor: "#10b6a7" }}
-          />
+            <input
+              type="checkbox"
+              checked={task.done}
+              readOnly
+              aria-label={task.title}
+              style={{ width: 18, height: 18, accentColor: "#0f766e" }}
+            />
           <div>
             <strong
               style={{

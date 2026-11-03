@@ -73,8 +73,8 @@ export function PaycellCheckoutModal({
         position: "fixed",
         inset: 0,
         zIndex: 9999,
-        background: "rgba(0, 0, 0, 0.75)",
-        backdropFilter: "blur(6px)",
+        background: "rgba(15, 23, 42, 0.45)",
+        backdropFilter: "blur(4px)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -85,22 +85,22 @@ export function PaycellCheckoutModal({
         style={{
           width: "100%",
           maxWidth: "460px",
-          background: "#12141a",
-          border: "1px solid #282d3c",
-          borderRadius: "20px",
-          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-          color: "#f1f3f9",
+          background: "#ffffff",
+          border: "1px solid #cbd5e1",
+          borderRadius: "16px",
+          boxShadow: "0 20px 50px rgba(15, 23, 42, 0.15)",
+          color: "#0f172a",
           overflow: "hidden",
         }}
       >
         <div
           style={{
             padding: "16px 20px",
-            borderBottom: "1px solid #232838",
+            borderBottom: "1px solid #e2e8f0",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            background: "#161922",
+            background: "#f8fafc",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -109,29 +109,29 @@ export function PaycellCheckoutModal({
                 width: "36px",
                 height: "36px",
                 borderRadius: "10px",
-                background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
+                background: "#0f766e",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "#fff",
+                color: "#ffffff",
               }}
             >
               <CreditCard size={18} />
             </div>
             <div>
-              <div style={{ fontWeight: 700, fontSize: "15px", letterSpacing: "0.2px" }}>
+              <div style={{ fontWeight: 700, fontSize: "15px", color: "#0f172a" }}>
                 Paycell.Az Ödəniş Şlüzü
               </div>
               <div
                 style={{
-                  fontSize: "11px",
-                  color: "#94a3b8",
+                  fontSize: "11.5px",
+                  color: "#475569",
                   display: "flex",
                   alignItems: "center",
                   gap: "4px",
                 }}
               >
-                <ShieldCheck size={12} color="#10b981" /> Rəsmi 3D Secure Kart Ödənişi
+                <ShieldCheck size={13} color="#0f766e" /> Rəsmi 3D Secure Kart Ödənişi
               </div>
             </div>
           </div>
@@ -142,7 +142,7 @@ export function PaycellCheckoutModal({
               style={{
                 background: "transparent",
                 border: "none",
-                color: "#94a3b8",
+                color: "#475569",
                 cursor: "pointer",
                 padding: "10px",
                 minWidth: "44px",
@@ -162,10 +162,9 @@ export function PaycellCheckoutModal({
         <form onSubmit={handleRedirectToPaycell} style={{ padding: "22px 20px" }}>
           <div
             style={{
-              background:
-                "linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(30, 58, 138, 0.25))",
-              border: "1px solid rgba(59, 130, 246, 0.3)",
-              borderRadius: "14px",
+              background: "#f0fdfa",
+              border: "1px solid #99f6e4",
+              borderRadius: "12px",
               padding: "16px",
               marginBottom: "16px",
               display: "flex",
@@ -174,19 +173,19 @@ export function PaycellCheckoutModal({
             }}
           >
             <div>
-              <div style={{ fontSize: "11px", color: "#93c5fd", fontWeight: 700 }}>
+              <div style={{ fontSize: "11px", color: "#0f766e", fontWeight: 700 }}>
                 SEÇİLƏN PAKET
               </div>
-              <div style={{ fontSize: "17px", fontWeight: 800, color: "#fff", marginTop: "2px" }}>
+              <div style={{ fontSize: "17px", fontWeight: 800, color: "#0f172a", marginTop: "2px" }}>
                 {plan.toUpperCase()} {extraBranches > 0 ? `(+${extraBranches} filial)` : ""}
               </div>
-              <div style={{ fontSize: "12px", color: "#94a3b8", marginTop: "2px" }}>
+              <div style={{ fontSize: "12px", color: "#475569", marginTop: "2px" }}>
                 Müddət: 30 gün (1 ay)
               </div>
             </div>
             <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: "11px", color: "#94a3b8" }}>Yekun məbləğ</div>
-              <div style={{ fontSize: "22px", fontWeight: 800, color: "#38bdf8" }}>
+              <div style={{ fontSize: "11px", color: "#475569" }}>Yekun məbləğ</div>
+              <div style={{ fontSize: "22px", fontWeight: 800, color: "#0f766e" }}>
                 {amountAzn}.00 AZN
               </div>
             </div>
@@ -194,27 +193,27 @@ export function PaycellCheckoutModal({
 
           <div
             style={{
-              background: "#181c26",
-              border: "1px solid #282f42",
-              borderRadius: "14px",
+              background: "#f8fafc",
+              border: "1px solid #e2e8f0",
+              borderRadius: "12px",
               padding: "14px 16px",
               fontSize: "12.5px",
               lineHeight: "1.7",
-              color: "#cbd5e1",
+              color: "#334155",
               marginBottom: "18px",
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-              <span style={{ color: "#94a3b8" }}>Ödəniş provayderi:</span>
-              <strong style={{ color: "#f8fafc" }}>Paycell.Az (Site #89)</strong>
+              <span style={{ color: "#475569" }}>Ödəniş provayderi:</span>
+              <strong style={{ color: "#0f172a" }}>Paycell.Az (Site #89)</strong>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-              <span style={{ color: "#94a3b8" }}>Tərəfdaş domen:</span>
-              <strong style={{ color: "#f8fafc" }}>panelim.az</strong>
+              <span style={{ color: "#475569" }}>Tərəfdaş domen:</span>
+              <strong style={{ color: "#0f172a" }}>panelim.az</strong>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#94a3b8" }}>Kart məlumatları:</span>
-              <span style={{ color: "#10b981", fontWeight: 600 }}>
+              <span style={{ color: "#475569" }}>Kart məlumatları:</span>
+              <span style={{ color: "#0f766e", fontWeight: 600 }}>
                 Birbaşa Paycell / Bank səhifəsində
               </span>
             </div>
@@ -224,9 +223,9 @@ export function PaycellCheckoutModal({
             <div
               role="alert"
               style={{
-                background: "rgba(239, 68, 68, 0.15)",
-                border: "1px solid rgba(239, 68, 68, 0.3)",
-                color: "#f87171",
+                background: "#fef2f2",
+                border: "1px solid #fecaca",
+                color: "#b91c1c",
                 borderRadius: "10px",
                 padding: "10px 12px",
                 fontSize: "12px",
@@ -244,12 +243,10 @@ export function PaycellCheckoutModal({
               width: "100%",
               minHeight: "48px",
               padding: "14px",
-              borderRadius: "12px",
-              background: processing
-                ? "#334155"
-                : "linear-gradient(135deg, #2563eb, #1d4ed8)",
+              borderRadius: "10px",
+              background: processing ? "#64748b" : "#0f766e",
               border: "none",
-              color: "#fff",
+              color: "#ffffff",
               fontWeight: 700,
               fontSize: "14px",
               cursor: processing ? "not-allowed" : "pointer",
@@ -271,8 +268,8 @@ export function PaycellCheckoutModal({
           <div
             style={{
               marginTop: "12px",
-              fontSize: "11px",
-              color: "#64748b",
+              fontSize: "11.5px",
+              color: "#475569",
               textAlign: "center",
               display: "flex",
               alignItems: "center",
@@ -280,7 +277,7 @@ export function PaycellCheckoutModal({
               gap: "4px",
             }}
           >
-            <Sparkles size={12} color="#3b82f6" />
+            <Sparkles size={12} color="#0f766e" />
             Ödəniş təsdiqləndikdən sonra abunəlik avtomatik aktivləşir
           </div>
         </form>
