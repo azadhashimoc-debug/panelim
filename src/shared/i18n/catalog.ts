@@ -205,6 +205,9 @@ const catalog = {
   "İnternet bağlantısını yoxlayın. Əməliyyat təsdiqlənməyib.":
     "İnternet bağlantısını yoxlayın. Əməliyyat təsdiqlənməyib.",
   "Əməliyyat tamamlanmadı.": "Əməliyyat tamamlanmadı.",
+  Müraciətlər: "Müraciətlər",
+  "İcazə / Məzuniyyət": "İcazə / Məzuniyyət",
+  Düzəliş: "Düzəliş",
 } as const;
 export function tr(message: keyof typeof catalog): string {
   return catalog[message];

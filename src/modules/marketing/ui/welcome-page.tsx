@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -118,7 +117,6 @@ export function WelcomePage({ year }: { year: number }) {
   useEffect(() => {
     if (isUserInteracting) return;
 
-    let step = 0;
     // Pre-calculated target coordinates inside the cockpit screen:
     // Tab 0: { x: 310, y: 44 }
     // Tab 1: { x: 470, y: 44 }
@@ -317,6 +315,21 @@ export function WelcomePage({ year }: { year: number }) {
                 <Play size={13} fill="currentColor" />
                 <span>Canlı 2 dəqiqəlik demoya bax</span>
               </Link>
+            </div>
+
+            <div className={styles.heroGuarantees}>
+              <span className={styles.heroGuaranteeItem}>
+                <ShieldCheck size={14} className={styles.guaranteeIcon} />
+                14 gün tam Business sınaq
+              </span>
+              <span className={styles.heroGuaranteeItem}>
+                <Check size={14} className={styles.guaranteeIcon} />
+                Kart tələb olunmur
+              </span>
+              <span className={styles.heroGuaranteeItem}>
+                <Sparkles size={14} className={styles.guaranteeIcon} />
+                3 işçiyədək 0 ₼ ömürlük
+              </span>
             </div>
           </div>
 
@@ -774,6 +787,39 @@ export function WelcomePage({ year }: { year: number }) {
               <Link href="/qeydiyyat" className={styles.priceButtonSecondary}>
                 Growth seç
               </Link>
+            </div>
+          </div>
+
+          {/* Anchoring & Cost Comparison (Marketing Psychology: Anchoring + Loss Aversion) */}
+          <div className={styles.comparisonWrapper}>
+            <div className={styles.comparisonHeader}>
+              <h3 className={styles.comparisonHeading}>Niyə minlərlə manatlıq aparatlar yerinə panelim.az?</h3>
+              <p className={styles.comparisonLead}>
+                Bahalı turniket və barmaq izi cihazları kiçik komandalar üçün həm baha, həm də köhnəlmiş həlldir.
+              </p>
+            </div>
+            <div className={styles.comparisonGrid}>
+              <div className={styles.comparisonColumnTraditional}>
+                <div className={styles.comparisonColTitle}>Ənənəvi biometrik aparat və turniketlər</div>
+                <div className={styles.comparisonPriceTag}>1,500 – 3,000 ₼ <small>ilkin xərc</small></div>
+                <ul className={styles.comparisonList}>
+                  <li className={styles.comparisonNegative}>✕ Divarın deşilməsi, kabel çəkilişi və quraşdırma xərci</li>
+                  <li className={styles.comparisonNegative}>✕ Barmaq izi tanımadıqda servis ustası gözləmək</li>
+                  <li className={styles.comparisonNegative}>✕ Çoxfiliallı idarəetmə üçün bahalı lokal server</li>
+                  <li className={styles.comparisonNegative}>✕ Ay sonunda məlumatları yenə də əllə Excel-ə köçürmək</li>
+                </ul>
+              </div>
+              <div className={styles.comparisonColumnModern}>
+                <div className={styles.modernBadge}>Ağıllı mobil həll</div>
+                <div className={styles.comparisonColTitle}>panelim.az ilə QR & GPS</div>
+                <div className={styles.comparisonPriceTagModern}>0 ₼ avadanlıq <small>· 29 ₼/ay Business</small></div>
+                <ul className={styles.comparisonList}>
+                  <li className={styles.comparisonPositive}><Check size={15} /> 0 ₼ avadanlıq xərci — işçinin öz smartfonu kifayətdir</li>
+                  <li className={styles.comparisonPositive}><Check size={15} /> 2 dəqiqəyə aktiv — QR kodu çap edib qapıya vurun</li>
+                  <li className={styles.comparisonPositive}><Check size={15} /> Bütün filiallar vahid mobil rəhbər kabinetində</li>
+                  <li className={styles.comparisonPositive}><Check size={15} /> Ay sonu avtomatik daxili maaş və avans uçotu</li>
+                </ul>
+              </div>
             </div>
           </div>
         </section>

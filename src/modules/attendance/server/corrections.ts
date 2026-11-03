@@ -15,11 +15,17 @@ const requestSchema = z
   .strict();
 const decisionSchema = z
   .object({
-    id: z.uuid(),
+    id: z.uuid().optional(),
+    correctionId: z.uuid().optional(),
     decision: z.enum(["approved", "rejected"]),
     reason: z.string().trim().min(3).max(1000),
   })
-  .strict();
+  .strict()
+  .transform((val) => {
+    const id = val.id || val.correctionId;
+    if (!id) throw new Error("INVALID_INPUT");
+    return { id, decision: val.decision, reason: val.reason };
+  });
 export async function requestCorrection(input: unknown) {
   const parsed = requestSchema.safeParse(input);
   if (!parsed.success) throw new Error("INVALID_INPUT");

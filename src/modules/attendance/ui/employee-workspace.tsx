@@ -664,14 +664,23 @@ export function EmployeeWorkspace({
           ) : (
             <section className="card full-card">
               <div className="section-title">
-                <h2>{tr("Düzəliş müraciətləri")}</h2>
-                <button
-                  className="button primary compact"
-                  onClick={() => showDialog("correction")}
-                >
-                  <FilePenLine size={16} />
-                  {tr("Yeni müraciət")}
-                </button>
+                <h2>{tr("Müraciətlər")}</h2>
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  <button
+                    className="button secondary compact"
+                    onClick={() => showDialog("leave")}
+                  >
+                    <Umbrella size={16} />
+                    {tr("İcazə / Məzuniyyət")}
+                  </button>
+                  <button
+                    className="button primary compact"
+                    onClick={() => showDialog("correction")}
+                  >
+                    <FilePenLine size={16} />
+                    {tr("Düzəliş")}
+                  </button>
+                </div>
               </div>
               {workspace?.corrections.length ? (
                 <div className="request-list">

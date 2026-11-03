@@ -61,11 +61,7 @@ export function SubscriptionPanel({ demo = false }: { demo?: boolean }) {
   }
 
   useEffect(() => {
-    if (demo) {
-      setStatus(DEMO_SUBSCRIPTION_STATUS);
-      setLoading(false);
-      return;
-    }
+    if (demo) return;
     const controller = new AbortController();
     api<{ status: SubscriptionStatus }>("/api/billing", undefined, controller.signal)
       .then(async (result) => {
@@ -90,7 +86,7 @@ export function SubscriptionPanel({ demo = false }: { demo?: boolean }) {
         if (!controller.signal.aborted) setLoading(false);
       });
     return () => controller.abort();
-  }, []);
+  }, [demo]);
 
   async function retry() {
     setLoading(true); setError("");

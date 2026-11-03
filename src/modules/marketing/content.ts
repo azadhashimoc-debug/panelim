@@ -18,13 +18,13 @@ export const marketing = {
   titleFirst: "İşçi davamiyyəti və",
   titleAccent: "daxili maaş uçotu cibinizdə.",
   intro:
-    "5–50 işçisi olan kafe, restoran, minimarket və klinikalar üçün turniketsiz mobil davamiyyət sistemi. Dinamik QR kod, GPS məkan təsdiqi, növbə qrafiki və ay sonu dəqiq əməkhaqqı cədvəli.",
-  demoNote: "Heç bir quraşdırma və ya ödəniş kartı tələb olunmur.",
+    "5–50 işçisi olan kafe, restoran, minimarket və mağazalar üçün turniketsiz mobil davamiyyət. 'Mən gəlmişdim' mübahisələrinə, unudulmuş avanslara və ay sonu Excel saatlarına son qoyun. Dinamik QR və GPS ilə dəqiq nəzarət cibinizdə.",
+  demoNote: "14 gün pulsuz sınaq. Kredit kartı və ya quraşdırma tələb olunmur.",
   heroChecks: [
-    "Dinamik QR və GPS yoxlaması",
-    "Növbə cədvəli və gecə növbəsi",
+    "Dinamik QR və GPS filial yoxlaması",
+    "Növbə cədvəli və gecə növbələri",
     "Avans və təsdiqli əlavə saatlar",
-    "Çoxfiliallı vahid idarəetmə",
+    "Ay sonu avtomatik daxili maaş uçotu",
   ],
   sample: "İşçi kabineti nümunəsi",
   sampleDescription:

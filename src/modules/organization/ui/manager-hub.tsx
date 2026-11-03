@@ -72,7 +72,7 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
       if (res.team.length > 0 && !selectedMemberId) {
         setSelectedMemberId(res.team[0].id);
       }
-    } catch (err: unknown) {
+    } catch (_err: unknown) {
       if (signal?.aborted) return;
       setData(DEMO_MANAGER_DATA);
       setIsDemo(true);
@@ -83,11 +83,7 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
   }
 
   useEffect(() => {
-    if (isDemo) {
-      setData(DEMO_MANAGER_DATA);
-      setLoading(false);
-      return;
-    }
+    if (isDemo) return;
 
     let active = true;
     const controller = new AbortController();
@@ -102,7 +98,7 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
           setSelectedMemberId((prev) => prev || res.team[0].id);
         }
       })
-      .catch((err: unknown) => {
+      .catch(() => {
         if (!active || controller.signal.aborted) return;
         setData(DEMO_MANAGER_DATA);
         setIsDemo(true);
@@ -128,7 +124,7 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
         company_id: data?.company.id || "demo-comp-1",
         user_id: `demo-u-${Date.now()}`,
         display_name: (form.get("displayName") as string) || "Yeni İşçi",
-        role: (form.get("role") as any) || "employee",
+        role: ((form.get("role") as string) || "employee") as "employee" | "manager" | "accountant",
         archived_at: null,
       };
       setData((prev) =>
@@ -143,7 +139,7 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
                   company_id: prev.company.id,
                   membership_id: newMember.id,
                   started_on: new Date().toISOString().slice(0, 10),
-                  pay_type: (form.get("payType") as any) || "monthly",
+                  pay_type: ((form.get("payType") as string) || "monthly") as "monthly" | "hourly",
                   base_pay_qepik: Math.round(
                     parseFloat((form.get("basePayAZN") as string) || "0") * 100
                   ),
@@ -302,11 +298,13 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
 
     try {
       const amount = parseFloat(form.get("amountAZN") as string || "0");
+      const dateVal = (form.get("date") as string) || new Date().toISOString().slice(0, 10);
       await api("/api/payroll", {
         membershipId: form.get("membershipId"),
         amountQepik: Math.round(amount * 100),
         note: form.get("note") || "Avans ödənişi",
-        date: form.get("date") || new Date().toISOString().slice(0, 10),
+        issuedOn: dateVal,
+        date: dateVal,
       });
       setModal(null);
       await loadData();
@@ -415,12 +413,14 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
     try {
       if (decisionTarget.type === "leave") {
         await api("/api/leave-requests", {
+          id: decisionTarget.id,
           requestId: decisionTarget.id,
           decision: decisionTarget.decision,
           reason,
         });
       } else {
         await api("/api/corrections", {
+          id: decisionTarget.id,
           correctionId: decisionTarget.id,
           decision: decisionTarget.decision,
           reason,
@@ -588,7 +588,7 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
             )}
 
             {active === "tasks" && <TasksSample />}
-            {active === "reports" && <ReportsPanel data={data} />}
+            {active === "reports" && <ReportsPanel data={data} isDemo={isDemo} />}
           </>
         )}
       </main>
@@ -1278,7 +1278,33 @@ function PayrollPanel({
 }
 
 // 6. Reports Panel
-function ReportsPanel({ data }: { data: ManagerHubData }) {
+function ReportsPanel({ data, isDemo }: { data: ManagerHubData; isDemo?: boolean }) {
+  const handleExport = () => {
+    if (isDemo) {
+      const headers = ["Tarix", "İşçi", "Filial", "Giriş vaxtı", "Çıxış vaxtı", "Status"];
+      const rows = (data.todayAttendance || []).map((a) => {
+        const worker = data.team.find((m) => m.id === a.membership_id)?.display_name || "İşçi";
+        const branch = data.branches.find((b) => b.id === a.branch_id)?.name || "Filial";
+        return [a.work_date, worker, branch, a.check_in || "", a.check_out || "", a.check_out ? "Tamamlandı" : "İşdədir"].join(",");
+      });
+      const csv = "\uFEFF" + [headers.join(","), ...rows].join("\r\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `davamiyyet-demo-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } else {
+      const branchId = data.branches[0]?.id;
+      if (branchId) {
+        window.open(`/api/attendance/export?branch=${encodeURIComponent(branchId)}`, "_blank");
+      }
+    }
+  };
+
   return (
     <>
       <section className="hub-metrics">
@@ -1310,7 +1336,7 @@ function ReportsPanel({ data }: { data: ManagerHubData }) {
             <small>FİLİAL GÖSTƏRİCİLƏRİ</small>
             <h2>Filiallar Üzrə Davamiyyət</h2>
           </div>
-          <button className="button secondary compact" title="Davamiyyət hesabatını yüklə">
+          <button className="button secondary compact" title="Davamiyyət hesabatını yüklə" onClick={handleExport}>
             <Download size={14} /> Excel çıxarışı
           </button>
         </div>

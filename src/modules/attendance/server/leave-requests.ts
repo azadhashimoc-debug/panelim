@@ -7,19 +7,33 @@ import { databaseError, rateLimit } from "@/shared/server/http";
 const requestSchema = z
   .object({
     type: z.enum(["leave", "permission"]),
-    startsOn: z.iso.date(),
-    endsOn: z.iso.date(),
+    startsOn: z.iso.date().optional(),
+    endsOn: z.iso.date().optional(),
+    start: z.iso.date().optional(),
+    end: z.iso.date().optional(),
     reason: z.string().trim().min(3).max(1000),
   })
-  .strict();
+  .strict()
+  .transform((val) => {
+    const startsOn = val.startsOn || val.start;
+    const endsOn = val.endsOn || val.end;
+    if (!startsOn || !endsOn) throw new Error("INVALID_INPUT");
+    return { type: val.type, startsOn, endsOn, reason: val.reason };
+  });
 
 const decisionSchema = z
   .object({
-    id: z.uuid(),
+    id: z.uuid().optional(),
+    requestId: z.uuid().optional(),
     decision: z.enum(["approved", "rejected"]),
     reason: z.string().trim().min(3).max(1000),
   })
-  .strict();
+  .strict()
+  .transform((val) => {
+    const id = val.id || val.requestId;
+    if (!id) throw new Error("INVALID_INPUT");
+    return { id, decision: val.decision, reason: val.reason };
+  });
 
 export async function requestLeave(input: unknown) {
   const parsed = requestSchema.safeParse(input);

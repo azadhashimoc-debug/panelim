@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -8,11 +8,9 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Clock,
   Coins,
   QrCode,
   Sparkles,
-  UsersRound,
   X,
 } from "lucide-react";
 
@@ -77,13 +75,9 @@ export function DemoTourGuide({
   const [isOpen, setIsOpen] = useState(true);
   const [stepIdx, setStepIdx] = useState(0);
   const [dismissed, setDismissed] = useState(true);
-  const [minimized, setMinimized] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth <= 768) {
-      setMinimized(true);
-    }
-  }, []);
+  const [minimized, setMinimized] = useState(
+    () => typeof window !== "undefined" && window.innerWidth <= 768,
+  );
 
   const step = TOUR_STEPS[stepIdx];
   const Icon = step.icon;

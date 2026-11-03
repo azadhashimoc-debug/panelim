@@ -8,10 +8,21 @@ const advanceSchema = z
   .object({
     membershipId: z.uuid(),
     amountQepik: z.number().int().positive(),
-    issuedOn: z.iso.date(),
+    issuedOn: z.iso.date().optional(),
+    date: z.iso.date().optional(),
     note: z.string().trim().max(500).optional(),
   })
-  .strict();
+  .strict()
+  .transform((val) => {
+    const issuedOn = val.issuedOn || val.date;
+    if (!issuedOn) throw new Error("INVALID_INPUT");
+    return {
+      membershipId: val.membershipId,
+      amountQepik: val.amountQepik,
+      issuedOn,
+      note: val.note,
+    };
+  });
 
 const closePeriodSchema = z
   .object({
