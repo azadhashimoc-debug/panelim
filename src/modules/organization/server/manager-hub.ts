@@ -191,6 +191,35 @@ export async function addEmployee(input: unknown) {
 
   const db = serviceClient();
 
+  // Verify branch exists in the company
+  const { data: branch, error: branchErr } = await db
+    .from("branches")
+    .select("id")
+    .eq("id", parsed.data.branchId)
+    .eq("company_id", member.company_id)
+    .is("archived_at", null)
+    .maybeSingle();
+
+  if (branchErr || !branch) throw new Error("FORBIDDEN");
+
+  // Non-owners (managers) can only create employees and only in their own assigned branch
+  if (member.role !== "owner") {
+    if (parsed.data.role !== "employee") {
+      throw new Error("FORBIDDEN");
+    }
+
+    const { data: ownBranches, error: ownError } = await db
+      .from("branch_assignments")
+      .select("branch_id")
+      .eq("membership_id", member.id);
+
+    if (ownError) throw new Error("INTERNAL");
+    const own = new Set((ownBranches ?? []).map((a) => a.branch_id as string));
+    if (!own.has(parsed.data.branchId)) {
+      throw new Error("FORBIDDEN");
+    }
+  }
+
   // Create auth user
   const { data: authData, error: authErr } = await db.auth.admin.createUser({
     email: parsed.data.email.trim().toLowerCase(),

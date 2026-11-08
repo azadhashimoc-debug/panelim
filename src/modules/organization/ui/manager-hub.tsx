@@ -142,11 +142,9 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
       if (res.team.length > 0 && !selectedMemberId) {
         setSelectedMemberId(res.team[0].id);
       }
-    } catch (_err: unknown) {
+    } catch (err: unknown) {
       if (signal?.aborted) return;
-      setData(DEMO_MANAGER_DATA);
-      setIsDemo(true);
-      setError("");
+      setError(err instanceof Error ? err.message : "Məlumatlar yüklənərkən xəta baş verdi.");
     } finally {
       if (!signal?.aborted) setLoading(false);
     }
@@ -168,11 +166,9 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
           setSelectedMemberId((prev) => prev || res.team[0].id);
         }
       })
-      .catch(() => {
+      .catch((err: unknown) => {
         if (!active || controller.signal.aborted) return;
-        setData(DEMO_MANAGER_DATA);
-        setIsDemo(true);
-        setError("");
+        setError(err instanceof Error ? err.message : "Məlumatlar yüklənərkən xəta baş verdi.");
         setLoading(false);
       });
 
@@ -696,64 +692,79 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
         <AccessLinkModal link={accessLink} onClose={() => setAccessLink(null)} />
       )}
 
-      {modal === "addEmployee" && data && (
-        <Modal title="Yeni İşçi Əlavə Et" onClose={() => setModal(null)}>
-          <form className="stack" onSubmit={handleAddEmployee} style={{ padding: 20 }}>
-            <label className="field">
-              Ad və Soyad
-              <input name="displayName" type="text" required placeholder="Aylin Məmmədova" maxLength={100} />
-            </label>
-            <label className="field">
-              Rəsmi E-poçt
-              <input name="email" type="email" required placeholder="aylin@biznes.az" maxLength={254} />
-            </label>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      {modal === "addEmployee" && data && (() => {
+        const isOwner = data.member.role === "owner";
+        const allowedBranches = isOwner
+          ? data.branches
+          : data.branches.filter((b) =>
+              data.branchAssignments.some(
+                (a) => a.membership_id === data.member.id && a.branch_id === b.id
+              )
+            );
+
+        return (
+          <Modal title="Yeni İşçi Əlavə Et" onClose={() => setModal(null)}>
+            <form className="stack" onSubmit={handleAddEmployee} style={{ padding: 20 }}>
               <label className="field">
-                Vəzifə / Rol
-                <select name="role" defaultValue="employee">
-                  <option value="employee">İşçi</option>
-                  <option value="manager">Filial Rəhbəri</option>
-                  <option value="accountant">Mühasib</option>
-                </select>
+                Ad və Soyad
+                <input name="displayName" type="text" required placeholder="Aylin Məmmədova" maxLength={100} />
               </label>
               <label className="field">
-                Təyin olunan filial
-                <select name="branchId" defaultValue={data.branches[0]?.id}>
-                  {data.branches.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name}
-                    </option>
-                  ))}
-                </select>
+                Rəsmi E-poçt
+                <input name="email" type="email" required placeholder="aylin@biznes.az" maxLength={254} />
               </label>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
-              <label className="field">
-                Maaş növü
-                <select name="payType" defaultValue="monthly">
-                  <option value="monthly">Aylıq</option>
-                  <option value="hourly">Saatlıq</option>
-                </select>
-              </label>
-              <label className="field">
-                Məbləğ (AZN)
-                <input name="basePayAZN" type="number" step="0.01" min="0" required defaultValue="850" />
-              </label>
-              <label className="field">
-                Maaş günü
-                <input name="paydayDay" type="number" min="1" max="31" defaultValue="5" />
-              </label>
-            </div>
-            {actionError && <p className="form-error">{actionError}</p>}
-            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 12 }}>
-              <button type="button" className="button secondary" onClick={() => setModal(null)}>İmtina</button>
-              <button type="submit" className="button primary" disabled={busy}>
-                {busy ? "Yadda saxlanılır…" : "İşçini təsdiqlə"}
-              </button>
-            </div>
-          </form>
-        </Modal>
-      )}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <label className="field">
+                  Vəzifə / Rol
+                  <select name="role" defaultValue="employee">
+                    <option value="employee">İşçi</option>
+                    {isOwner && (
+                      <>
+                        <option value="manager">Filial Rəhbəri</option>
+                        <option value="accountant">Mühasib</option>
+                      </>
+                    )}
+                  </select>
+                </label>
+                <label className="field">
+                  Təyin olunan filial
+                  <select name="branchId" defaultValue={allowedBranches[0]?.id}>
+                    {allowedBranches.map((b) => (
+                      <option key={b.id} value={b.id}>
+                        {b.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+                <label className="field">
+                  Maaş növü
+                  <select name="payType" defaultValue="monthly">
+                    <option value="monthly">Aylıq</option>
+                    <option value="hourly">Saatlıq</option>
+                  </select>
+                </label>
+                <label className="field">
+                  Məbləğ (AZN)
+                  <input name="basePayAZN" type="number" step="0.01" min="0" required defaultValue="850" />
+                </label>
+                <label className="field">
+                  Maaş günü
+                  <input name="paydayDay" type="number" min="1" max="31" defaultValue="5" />
+                </label>
+              </div>
+              {actionError && <p className="form-error">{actionError}</p>}
+              <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 12 }}>
+                <button type="button" className="button secondary" onClick={() => setModal(null)}>İmtina</button>
+                <button type="submit" className="button primary" disabled={busy || allowedBranches.length === 0}>
+                  {busy ? "Yadda saxlanılır…" : "İşçini təsdiqlə"}
+                </button>
+              </div>
+            </form>
+          </Modal>
+        );
+      })()}
 
       {/* MODAL: Add Branch */}
       {modal === "addBranch" && (

@@ -157,6 +157,87 @@ it("rejects employee addition with invalid input", async () => {
   expect(await response.json()).toMatchObject({ error: { code: "INVALID_INPUT" } });
 });
 
+it("rejects employee addition if manager tries to create a manager", async () => {
+  context.session.mockResolvedValue({
+    client: { from: () => createMockQuery({ id: membershipId, company_id: companyId, role: "manager", display_name: "Filial Müdiri" }) },
+    user: { id: "manager-user-id" },
+  });
+
+  vi.mocked(readMutation).mockResolvedValue({
+    action: "add_employee",
+    displayName: "İkinci Müdir",
+    email: "ikinci@kafe.az",
+    role: "manager",
+    branchId,
+    payType: "monthly",
+    basePayQepik: 85000,
+    paydayDay: 5,
+  });
+
+  const response = await POST(new Request("http://localhost/api/rehber", { method: "POST" }));
+  expect(response.status).toBe(403);
+  expect(await response.json()).toMatchObject({ error: { code: "FORBIDDEN" } });
+});
+
+it("rejects employee addition if manager is not assigned to the branch", async () => {
+  context.session.mockResolvedValue({
+    client: { from: () => createMockQuery({ id: membershipId, company_id: companyId, role: "manager", display_name: "Filial Müdiri" }) },
+    user: { id: "manager-user-id" },
+  });
+
+  // branch_assignments returns other branches
+  context.serviceFrom.mockImplementation((table: string) => {
+    if (table === "branch_assignments") {
+      return createMockQuery([{ branch_id: "other-branch-uuid" }]);
+    }
+    return createMockQuery();
+  });
+
+  vi.mocked(readMutation).mockResolvedValue({
+    action: "add_employee",
+    displayName: "Aydın Məmmədov",
+    email: "aydin@kafe.az",
+    role: "employee",
+    branchId,
+    payType: "monthly",
+    basePayQepik: 85000,
+    paydayDay: 5,
+  });
+
+  const response = await POST(new Request("http://localhost/api/rehber", { method: "POST" }));
+  expect(response.status).toBe(403);
+  expect(await response.json()).toMatchObject({ error: { code: "FORBIDDEN" } });
+});
+
+it("allows manager to add employee to their assigned branch", async () => {
+  context.session.mockResolvedValue({
+    client: { from: () => createMockQuery({ id: membershipId, company_id: companyId, role: "manager", display_name: "Filial Müdiri" }) },
+    user: { id: "manager-user-id" },
+  });
+
+  context.serviceFrom.mockImplementation((table: string) => {
+    if (table === "branch_assignments") {
+      return createMockQuery([{ branch_id: branchId }]);
+    }
+    return createMockQuery();
+  });
+
+  vi.mocked(readMutation).mockResolvedValue({
+    action: "add_employee",
+    displayName: "Aydın Məmmədov",
+    email: "aydin@kafe.az",
+    role: "employee",
+    branchId,
+    payType: "monthly",
+    basePayQepik: 85000,
+    paydayDay: 5,
+  });
+
+  const response = await POST(new Request("http://localhost/api/rehber", { method: "POST" }));
+  expect(response.status).toBe(200);
+  expect(await response.json()).toMatchObject({ success: true });
+});
+
 it("adds branch when valid branch details provided by owner", async () => {
   vi.mocked(readMutation).mockResolvedValue({
     action: "add_branch",

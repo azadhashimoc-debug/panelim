@@ -2,6 +2,10 @@ import { beforeEach, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
+vi.mock("@/infrastructure/email/resend", () => ({
+  sendEmail: vi.fn().mockResolvedValue({ success: true, data: { id: "mock-email-id" } }),
+}));
+
 const deps = vi.hoisted(() => ({
   signUp: vi.fn(),
   signInWithPassword: vi.fn(),
@@ -22,6 +26,13 @@ vi.mock("@/infrastructure/supabase/server", () => ({
   }),
   serviceClient: () => ({
     rpc: deps.rpc,
+  auth: {
+    admin: {
+      createUser: vi.fn().mockResolvedValue({ data: { user: { id: "10000000-0000-4000-8000-000000000001" } }, error: null }),
+      updateUserById: vi.fn().mockResolvedValue({ data: {}, error: null }),
+      listUsers: vi.fn().mockResolvedValue({ data: { users: [] }, error: null }),
+    },
+  },
     from: (table: string) => ({
       select: () => ({
         eq: () => ({
@@ -214,5 +225,45 @@ it("login indicates needsSetup: true when user has no active company membership"
     success: true,
     needsSetup: true,
     redirect: "/qeydiyyat?qurulum=davam",
+  });
+});
+
+it("generates and sends OTP ticket for register_request_otp", async () => {
+  const request = new Request("http://localhost/api/auth", {
+    method: "POST",
+    headers: { origin: "http://localhost", "content-type": "application/json" },
+    body: JSON.stringify({
+      action: "register_request_otp",
+      email: "newowner@example.com",
+    }),
+  });
+
+  const response = await POST(request);
+  expect(response.status).toBe(200);
+  const data = await response.json();
+  expect(data.success).toBe(true);
+  expect(typeof data.ticket).toBe("string");
+  expect(data.ticket.includes(".")).toBe(true);
+});
+
+it("rejects register_verify_otp with tampered code or ticket", async () => {
+  const request = new Request("http://localhost/api/auth", {
+    method: "POST",
+    headers: { origin: "http://localhost", "content-type": "application/json" },
+    body: JSON.stringify({
+      action: "register_verify_otp",
+      email: "newowner@example.com",
+      code: "123456",
+      ticket: "9999999999999.invalidsignature",
+      displayName: "New Owner",
+      companyName: "New Company",
+      password: "password123",
+    }),
+  });
+
+  const response = await POST(request);
+  expect(response.status).toBe(400);
+  expect(await response.json()).toMatchObject({
+    error: { code: "INVALID_INPUT" },
   });
 });
