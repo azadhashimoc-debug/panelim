@@ -1,6 +1,6 @@
 import "server-only";
 import { z } from "zod";
-import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 import { requireSession } from "@/modules/identity/server/session";
 import { serviceClient } from "@/infrastructure/supabase/server";
 import { databaseError, rateLimit } from "@/shared/server/http";
@@ -20,12 +20,28 @@ const schema = z
       (v.plan === "business" ? 1 : v.plan === "start" ? 2 : 0),
   );
 
-function getPaycellSigningSecret(): string {
+function getPaycellSigningSecret(): string | null {
   return (
     process.env.QR_SIGNING_SECRET ||
     process.env.SUPABASE_SERVICE_ROLE_KEY ||
-    "panelim-paycell-signing-secret-v1"
+    null
   );
+}
+
+/**
+ * Paycell callback-inin mənbəyini yoxlayır. Açar yalnız Paycell panelindəki callback URL-də
+ * saxlanılır, müştəriyə heç vaxt verilmir. order_id imzası ödənişi sübut etmir: onu server
+ * ödənişdən əvvəl yaradıb müştəriyə verir.
+ */
+export function verifyPaycellWebhookKey(
+  given: string | null,
+): "ok" | "denied" | "not_configured" {
+  const expected = process.env.PAYCELL_WEBHOOK_KEY;
+  if (!expected) return "not_configured";
+  const digest = (value: string) => createHash("sha256").update(value).digest();
+  return given !== null && timingSafeEqual(digest(given), digest(expected))
+    ? "ok"
+    : "denied";
 }
 
 export function createPaycellOrderId(
@@ -34,9 +50,11 @@ export function createPaycellOrderId(
   extraBranches: number,
   nowMs = Date.now(),
 ): string {
+  const secret = getPaycellSigningSecret();
+  if (!secret) throw new Error("NOT_CONFIGURED");
   const ts = Math.floor(nowMs / 1000).toString(36);
   const payload = `${companyId}_${plan}_${extraBranches}_${ts}`;
-  const sig = createHmac("sha256", getPaycellSigningSecret())
+  const sig = createHmac("sha256", secret)
     .update(payload)
     .digest("hex")
     .slice(0, 16);
@@ -72,8 +90,10 @@ export function verifyPaycellOrderId(orderId: string): {
   ) {
     return null;
   }
+  const secret = getPaycellSigningSecret();
+  if (!secret) return null;
   const payload = `${companyId}_${plan}_${extraBranches}_${ts}`;
-  const expectedSig = createHmac("sha256", getPaycellSigningSecret())
+  const expectedSig = createHmac("sha256", secret)
     .update(payload)
     .digest("hex")
     .slice(0, 16);
@@ -123,6 +143,8 @@ export async function createPaycellCheckout(input: unknown, origin?: string) {
   if (!parsed.success || parsed.data.plan === "free") {
     throw new Error("INVALID_INPUT");
   }
+  // Callback açarı yoxdursa ödəniş abunəni aktivləşdirə bilməz: müştəridən pul alınmasın
+  if (!process.env.PAYCELL_WEBHOOK_KEY) throw new Error("NOT_CONFIGURED");
   await rateLimit(`billing:${companyId}`, 20, 60);
   const { plan, extraBranches } = parsed.data;
   const amountAzn =
@@ -168,6 +190,10 @@ export async function processSandboxCheckout(input: unknown) {
   const { companyId, actorId } = await requireOwner();
   const parsed = schema.safeParse(input);
   if (!parsed.success) throw new Error("INVALID_INPUT");
+  // Production-da ödənişsiz yalnız Free-yə keçid olur; pullu paket yalnız Paycell callback-i ilə açılır
+  if (parsed.data.plan !== "free" && process.env.NODE_ENV === "production") {
+    throw new Error("FORBIDDEN");
+  }
   await rateLimit(`billing:${companyId}`, 20, 60);
   const { plan, extraBranches, idempotencyKey } = parsed.data;
   const db = serviceClient();

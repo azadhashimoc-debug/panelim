@@ -1,8 +1,29 @@
 import { NextResponse } from "next/server";
 import { serviceClient } from "@/infrastructure/supabase/server";
-import { verifyPaycellOrderId } from "@/modules/organization/server/billing";
+import {
+  verifyPaycellOrderId,
+  verifyPaycellWebhookKey,
+} from "@/modules/organization/server/billing";
 
-async function activatePaycellOrder(orderId: string): Promise<boolean> {
+/** Açar yalnız Paycell panelindəki callback URL-dədir (?key=...). Uğursuzluqda cavab qaytarır. */
+function rejectUnauthorizedCallback(request: Request): NextResponse | null {
+  const given = new URL(request.url).searchParams.get("key");
+  const result = verifyPaycellWebhookKey(given);
+  if (result === "ok") return null;
+  return NextResponse.json(
+    { ok: false, error: result === "not_configured" ? "Webhook not configured" : "Forbidden" },
+    { status: result === "not_configured" ? 503 : 403 },
+  );
+}
+
+/** Paycell məbləğ göndərirsə plan qiymətinə tam bərabər olmalıdır (ödəniş URL-i imzasızdır). */
+function amountMatches(reported: unknown, expectedQepik: number): boolean {
+  if (reported === undefined || reported === null || reported === "") return true;
+  const azn = Number(String(reported).replace(",", "."));
+  return Number.isFinite(azn) && Math.round(azn * 100) === expectedQepik;
+}
+
+async function activatePaycellOrder(orderId: string, reportedAmount: unknown): Promise<boolean> {
   const verified = verifyPaycellOrderId(orderId);
   if (!verified) {
     console.warn(`[Paycell Webhook] Rejected invalid/unverified order_id: ${orderId}`);
@@ -17,6 +38,11 @@ async function activatePaycellOrder(orderId: string): Promise<boolean> {
       : plan === "business"
         ? 2900 + extraBranches * 500
         : 4900;
+
+  if (!amountMatches(reportedAmount, amount)) {
+    console.warn(`[Paycell Webhook] Amount mismatch for order_id: ${orderId}`);
+    return false;
+  }
 
   const { data: owner } = await db
     .from("memberships")
@@ -78,13 +104,15 @@ function resolveCallbackUrl(rawCallback: string | null, requestUrl: string): str
 }
 
 export async function GET(request: Request) {
+  const rejected = rejectUnauthorizedCallback(request);
+  if (rejected) return rejected;
   try {
     const url = new URL(request.url);
     const orderId = url.searchParams.get("order_id");
     const callback = url.searchParams.get("callback");
 
     if (orderId) {
-      const activated = await activatePaycellOrder(orderId);
+      const activated = await activatePaycellOrder(orderId, url.searchParams.get("amount"));
       if (!activated) {
         return NextResponse.json(
           { ok: false, error: "Invalid or expired order_id" },
@@ -117,6 +145,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const rejected = rejectUnauthorizedCallback(request);
+  if (rejected) return rejected;
   try {
     let payload: Record<string, unknown> = {};
     const contentType = request.headers.get("content-type") || "";
@@ -142,7 +172,7 @@ export async function POST(request: Request) {
 
     const orderId = String(payload.order_id || payload.orderId || "");
     if (orderId) {
-      const activated = await activatePaycellOrder(orderId);
+      const activated = await activatePaycellOrder(orderId, payload.amount);
       if (!activated) {
         return NextResponse.json(
           { status: "error", message: "Invalid or expired order_id" },

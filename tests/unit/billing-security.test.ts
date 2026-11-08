@@ -1,4 +1,4 @@
-import { beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 const dependencies = vi.hoisted(() => ({
@@ -48,6 +48,32 @@ beforeEach(() => {
     data: { success: true, transaction_id: "tx", idempotent: false },
     error: null,
   });
+  vi.stubEnv("QR_SIGNING_SECRET", "test-order-signing-secret");
+  vi.stubEnv("PAYCELL_WEBHOOK_KEY", "test-paycell-webhook-key-0123456789");
+});
+afterEach(() => vi.unstubAllEnvs());
+it("refuses a paid plan without payment in production", async () => {
+  vi.stubEnv("NODE_ENV", "production");
+  await expect(
+    processSandboxCheckout({ plan: "growth", idempotencyKey: "free-ride-1" }),
+  ).rejects.toThrow("FORBIDDEN");
+  expect(dependencies.rpc).not.toHaveBeenCalled();
+});
+it("still lets an owner switch to Free in production", async () => {
+  vi.stubEnv("NODE_ENV", "production");
+  await expect(
+    processSandboxCheckout({ plan: "free", idempotencyKey: "free-2" }),
+  ).resolves.toMatchObject({ success: true });
+  expect(dependencies.rpc).toHaveBeenCalledWith(
+    "switch_to_free",
+    expect.objectContaining({ p_key: "free-2" }),
+  );
+});
+it("does not start a Paycell payment when the webhook key is missing", async () => {
+  vi.stubEnv("PAYCELL_WEBHOOK_KEY", "");
+  await expect(
+    createPaycellCheckout({ mode: "paycell", plan: "start", idempotencyKey: "paycell-2" }),
+  ).rejects.toThrow("NOT_CONFIGURED");
 });
 it("rejects checkout when session verification fails", async () => {
   dependencies.session.mockRejectedValue(new Error("UNAUTHENTICATED"));
