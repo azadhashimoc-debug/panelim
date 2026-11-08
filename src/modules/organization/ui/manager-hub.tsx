@@ -10,9 +10,12 @@ import {
   CalendarDays,
   CheckCircle2,
   ClipboardList,
+  Copy,
   CreditCard,
   Download,
+  KeyRound,
   LayoutDashboard,
+  MessageCircle,
   Plus,
   QrCode,
   ReceiptText,
@@ -68,6 +71,34 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
   const [selectedMemberId, setSelectedMemberId] = useState<string>(
     demo ? DEMO_MANAGER_DATA.team[0]?.id || "" : ""
   );
+  const [accessLink, setAccessLink] = useState<{
+    name: string;
+    url: string | null;
+    error: string;
+    demo: boolean;
+  } | null>(null);
+
+  async function openAccessLink(membershipId: string, name: string) {
+    if (isDemo) {
+      setAccessLink({ name, url: "https://panelim.az/davet#t=demo", error: "", demo: true });
+      return;
+    }
+    setAccessLink({ name, url: null, error: "", demo: false });
+    try {
+      const result = await api<{ url: string }>("/api/rehber", {
+        action: "create_access_link",
+        membershipId,
+      });
+      setAccessLink({ name, url: result.url, error: "", demo: false });
+    } catch (err: unknown) {
+      setAccessLink({
+        name,
+        url: null,
+        error: err instanceof Error ? err.message : "Link yaradılmadı.",
+        demo: false,
+      });
+    }
+  }
 
   async function handleOpenQr(branchId?: string, branchName?: string) {
     const targetId = branchId || data?.branches[0]?.id || "";
@@ -104,7 +135,7 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
   async function loadData(signal?: AbortSignal) {
     if (isDemo) return;
     try {
-      const res = await api<ManagerHubData>("/api/rehber", { signal });
+      const res = await api<ManagerHubData>("/api/rehber", undefined, signal);
       if (signal?.aborted) return;
       setData(res);
       setError("");
@@ -199,11 +230,12 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
       );
       setModal(null);
       setBusy(false);
+      void openAccessLink(newMember.id, newMember.display_name);
       return;
     }
 
     try {
-      await api("/api/rehber", {
+      const created = await api<{ membershipId: string }>("/api/rehber", {
         action: "add_employee",
         displayName: form.get("displayName"),
         email: form.get("email"),
@@ -215,6 +247,8 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
       });
       setModal(null);
       await loadData();
+      // İşçi şifrəsini yalnız bu linklə təyin edə bilir
+      await openAccessLink(created.membershipId, String(form.get("displayName")));
     } catch (err: unknown) {
       setActionError(err instanceof Error ? err.message : "Xəta baş verdi.");
     } finally {
@@ -611,6 +645,9 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
                 onOpenBranchQr={(branchId, branchName) => {
                   void handleOpenQr(branchId, branchName);
                 }}
+                onCreateAccessLink={(membershipId, name) => {
+                  void openAccessLink(membershipId, name);
+                }}
               />
             )}
 
@@ -655,6 +692,10 @@ export function ManagerHub({ demo = false }: { demo?: boolean }) {
       </main>
 
       {/* MODAL: Add Employee */}
+      {accessLink && (
+        <AccessLinkModal link={accessLink} onClose={() => setAccessLink(null)} />
+      )}
+
       {modal === "addEmployee" && data && (
         <Modal title="Yeni İşçi Əlavə Et" onClose={() => setModal(null)}>
           <form className="stack" onSubmit={handleAddEmployee} style={{ padding: 20 }}>
@@ -1032,17 +1073,78 @@ function Overview({
   );
 }
 
+function AccessLinkModal({
+  link,
+  onClose,
+}: {
+  link: { name: string; url: string | null; error: string; demo: boolean };
+  onClose: () => void;
+}) {
+  const [copied, setCopied] = useState(false);
+  const whatsappText = `Salam! panelim.az hesabınız üçün bu linkdən şifrənizi təyin edin: ${link.url}`;
+
+  async function copy() {
+    if (!link.url) return;
+    await navigator.clipboard.writeText(link.url);
+    setCopied(true);
+  }
+
+  return (
+    <Modal title={`${link.name}: giriş linki`} onClose={onClose}>
+      <div className="stack" style={{ padding: 20 }}>
+        {link.error ? (
+          <p className="form-error" role="alert">{link.error}</p>
+        ) : !link.url ? (
+          <p role="status">Link hazırlanır…</p>
+        ) : (
+          <>
+            {link.demo && (
+              <p role="note"><strong>Demo:</strong> bu nümunədir, real link yaradılmır.</p>
+            )}
+            <p>
+              Bu linki yalnız işçinin özünə göndərin. İşçi linki açıb şifrəsini təyin edəcək, sonra e-poçtu
+              və şifrəsi ilə daxil olacaq.
+            </p>
+            <label className="field">
+              Link
+              <input readOnly value={link.url} onFocus={(e) => e.currentTarget.select()} />
+            </label>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              <button type="button" className="button secondary" onClick={() => void copy()}>
+                <Copy size={16} /> {copied ? "Kopyalandı" : "Linki kopyala"}
+              </button>
+              <a
+                className="button primary"
+                href={`https://wa.me/?text=${encodeURIComponent(whatsappText)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle size={16} /> WhatsApp ilə göndər
+              </a>
+            </div>
+            <p className="note" style={{ fontSize: "0.85rem" }}>
+              Link tək istifadəlikdir və müddəti məhduddur. İşləməsə, İşçilər bölməsindən yenisini yaradın.
+            </p>
+          </>
+        )}
+      </div>
+    </Modal>
+  );
+}
+
 // 2. Team & Branch Panel
 function TeamPanel({
   data,
   onOpenAddEmployee,
   onOpenAddBranch,
   onOpenBranchQr,
+  onCreateAccessLink,
 }: {
   data: ManagerHubData;
   onOpenAddEmployee: () => void;
   onOpenAddBranch: () => void;
   onOpenBranchQr: (branchId: string, branchName: string) => void;
+  onCreateAccessLink: (membershipId: string, name: string) => void;
 }) {
   return (
     <>
@@ -1077,6 +1179,18 @@ function TeamPanel({
                     {branch ? ` · ${branch.name}` : ""}
                     {term?.started_on ? ` · Başlama: ${term.started_on}` : ""}
                   </small>
+                  {member.role !== "owner" &&
+                    member.id !== data.member.id &&
+                    (data.member.role === "owner" || member.role === "employee") && (
+                      <button
+                        type="button"
+                        className="button secondary compact"
+                        style={{ marginTop: 8 }}
+                        onClick={() => onCreateAccessLink(member.id, member.display_name)}
+                      >
+                        <KeyRound size={14} /> Giriş linki
+                      </button>
+                    )}
                 </div>
                 <span>
                   {term ? `${formatMoney(term.base_pay_qepik)} / ${term.pay_type === "monthly" ? "ay" : "saat"}` : "Tarif yoxdur"}

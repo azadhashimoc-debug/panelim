@@ -2,6 +2,7 @@ import { fail, ok, readMutation } from "@/shared/server/http";
 import {
   fetchManagerHubData,
   addEmployee,
+  createAccessLink,
   addBranch,
   addShift,
 } from "@/modules/organization/server/manager-hub";
@@ -23,6 +24,9 @@ export async function POST(request: Request) {
 
     if (body.action === "add_employee") {
       return ok(await addEmployee(body));
+    }
+    if (body.action === "create_access_link") {
+      return ok(await createAccessLink(body));
     }
     if (body.action === "add_branch") {
       return ok(await addBranch(body));

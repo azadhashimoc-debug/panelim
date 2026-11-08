@@ -71,6 +71,107 @@ export async function fetchManagerHubData() {
   };
 }
 
+const accessLinkSchema = z.object({ membershipId: z.string().uuid() });
+
+/**
+ * İşçi üçün tək istifadəlik şifrə təyini linki yaradır. Link hədəf hesaba tam giriş verdiyi üçün
+ * yalnız rəhbərin həqiqətən idarə etdiyi şəxs üçün buraxılır: sahib şirkətin qeyri-sahib üzvləri,
+ * filial rəhbəri isə yalnız öz filialının işçiləri üçün. Token URL fraqmentindədir, serverə,
+ * jurnallara və keçid önizləmələrinə düşmür; audit qeydinə yazılmır.
+ */
+export async function createAccessLink(input: unknown) {
+  const { user, member } = await requireManagerSession();
+  const parsed = accessLinkSchema.safeParse(input);
+  if (!parsed.success) throw new Error("INVALID_INPUT");
+  const appUrl = process.env.APP_URL;
+  if (!appUrl) throw new Error("NOT_CONFIGURED");
+
+  await rateLimit(`access_link:${member.company_id}`, 20, 60);
+
+  const db = serviceClient();
+  const { data: target, error: targetError } = await db
+    .from("memberships")
+    .select("id, user_id, role")
+    .eq("id", parsed.data.membershipId)
+    .eq("company_id", member.company_id)
+    .is("archived_at", null)
+    .maybeSingle();
+  if (targetError) throw new Error("INTERNAL");
+  if (!target || target.role === "owner" || target.id === member.id) {
+    throw new Error("FORBIDDEN");
+  }
+
+  // Link bütün hesabı açır: başqa şirkətdə də aktiv olan istifadəçiyə toxunulmur
+  const { data: elsewhere, error: elsewhereError } = await db
+    .from("memberships")
+    .select("id")
+    .eq("user_id", target.user_id)
+    .neq("company_id", member.company_id)
+    .is("archived_at", null)
+    .limit(1);
+  if (elsewhereError) throw new Error("INTERNAL");
+  if (elsewhere?.length) throw new Error("FORBIDDEN");
+
+  const { data: targetBranches, error: branchError } = await db
+    .from("branch_assignments")
+    .select("branch_id")
+    .eq("membership_id", target.id);
+  if (branchError) throw new Error("INTERNAL");
+  const targetBranchIds = (targetBranches ?? []).map((a) => a.branch_id as string);
+
+  if (member.role !== "owner") {
+    if (target.role !== "employee") throw new Error("FORBIDDEN");
+    const { data: ownBranches, error: ownError } = await db
+      .from("branch_assignments")
+      .select("branch_id")
+      .eq("membership_id", member.id);
+    if (ownError) throw new Error("INTERNAL");
+    const own = new Set((ownBranches ?? []).map((a) => a.branch_id as string));
+    if (!targetBranchIds.some((branchId) => own.has(branchId))) {
+      throw new Error("FORBIDDEN");
+    }
+  }
+
+  // audit_events.branch_id məcburidir: filialı olmayan üzv üçün şirkətin aktiv filialı yazılır
+  let auditBranchId: string | undefined = targetBranchIds[0];
+  if (!auditBranchId) {
+    const { data: companyBranches, error: companyError } = await db
+      .from("branches")
+      .select("id")
+      .eq("company_id", member.company_id)
+      .is("archived_at", null)
+      .limit(1);
+    if (companyError) throw new Error("INTERNAL");
+    auditBranchId = companyBranches?.[0]?.id as string | undefined;
+  }
+  if (!auditBranchId) throw new Error("INTERNAL");
+
+  const { data: targetUser, error: userError } = await db.auth.admin.getUserById(
+    target.user_id as string,
+  );
+  const email = targetUser?.user?.email;
+  if (userError || !email) throw new Error("INTERNAL");
+
+  const { data: link, error: linkError } = await db.auth.admin.generateLink({
+    type: "recovery",
+    email,
+  });
+  const token = link?.properties?.hashed_token;
+  if (linkError || !token) throw new Error("INTERNAL");
+
+  const { error: auditError } = await db.from("audit_events").insert({
+    company_id: member.company_id,
+    branch_id: auditBranchId,
+    actor_id: user.id,
+    action: "employee.access_link_created",
+    entity_id: target.id,
+    reason: "İşçi üçün giriş linki yaradıldı",
+  });
+  if (auditError) throw new Error("INTERNAL");
+
+  return { url: `${new URL(appUrl).origin}/davet#t=${token}` };
+}
+
 const addEmployeeSchema = z.object({
   displayName: z.string().trim().min(2).max(100),
   email: z.string().email().max(254),

@@ -20,6 +20,10 @@ export const errorMessages: Record<string, string> = {
     "Bağlantı hələ qurulmayıb. Hesab məlumatları hazır olduqda davam edə bilərsiniz.",
   UNAUTHENTICATED: "Davam etmək üçün hesabınıza daxil olun.",
   FORBIDDEN: "Bu əməliyyat üçün icazəniz yoxdur.",
+  INVITE_INVALID:
+    "Bu link artıq istifadə olunub və ya vaxtı bitib. Rəhbərinizdən yeni link istəyin.",
+  INVITE_PASSWORD:
+    "Şifrə qəbul edilmədi və link artıq işlənib. Rəhbərinizdən yeni link istəyin və başqa şifrə seçin.",
   EMPLOYEE_LIMIT_REACHED: "Paketin aktiv işçi limiti dolub. İşçini arxivləşdirin və ya paketi yüksəldin.",
   BRANCH_LIMIT_REACHED: "Paketin aktiv filial limiti dolub. Filialı deaktivləşdirin və ya paketi yüksəldin.",
   PLAN_SELECTION_REQUIRED: "Paket limiti aşılıb. Sahib aktiv qalacaq heyəti və filialı seçməli və ya paketi yüksəltməlidir.",

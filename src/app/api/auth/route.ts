@@ -23,6 +23,11 @@ const schema = z.discriminatedUnion("action", [
     branchName: z.string().trim().max(120).optional(),
   }),
   z.object({ action: z.literal("logout") }),
+  z.object({
+    action: z.literal("accept_invite"),
+    token: z.string().min(20).max(512),
+    password: z.string().min(8).max(256),
+  }),
 ]);
 
 export async function POST(request: Request) {
@@ -35,6 +40,39 @@ export async function POST(request: Request) {
       const { error } = await client.auth.signOut();
       if (error) throw new Error("INTERNAL");
       return ok({ success: true });
+    }
+
+    if (parsed.data.action === "accept_invite") {
+      await rateLimit(`accept_invite:${parsed.data.token}`, 10, 3600);
+      // Token yalnız burada, şifrə göndəriləndə işlədilir: keçid önizləməsi onu xərcləyə bilmir
+      const { data: verified, error: verifyError } = await client.auth.verifyOtp({
+        type: "recovery",
+        token_hash: parsed.data.token,
+      });
+      if (verifyError || !verified.user) throw new Error("INVITE_INVALID");
+
+      const { error: passwordError } = await client.auth.updateUser({
+        password: parsed.data.password,
+      });
+      if (passwordError) {
+        await client.auth.signOut();
+        throw new Error("INVITE_PASSWORD");
+      }
+
+      const { data: member } = await serviceClient()
+        .from("memberships")
+        .select("role, company_id")
+        .eq("user_id", verified.user.id)
+        .is("archived_at", null)
+        .maybeSingle();
+      return ok({
+        success: true,
+        redirect: !member
+          ? "/qeydiyyat?qurulum=davam"
+          : member.role === "owner"
+            ? "/rehber"
+            : "/isci",
+      });
     }
 
     if (parsed.data.action === "login") {
